@@ -1,25 +1,19 @@
 {
   "compilerOptions": {
     "target": "ES2023",
+    "lib": ["ES2023", "DOM", "DOM.Iterable"],
     "module": "ESNext",
-    "moduleResolution": "bundler",
-    "paths": {
-      "@workspace/config": ["config/index.ts"],
-      "@workspace/config/*": ["config/*"],
-      "@workspace/*": ["packages/*/dist"],
-    },
-    "resolveJsonModule": true,
-    "typeRoots": ["./packages/core/src/types", "./node_modules/@types"],
-    "types": ["node"],
-    "strict": true,
+    "moduleResolution": "Bundler",
+    "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
-    "isolatedModules": true,
-    "skipLibCheck": true,
-    "composite": true,
-    "declaration": true,
-    "declarationMap": true,
-    "sourceMap": true,
+    "resolveJsonModule": true,
     "verbatimModuleSyntax": true,
-    "lib": ["ES2020", "DOM", "DOM.Iterable"],
-  },
+    "isolatedModules": true,
+    "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "exactOptionalPropertyTypes": true,
+    "useDefineForClassFields": true,
+    "skipLibCheck": true,
+    "types": ["node"]
+  }
 }

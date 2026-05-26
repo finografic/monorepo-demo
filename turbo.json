@@ -1,70 +1,31 @@
 {
-  "$schema": "https://v2-8-16.turborepo.dev/schema.json",
-  "globalEnv": ["NODE_ENV"],
+  "$schema": "https://turbo.build/schema.json",
+  "globalEnv": ["NODE_ENV", "PORT"],
   "tasks": {
     "build": {
       "dependsOn": ["^build"],
-      "outputs": ["dist/**"]
-    },
-    "@workspace/build-deployment#build": {
-      "cache": false,
-      "dependsOn": [],
-      "outputs": []
-    },
-    "@workspace/scripts#build": {
-      "cache": false,
-      "outputs": []
-    },
-    "@workspace/core#build": {
-      "outputs": ["dist/**", "*.tsbuildinfo"]
-    },
-    "@workspace/shared#build": {
-      "dependsOn": ["@workspace/core#build"],
-      "outputs": ["dist/**", "*.tsbuildinfo"]
-    },
-    "@workspace/i18n#build": {
-      "dependsOn": ["@workspace/core#build", "@workspace/shared#build"],
-      "outputs": ["dist/**", "*.tsbuildinfo"]
-    },
-    "@workspace/config#build": {
-      "dependsOn": ["@workspace/i18n#build"],
-      "outputs": ["dist/**", "*.tsbuildinfo"]
-    },
-    "@workspace/design-system#build": {
-      "dependsOn": [
-        "@workspace/core#build",
-        "@workspace/shared#build",
-        "@workspace/i18n#build",
-        "@workspace/config#build"
-      ],
-      "outputs": ["dist/**"]
-    },
-    "@workspace/server#build": {
-      "dependsOn": [
-        "@workspace/core#build",
-        "@workspace/shared#build",
-        "@workspace/i18n#build",
-        "@workspace/config#build"
-      ],
-      "outputs": ["dist/**", "*.tsbuildinfo"]
-    },
-    "@workspace/client#build": {
-      "dependsOn": [
-        "@workspace/core#build",
-        "@workspace/shared#build",
-        "@workspace/i18n#build",
-        "@workspace/config#build"
-      ],
-      "outputs": ["dist/**", "styled-system/**"]
+      "outputs": ["dist/**", "build/**", "styled-system/**", "*.tsbuildinfo"]
     },
     "dev": {
       "cache": false,
-      "persistent": true,
-      "dependsOn": ["^build"],
-      "env": ["NODE_ENV", "PORT"]
+      "persistent": true
+    },
+    "start": {
+      "cache": false,
+      "persistent": true
     },
     "lint": {
       "outputs": []
+    },
+    "lint:fix": {
+      "cache": false,
+      "outputs": []
+    },
+    "typecheck": {
+      "outputs": []
+    },
+    "test": {
+      "outputs": ["coverage/**"]
     },
     "clean": {
       "cache": false
