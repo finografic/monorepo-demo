@@ -1,26 +1,32 @@
 {
   "name": "@workspace/client",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "private": true,
   "type": "module",
   "scripts": {
-    "---------- DEV_AND_BUILD": "---------------------------------------------",
-    "dev": "echo 'placeholder — Phase 02 will add Vite dev server'",
-    "build": "echo 'placeholder — Phase 02 will add Vite build'",
-    "clean": "pnpm --package=@finografic/project-scripts dlx purge-builds --detach",
-    "·········· LINTING": "···················································",
-    "lint": "oxlint -c ../../oxlint.config.ts",
-    "lint:fix": "oxlint -c ../../oxlint.config.ts --fix",
-    "·········· FORMATTING": "················································",
-    "format:check": "oxfmt --check .",
-    "format:fix": "oxfmt .",
-    "·········· TYPES": "·····················································",
+    "---------- DEV": "-------------------------------------------------------",
+    "dev": "vite",
+    "start": "vite preview",
+    "·········· BUILD": "·····················································",
+    "build": "vite build",
+    "·········· CLEAN": "·····················································",
+    "clean": "rm -rf dist node_modules/.vite",
+    "·········· LINTING": "····················································",
     "typecheck": "tsc --noEmit",
-    "tsc:debug": "tsc --pretty --project tsconfig.json"
+    "lint": "oxlint -c oxlint.config.ts"
   },
-  "dependencies": {},
+  "dependencies": {
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
+    "react-router-dom": "^7.13.0"
+  },
   "devDependencies": {
-    "@finografic/project-scripts": "^1.3.3",
-    "typescript": "^5.9.3"
+    "@types/node": "^24.0.0",
+    "@types/react": "^19.2.2",
+    "@types/react-dom": "^19.2.2",
+    "@vitejs/plugin-react": "^5.1.0",
+    "typescript": "^5.9.3",
+    "vite": "^7.1.10",
+    "vitest": "^4.0.18"
   }
 }

@@ -1,6 +1,6 @@
 # @finografic/monorepo-starter — Roadmap
 
-> **Status:** Initial extraction plan defined. Phase 1 ready to start.
+> **Status:** Phase 02 complete. App shells extracted and validated.
 > 📅 2026-05-27
 
 This roadmap is the high-level sequencing plan for turning this repo into a selective-extraction
@@ -28,7 +28,7 @@ Detailed execution lives in:
 
 ## P1 — Next Up
 
-- Extract minimal `apps/client` and `apps/server` shells from the source repo without business features. Detail: [TODO — Phase 02 App Shell Extraction](/docs/todo/TODO_PHASE_02_APP_SHELL_EXTRACTION.md)
+- ~~Extract minimal `apps/client` and `apps/server` shells from the source repo without business features.~~ **Complete.** Detail: [TODO — Phase 02 App Shell Extraction](/docs/todo/TODO_PHASE_02_APP_SHELL_EXTRACTION.md)
 
 ## P2 — Planned
 
@@ -56,9 +56,10 @@ Detailed execution lives in:
 
 ## Done
 
-| Date       | Item                                                                   |
-| ---------- | ---------------------------------------------------------------------- |
-| 2026-05-27 | Initial repo scaffolding files added                                   |
-| 2026-05-27 | Root roadmap created                                                   |
-| 2026-05-27 | Root monorepo config baseline and phased extraction plan established   |
-| 2026-05-27 | Phase 01 complete — workspace packages created, install/typecheck pass |
+| Date       | Item                                                                    |
+| ---------- | ----------------------------------------------------------------------- |
+| 2026-05-27 | Initial repo scaffolding files added                                    |
+| 2026-05-27 | Root roadmap created                                                    |
+| 2026-05-27 | Root monorepo config baseline and phased extraction plan established    |
+| 2026-05-27 | Phase 01 complete — workspace packages created, install/typecheck pass  |
+| 2026-05-27 | Phase 02 complete — client and server app shells extracted and building |

@@ -1,6 +1,7 @@
 # TODO — Phase 02 App Shell Extraction
-> **Status:** Not started. Sequencing agreed on 2026-05-27.
-📅 2026-05-27
+
+> **Status:** Complete. App shells extracted on 2026-05-27.
+> 📅 2026-05-27
 
 ## Goal
 
@@ -9,12 +10,12 @@ product-specific features.
 
 ## Scope
 
-- [ ] Create `apps/client` as a Vite + React + TypeScript app shell.
-- [ ] Create `apps/server` as a Hono + TypeScript app shell.
-- [ ] Keep the first client scope to a landing page and admin/dashboard demo only.
-- [ ] Keep the first server scope to health and demo routes only.
-- [ ] Remove source features during extraction, not after a full copy.
-- [ ] Validate the first end-to-end dev flow through Turbo.
+- [x] Create `apps/client` as a Vite + React + TypeScript app shell.
+- [x] Create `apps/server` as a Hono + TypeScript app shell.
+- [x] Keep the first client scope to a landing page and admin/dashboard demo only.
+- [x] Keep the first server scope to health and demo routes only.
+- [x] Remove source features during extraction, not after a full copy.
+- [x] Validate the first end-to-end dev flow through Turbo.
 
 ## Extraction Rules
 
@@ -31,6 +32,13 @@ product-specific features.
 
 ## Validation
 
-- [ ] `pnpm install`
-- [ ] `pnpm build`
-- [ ] `pnpm dev`
+- [x] `pnpm install`
+- [x] `pnpm build`
+- [x] `pnpm dev`
+
+## Done
+
+- [x] Server shell: Hono + @hono/node-server + tsdown, health and demo routes.
+- [x] Client shell: Vite + React + react-router-dom, landing page and dashboard with server health fetch.
+- [x] Proxy configured: client dev server proxies `/api` to server on port 4000.
+- [x] All three packages typecheck, both apps build, server starts cleanly.
