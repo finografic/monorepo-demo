@@ -36,6 +36,11 @@ export function splitAtUnclosedFence(buffer: string): SplitResult {
   const safeLines = lines.slice(0, openFenceIndex);
   const pendingLines = lines.slice(openFenceIndex);
 
+  // Trim trailing blank lines from safe so the renderer doesn't get orphaned whitespace
+  while (safeLines.length > 0 && safeLines[safeLines.length - 1] === '') {
+    safeLines.pop();
+  }
+
   return {
     safe: safeLines.join('\n'),
     pending: pendingLines.join('\n'),
