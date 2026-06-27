@@ -73,20 +73,23 @@ Shared across Claude Code, Cursor, and GitHub Copilot.
 - In this workspace, do not remove unused imports on save (`source.organizeImports: never`); sort only via `source.sortImports: explicit`. Keep `source.fixAll.oxc: explicit` for oxlint fixes without organize-imports cleanup.
 - Prefer adding missing imports on save (`source.addMissingImports: explicit`) and TypeScript auto-import suggestions while typing.
 - Use `:` as the segment separator in npm script names everywhere (e.g. `db:migrations:seed`, not `db.migrations.seed` or space-separated variants).
+- Prefer the published `@finografic/project-scripts` from the registry; use `file:`/`link:` only when explicitly testing local project-scripts changes.
+- `pnpm link` writes persistent `link:` specifiers in `package.json` and `pnpm-workspace.yaml` overrides — global unlink does not restore registry ranges.
+- Only list seeds in `config/db-setup.config.ts` for schemas/tables that exist in this repo.
 
 ## Learned Workspace Facts
 
 - This is a selective-extraction monorepo starter based on touch-monorepo; intentionally beyond bare-bones (auth, admin/CMS, Drizzle, i18n) and also a GitHub demo/portfolio piece.
-- Internal packages use `@workspace/*` scope; external deps use their real npm scopes.
 - `pnpm-workspace.yaml` declares: `config`, `packages/*`, `apps/*`.
 - Turbo drives `build`, `dev`, `lint`, `typecheck`, `test`, and `clean` tasks.
-- `apps/client`: Vite 7 + React 19 + react-router-dom; dev on port 3000, proxies `/api` → server.
-- `apps/server`: Hono + @hono/node-server; `tsdown` build, `tsx watch` dev, default port 4000.
-- `@workspace/config`: Valibot env validation + dotenv with root-dir auto-discovery + workspace paths.
+- `apps/client`: Vite 7 + React 19 + react-router-dom; dev on port 3000, proxies `/api` → server. `apps/server`: Hono + @hono/node-server; `tsdown` build, `tsx watch` dev, default port 4000.
+- `@workspace/config`: Valibot env validation + dotenv with root-dir auto-discovery + workspace paths; hosts `db-setup.config.ts`.
 - Each app has a local `oxlint.config.ts` importing presets from `@finografic/oxc-config/oxlint`.
 - Root `package.json` does NOT set `"type": "module"` — each sub-package declares its own.
-- `packages/core` and `packages/shared` from source were evaluated and intentionally skipped.
+- `packages/core` and `packages/shared` were intentionally skipped; `apps/` without `packages/` is valid (`@finografic/project-scripts` `findProjectRoot` needs `apps/` or `packages/`, not both).
 - No deployment workflow — GitHub Pages removed as unsuitable for full-stack monorepo.
 - For selective extraction: use touch-monorepo for auth/server/db patterns; use cv-justin-rankin for Panda CSS + `@finografic/design-system` Vite setup.
+- Root `db:reset` chains drop → migrate → `db:setup` via the `@finografic/project-scripts` `db-setup` CLI (`NODE_OPTIONS='--import tsx' db-setup -y`); do not duplicate a local db-setup script.
+- `config/db-setup.config.ts` seeds: `user`, `supported_languages`, `translations_ui`, `translations_app`, `translations_admin`; `viewConfigs` is empty (no SQL views). Seed files use underscore names matching schema exports.
 
 ---
