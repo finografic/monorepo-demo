@@ -1,5 +1,4 @@
-import { Spinner } from '@finografic/design-system';
-import { css } from '@styled-system/css';
+import { Spinner } from '@workspace/ui/components/spinner';
 import React from 'react';
 import { Navigate } from 'react-router-dom';
 
@@ -19,8 +18,8 @@ export function ProtectedRoute({ children, requiredRole = 'user' }: Props): Reac
 
   if (isLoading) {
     return (
-      <div className={css({ display: 'flex', justifyContent: 'center', py: '16' })}>
-        <Spinner />
+      <div className="flex justify-center py-16">
+        <Spinner className="size-5" />
       </div>
     );
   }

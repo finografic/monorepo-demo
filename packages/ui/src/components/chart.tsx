@@ -9,7 +9,6 @@ import type { TooltipValueType } from 'recharts';
 const THEMES = { light: '', dark: '.dark' } as const;
 
 const INITIAL_DIMENSION = { width: 320, height: 200 } as const;
-type TooltipNameType = number | string;
 
 export type ChartConfig = Record<
   string,
@@ -125,10 +124,7 @@ function ChartTooltipContent({
     indicator?: 'line' | 'dot' | 'dashed';
     nameKey?: string;
     labelKey?: string;
-  } & Omit<
-    RechartsPrimitive.DefaultTooltipContentProps<TooltipValueType>,
-    'accessibilityLayer'
-  >) {
+  } & Omit<RechartsPrimitive.DefaultTooltipContentProps, 'accessibilityLayer'>) {
   const { config } = useChart();
 
   const tooltipLabel = React.useMemo(() => {

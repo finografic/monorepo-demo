@@ -1,5 +1,6 @@
-import { AvatarDS, Badge, Button } from '@finografic/design-system';
-import { css } from '@styled-system/css';
+import { Avatar, AvatarFallback } from '@workspace/ui/components/avatar';
+import { Badge } from '@workspace/ui/components/badge';
+import { Button } from '@workspace/ui/components/button';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link, NavLink, Outlet, useNavigate } from 'react-router-dom';
@@ -7,14 +8,20 @@ import { Link, NavLink, Outlet, useNavigate } from 'react-router-dom';
 import { LanguageSwitcher } from '../components/LanguageSwitcher/LanguageSwitcher';
 import { useAuth } from '../context/AuthContext';
 
-function navLinkClass({ isActive }: { isActive: boolean }) {
-  return css({
-    fontSize: 'sm',
-    fontWeight: 'medium',
-    textDecoration: 'none',
-    color: isActive ? 'accent' : 'fg.muted',
-    _hover: { color: 'fg' },
-  });
+function navLinkClass({ isActive }: { isActive: boolean }): string {
+  return [
+    'text-sm font-medium no-underline transition-colors hover:text-foreground',
+    isActive ? 'text-primary' : 'text-muted-foreground',
+  ].join(' ');
+}
+
+function initials(name: string): string {
+  return name
+    .split(/\s+/)
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((part) => part[0]?.toUpperCase())
+    .join('');
 }
 
 export function Layout(): React.JSX.Element {
@@ -28,82 +35,50 @@ export function Layout(): React.JSX.Element {
   };
 
   return (
-    <div className={css({ minH: '100dvh', display: 'flex', flexDir: 'column', bg: 'bg' })}>
-      <header
-        className={css({
-          borderBottom: '1px solid',
-          borderColor: 'border.subtle',
-          bg: 'bg.surface',
-          px: '6',
-          h: '14',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-        })}
-      >
-        <div className={css({ display: 'flex', alignItems: 'center', gap: '6' })}>
-          <Link
-            to="/"
-            className={css({
-              textDecoration: 'none',
-              fontWeight: 'bold',
-              fontSize: 'sm',
-              color: 'fg',
-            })}
-          >
+    <div className="flex min-h-dvh flex-col bg-background">
+      <header className="sticky top-0 z-30 flex h-14 items-center justify-between border-b bg-background/95 px-4 backdrop-blur supports-[backdrop-filter]:bg-background/75 sm:px-6">
+        <div className="flex items-center gap-5">
+          <Link to="/" className="text-sm font-bold text-foreground no-underline">
             monorepo-starter
           </Link>
-          <nav className={css({ display: 'flex', gap: '4' })}>
+          <nav className="flex items-center gap-4">
             <NavLink to="/" end className={navLinkClass}>
               {t('ui.nav.home', 'Home')}
             </NavLink>
-            {isAuthenticated && (
+            {isAuthenticated ? (
               <NavLink to="/dashboard" className={navLinkClass}>
                 {t('ui.nav.dashboard', 'Dashboard')}
               </NavLink>
-            )}
-            {role === 'admin' && (
+            ) : null}
+            {role === 'admin' ? (
               <NavLink to="/admin" className={navLinkClass}>
                 {t('ui.nav.adminPanel', 'Admin')}
               </NavLink>
-            )}
+            ) : null}
           </nav>
         </div>
 
-        <div className={css({ display: 'flex', alignItems: 'center', gap: '3' })}>
+        <div className="flex items-center gap-3">
           <LanguageSwitcher />
           {isAuthenticated ? (
             <>
-              <Badge palette={role === 'admin' ? 'danger' : 'primary'} size="sm">
-                {role}
-              </Badge>
-              <AvatarDS name={user?.name ?? 'U'} size="sm" />
+              <Badge variant={role === 'admin' ? 'destructive' : 'default'}>{role}</Badge>
+              <Avatar size="sm">
+                <AvatarFallback>{initials(user?.name ?? 'User') || 'U'}</AvatarFallback>
+              </Avatar>
               <Button variant="ghost" size="sm" onClick={() => void handleSignOut()}>
                 {t('ui.buttons.signOut', 'Sign out')}
               </Button>
             </>
           ) : (
-            <Link
-              to="/login"
-              className={css({
-                px: '3',
-                py: '1.5',
-                fontSize: 'sm',
-                fontWeight: 'medium',
-                borderRadius: 'md',
-                bg: 'accent',
-                color: 'white',
-                textDecoration: 'none',
-                _hover: { opacity: 0.9 },
-              })}
-            >
-              {t('ui.buttons.signIn', 'Sign in')}
-            </Link>
+            <Button asChild size="sm">
+              <Link to="/login">{t('ui.buttons.signIn', 'Sign in')}</Link>
+            </Button>
           )}
         </div>
       </header>
 
-      <main className={css({ flex: 1 })}>
+      <main className="flex-1">
         <Outlet />
       </main>
     </div>

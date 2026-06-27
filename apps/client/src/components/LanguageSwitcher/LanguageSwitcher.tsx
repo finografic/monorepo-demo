@@ -1,4 +1,4 @@
-import { css } from '@styled-system/css';
+import { Button } from '@workspace/ui/components/button';
 import { useTranslation } from 'react-i18next';
 import type { SupportedLanguage } from '../../i18n/i18n.constants';
 import type React from 'react';
@@ -19,35 +19,20 @@ export function LanguageSwitcher(): React.JSX.Element {
   };
 
   return (
-    <div className={css({ display: 'flex', gap: '2', alignItems: 'center' })}>
+    <div className="flex items-center gap-1">
       {SUPPORTED_LANGUAGES.map((lng) => (
-        <button
+        <Button
           key={lng}
           type="button"
+          size="xs"
+          variant={current === lng ? 'default' : 'ghost'}
           aria-label={`Switch to ${lng}`}
           aria-pressed={current === lng}
           onClick={() => handleChange(lng)}
-          className={css({
-            px: '2',
-            py: '1',
-            fontSize: 'xs',
-            fontWeight: 'semibold',
-            letterSpacing: 'wide',
-            borderRadius: 'sm',
-            border: '1px solid',
-            cursor: 'pointer',
-            transition: 'all 0.15s ease',
-            borderColor: current === lng ? 'accent' : 'transparent',
-            bg: current === lng ? 'accent' : 'transparent',
-            color: current === lng ? 'white' : 'inherit',
-            _hover: {
-              borderColor: 'accent',
-              opacity: current === lng ? 1 : 0.7,
-            },
-          })}
+          className="px-2 text-xs tracking-wide"
         >
           {LABELS[lng]}
-        </button>
+        </Button>
       ))}
     </div>
   );

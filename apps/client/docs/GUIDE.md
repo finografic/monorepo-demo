@@ -1,19 +1,16 @@
 # Client Guide — Vite + React Router
 
-> Quick reference for the `apps/client` SPA after the Phase 06 LLAAB-pattern migration.
+> Quick reference for the `apps/client` SPA after the shadcn + Tailwind migration.
 
 ## Stack
 
 | Layer   | Choice                                      |
 | ------- | ------------------------------------------- |
 | Bundler | Vite 8                                      |
-| UI      | React 19 + `@finografic/design-system` now  |
+| UI      | React 19 + shadcn via `@workspace/ui`       |
 | Router  | React Router v7 with `createBrowserRouter`  |
 | Data    | TanStack Query + Hono RPC via `src/lib/api` |
-| Styles  | Panda CSS + design-system preset now        |
-
-Tailwind 4, shadcn, and `packages/ui` are intentionally deferred. See
-`docs/todo/TODO_PHASE_06_LLAAB_CLIENT_SERVER_PATTERNS.md` for the later shadcn migration notes.
+| Styles  | Tailwind 4 + `@workspace/ui/globals.css`    |
 
 ## Project Layout
 
@@ -21,9 +18,10 @@ Tailwind 4, shadcn, and `packages/ui` are intentionally deferred. See
 apps/client/
   index.html
   vite.config.ts
+  components.json              # shadcn app config
   src/
-    main.tsx                    # root providers
-    App.tsx                     # RouterProvider + dev-only CSS smoke marker
+    main.tsx                    # root providers + global CSS import
+    App.tsx                     # RouterProvider
     router.tsx                  # createBrowserRouter route tree
     components/                 # shared client components
     context/                    # AuthProvider / useAuth
@@ -33,7 +31,10 @@ apps/client/
       QueryClientProvider/      # TanStack Query client provider
     queries/                    # TanStack Query hooks
     lib/api.ts                  # typed Hono RPC client
-    styles/theme.css            # Panda/design-system layer setup
+packages/ui/
+  components.json               # shadcn package config
+  src/styles/globals.css        # Tailwind 4 + shadcn theme tokens
+  src/components/               # owned shadcn source components
 ```
 
 ## Providers
@@ -105,17 +106,20 @@ pnpm dev
 
 ## Styling
 
-Current styling is Panda CSS with `@finografic/design-system`.
+Client styling is Tailwind 4 plus owned shadcn source components.
 
-- Import generated Panda styles from `@styled-system/styles.css`.
-- Keep design-system/Panda aliases in both `vite.config.ts` and `tsconfig.json`.
-- Use valid semantic tokens such as `bg`, `fg`, `border`, `accent`, `accent.subtle`, and `fg.error`.
+- Import global styles once from `@workspace/ui/globals.css`.
+- Import primitives from paths like `@workspace/ui/components/button`.
+- Keep app-local styling as readable Tailwind class names unless a reusable primitive belongs in
+  `packages/ui`.
+- Keep foundational colors on shadcn tokens such as `bg-background`, `bg-card`, `text-foreground`,
+  `text-muted-foreground`, `border-border`, and `ring-ring`.
 
 ## Common Pitfalls
 
-| Symptom                     | Fix                                                    |
-| --------------------------- | ------------------------------------------------------ |
-| QueryClient error           | Ensure the component is under `QueryClientProvider`    |
-| API client type missing     | Build `@workspace/server` so `dist/index.d.mts` exists |
-| Alias not resolving in Vite | Add it to `vite.config.ts` and `tsconfig.json`         |
-| Auth session missing        | Check `/api/auth/session`, cookies, and server logs    |
+| Symptom                 | Fix                                                                   |
+| ----------------------- | --------------------------------------------------------------------- |
+| QueryClient error       | Ensure the component is under `QueryClientProvider`                   |
+| API client type missing | Build `@workspace/server` so `dist/index.d.mts` exists                |
+| UI alias not resolving  | Check Vite/TS aliases for `@workspace/ui`, `ui`, `utils`, and `hooks` |
+| Auth session missing    | Check `/api/auth/session`, cookies, and server logs                   |

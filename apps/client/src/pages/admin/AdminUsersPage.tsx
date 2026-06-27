@@ -1,27 +1,17 @@
-import { Badge, DataTable, Spinner } from '@finografic/design-system';
-import type { DataTableColumn } from '@finografic/design-system';
-import { css } from '@styled-system/css';
+import { Badge } from '@workspace/ui/components/badge';
+import { DataTable } from '@workspace/ui/components/data-table';
+import { Spinner } from '@workspace/ui/components/spinner';
+import type { DataTableColumns } from '@workspace/ui/lib/data-table-utils';
 import { useUpdateUser, useUsers } from 'queries/users';
 import React, { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { UserRole, UserRow } from 'queries/users';
 
-const ROLE_PALETTE: Record<UserRow['role'], 'danger' | 'primary' | 'neutral'> = {
-  admin: 'danger',
-  user: 'primary',
-  public: 'neutral',
+const ROLE_VARIANT: Record<UserRow['role'], 'destructive' | 'default' | 'secondary'> = {
+  admin: 'destructive',
+  user: 'default',
+  public: 'secondary',
 };
-
-const selectClass = css({
-  fontSize: 'xs',
-  px: '2',
-  py: '1',
-  borderRadius: 'sm',
-  border: '1px solid',
-  borderColor: 'border',
-  bg: 'bg.surface',
-  cursor: 'pointer',
-});
 
 interface RoleCellProps {
   user: UserRow;
@@ -29,15 +19,15 @@ interface RoleCellProps {
   onUpdateRole: (id: string, role: UserRole) => void;
 }
 
-function RoleCell({ user: userRow, updatingId, onUpdateRole }: RoleCellProps) {
+function RoleCell({ user: userRow, updatingId, onUpdateRole }: RoleCellProps): React.JSX.Element {
   return (
-    <div className={css({ display: 'flex', alignItems: 'center', gap: '2' })}>
-      <Badge palette={ROLE_PALETTE[userRow.role]}>{userRow.role}</Badge>
+    <div className="flex items-center gap-2">
+      <Badge variant={ROLE_VARIANT[userRow.role]}>{userRow.role}</Badge>
       <select
         value={userRow.role}
         disabled={updatingId === userRow.id}
         onChange={(e) => onUpdateRole(userRow.id, e.target.value as UserRow['role'])}
-        className={selectClass}
+        className="h-7 rounded-md border border-input bg-background px-2 text-xs disabled:cursor-not-allowed disabled:opacity-50"
       >
         <option value="public">public</option>
         <option value="user">user</option>
@@ -53,19 +43,22 @@ export function AdminUsersPage(): React.JSX.Element {
   const updateUser = useUpdateUser();
   const updatingId = updateUser.isPending ? updateUser.variables.id : null;
 
-  const columns = useMemo<Array<DataTableColumn<UserRow>>>(
+  const columns = useMemo<DataTableColumns<UserRow>>(
     () => [
       {
         accessorKey: 'name',
         header: t('admin.users.columns.name', 'Name'),
+        align: 'left',
       },
       {
         accessorKey: 'email',
         header: t('admin.users.columns.email', 'Email'),
+        align: 'left',
       },
       {
         accessorKey: 'role',
         header: t('admin.users.columns.role', 'Role'),
+        align: 'left',
         cell: ({ row }) => (
           <RoleCell
             user={row.original}
@@ -78,7 +71,7 @@ export function AdminUsersPage(): React.JSX.Element {
         accessorKey: 'emailVerified',
         header: t('admin.users.columns.verified', 'Verified'),
         cell: ({ getValue }) => (
-          <Badge palette={getValue<boolean>() ? 'success' : 'neutral'}>
+          <Badge variant={getValue<boolean>() ? 'default' : 'secondary'}>
             {getValue<boolean>() ? 'yes' : 'no'}
           </Badge>
         ),
@@ -87,9 +80,9 @@ export function AdminUsersPage(): React.JSX.Element {
         accessorKey: 'createdAt',
         header: t('admin.users.columns.created', 'Created'),
         cell: ({ getValue }) => {
-          const val = getValue<string | null>();
-          if (!val) return '—';
-          return new Date(val).toLocaleDateString('en-GB');
+          const value = getValue<string | null>();
+          if (!value) return '—';
+          return new Date(value).toLocaleDateString('en-GB');
         },
       },
     ],
@@ -98,30 +91,26 @@ export function AdminUsersPage(): React.JSX.Element {
 
   return (
     <div>
-      <h1 className={css({ fontSize: '2xl', fontWeight: 'bold', color: 'fg' })}>
-        {t('admin.pages.users.title', 'Users')}
-      </h1>
-      <p className={css({ fontSize: 'sm', color: 'fg.muted', mt: '1', mb: '6' })}>
+      <h1 className="text-2xl font-bold text-foreground">{t('admin.pages.users.title', 'Users')}</h1>
+      <p className="mt-1 mb-6 text-sm text-muted-foreground">
         {t('admin.pages.users.subtitle', 'Manage accounts and roles')}
       </p>
 
-      {usersQuery.error && (
-        <p className={css({ fontSize: 'sm', color: 'fg.error', mb: '4' })}>
+      {usersQuery.error ? (
+        <p className="mb-4 text-sm text-destructive">
           {usersQuery.error instanceof Error ? usersQuery.error.message : 'Failed to load users'}
         </p>
-      )}
+      ) : null}
 
       {usersQuery.isLoading ? (
-        <div className={css({ display: 'flex', justifyContent: 'center', py: '12' })}>
-          <Spinner />
+        <div className="flex justify-center py-12">
+          <Spinner className="size-5" />
         </div>
       ) : (
         <DataTable
           data={usersQuery.data ?? []}
           columns={columns}
-          classNames={{ table: {} }}
           emptyMessage={t('admin.users.empty', 'No users found')}
-          getRowId={(row) => row.id}
         />
       )}
     </div>

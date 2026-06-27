@@ -1,5 +1,4 @@
-import { Card } from '@finografic/design-system';
-import { css } from '@styled-system/css';
+import { Card, CardContent } from '@workspace/ui/components/card';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -8,19 +7,17 @@ export function AdminSettingsPage(): React.JSX.Element {
 
   return (
     <div>
-      <h1 className={css({ fontSize: '2xl', fontWeight: 'bold', color: 'fg' })}>
-        {t('admin.pages.settings.title', 'Settings')}
-      </h1>
-      <p className={css({ fontSize: 'sm', color: 'fg.muted', mt: '1', mb: '6' })}>
+      <h1 className="text-2xl font-bold text-foreground">{t('admin.pages.settings.title', 'Settings')}</h1>
+      <p className="mt-1 mb-6 text-sm text-muted-foreground">
         {t('admin.pages.settings.subtitle', 'Application configuration')}
       </p>
 
       <Card>
-        <div className={css({ p: '6', textAlign: 'center' })}>
-          <p className={css({ fontSize: 'sm', color: 'fg.muted' })}>
+        <CardContent className="p-6 text-center">
+          <p className="text-sm text-muted-foreground">
             {t('admin.pages.settings.placeholder', 'Settings coming soon.')}
           </p>
-        </div>
+        </CardContent>
       </Card>
     </div>
   );

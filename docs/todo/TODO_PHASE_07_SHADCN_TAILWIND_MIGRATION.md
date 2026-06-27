@@ -105,75 +105,75 @@ Theme source for this repo:
 
 ### Tasks
 
-- [ ] Review `/Users/justin/LLAAB/apps/client/src/layouts/AGENTS.md`.
-- [ ] Copy/adapt useful layout primitives from LLAAB:
+- [x] Review `/Users/justin/LLAAB/apps/client/src/layouts/AGENTS.md`.
+- [x] Copy/adapt useful layout primitives from LLAAB:
       `AppLayout`, `PageLayout`, `PageDetail`, `PageList`, and sidebar contexts as needed.
-- [ ] Decide whether this starter should keep the current simple `layout/` folder or move to
+- [x] Decide whether this starter should keep the current simple `layout/` folder or move to
       LLAAB's plural `layouts/` pattern.
-- [ ] Replace `@styled-system/css` layout styling with class names/Tailwind utilities.
-- [ ] Replace design-system layout components with `@workspace/ui` components.
-- [ ] Keep public layout and admin layout behavior unchanged.
+- [x] Replace `@styled-system/css` layout styling with class names/Tailwind utilities.
+- [x] Replace design-system layout components with `@workspace/ui` components.
+- [x] Keep public layout and admin layout behavior unchanged.
 
 ### Validation
 
-- [ ] `pnpm --filter @workspace/client typecheck`
-- [ ] `pnpm --filter @workspace/client build`
+- [x] `pnpm --filter @workspace/client typecheck`
+- [x] `pnpm --filter @workspace/client build`
 
 ## Phase 07E — Migrate Pages and Shared Components
 
 ### Tasks
 
-- [ ] Replace `@finografic/design-system` imports in client pages/components.
-- [ ] Replace `css({ ... })` usage with Tailwind class names or shadcn component props.
-- [ ] Migrate `LanguageSwitcher`, `ProtectedRoute`, landing page, login page, dashboard, users, and
+- [x] Replace `@finografic/design-system` imports in client pages/components.
+- [x] Replace `css({ ... })` usage with Tailwind class names or shadcn component props.
+- [x] Migrate `LanguageSwitcher`, `ProtectedRoute`, landing page, login page, dashboard, users, and
       translations pages.
-- [ ] Use `@workspace/ui/components/button`, `card`, `badge`, `input`, `tabs`, `data-table`, etc.
-- [ ] Keep auth, i18n, Hono RPC, and TanStack Query behavior unchanged.
-- [ ] Do not delete `StyleSmokeTest` until this phase is visually verified.
+- [x] Use `@workspace/ui/components/button`, `card`, `badge`, `input`, `tabs`, `data-table`, etc.
+- [x] Keep auth, i18n, Hono RPC, and TanStack Query behavior unchanged.
+- [x] Do not delete `StyleSmokeTest` until this phase is visually verified.
 
 ### Validation
 
-- [ ] `pnpm --filter @workspace/client typecheck`
-- [ ] `pnpm --filter @workspace/client build`
+- [x] `pnpm --filter @workspace/client typecheck`
+- [x] `pnpm --filter @workspace/client build`
 
 ## Phase 07F — Remove Panda and Design-System
 
 ### Tasks
 
-- [ ] Remove all `@styled-system/*` imports.
-- [ ] Remove `StyleSmokeTest` after Tailwind/shadcn visual verification.
-- [ ] Remove `apps/client/panda.config.ts`.
-- [ ] Remove generated `apps/client/styled-system/` if present and ignored.
-- [ ] Remove `@pandacss/dev`, `@finografic/design-system`, Emotion deps, and Panda scripts.
-- [ ] Remove Panda aliases from `vite.config.ts` and `tsconfig.json`.
-- [ ] Remove `apps/client/src/styles/theme.css` if no longer needed.
-- [ ] Update `apps/client/docs/GUIDE.md`.
-- [ ] Update `AGENTS.md` learned workspace facts from Panda/design-system to shadcn/Tailwind.
+- [x] Remove all `@styled-system/*` imports.
+- [x] Remove `StyleSmokeTest` after Tailwind/shadcn visual verification.
+- [x] Remove `apps/client/panda.config.ts`.
+- [x] Remove generated `apps/client/styled-system/` if present and ignored.
+- [x] Remove `@pandacss/dev`, `@finografic/design-system`, Emotion deps, and Panda scripts.
+- [x] Remove Panda aliases from `vite.config.ts` and `tsconfig.json`.
+- [x] Remove `apps/client/src/styles/theme.css` if no longer needed.
+- [x] Update `apps/client/docs/GUIDE.md`.
+- [x] Update `AGENTS.md` learned workspace facts from Panda/design-system to shadcn/Tailwind.
 
 ### Validation
 
-- [ ] `pnpm typecheck`
-- [ ] `pnpm build`
-- [ ] `graphify update .`
+- [x] `pnpm typecheck`
+- [x] `pnpm build`
+- [x] `graphify update .`
 
 ## Phase 07G — Visual Smoke and Polish
 
 ### Tasks
 
-- [ ] Run `pnpm dev`.
-- [ ] Verify landing page, login, dashboard, admin users, and translations pages in browser.
-- [ ] Confirm Tailwind styles load without a custom smoke component.
-- [ ] Confirm Auth.js sign-in/sign-up still works.
-- [ ] Confirm admin data loading/mutations still work through TanStack Query + Hono RPC.
-- [ ] Tune spacing/typography only after the mechanical migration is complete.
+- [x] Run `pnpm dev`.
+- [x] Verify landing page, login, dashboard, admin users, and translations pages in browser.
+- [x] Confirm Tailwind styles load without a custom smoke component.
+- [x] Confirm Auth.js sign-in/sign-up still works.
+- [x] Confirm admin data loading/mutations still work through TanStack Query + Hono RPC.
+- [x] Tune spacing/typography only after the mechanical migration is complete.
 
 ### Validation
 
-- [ ] Browser smoke: landing page
-- [ ] Browser smoke: login page
-- [ ] Browser smoke: admin dashboard
-- [ ] Browser smoke: users table
-- [ ] Browser smoke: translations editor
+- [x] Browser smoke: landing page
+- [x] Browser smoke: login page
+- [x] Browser smoke: admin dashboard
+- [x] Browser smoke: users table
+- [x] Browser smoke: translations editor
 
 ## Deferred
 

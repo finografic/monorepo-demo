@@ -26,8 +26,8 @@ Detailed execution lives in:
 
 ## P0 — Active
 
-- Migrate the client UI layer from `@finografic/design-system` + Panda CSS to shadcn + Tailwind 4
-  using the proven LLAAB package/layout patterns. Detail: [TODO — Phase 07 Shadcn Tailwind Migration](/docs/todo/TODO_PHASE_07_SHADCN_TAILWIND_MIGRATION.md)
+- ~~Migrate the client UI layer from `@finografic/design-system` + Panda CSS to shadcn + Tailwind 4
+  using the proven LLAAB package/layout patterns.~~ **Complete.** Detail: [TODO — Phase 07 Shadcn Tailwind Migration](/docs/todo/TODO_PHASE_07_SHADCN_TAILWIND_MIGRATION.md)
 - ~~Adopt the newer LLAAB client/server architecture patterns: Vite 8, Hono RPC, TanStack Query,
   route-folder server structure, and React Router data-router setup.~~ **Complete.** Detail: [TODO — Phase 06 LLAAB Client/Server Patterns](/docs/todo/TODO_PHASE_06_LLAAB_CLIENT_SERVER_PATTERNS.md)
 - ~~Root monorepo bootstrap and planning docs.~~ **Complete.** Detail: [TODO — Phase 01 Root Bootstrap](/docs/todo/TODO_PHASE_01_ROOT_BOOTSTRAP.md)
@@ -77,3 +77,4 @@ Detailed execution lives in:
 | 2026-05-27 | Phase 04E complete — DS/Panda config verified; build + typecheck all green   |
 | 2026-05-27 | Phase 05 complete — pino logging, OpenAPI/Scalar, error envelope, rate limit |
 | 2026-06-28 | Phase 06 complete — Vite 8, Hono RPC, TanStack Query, route-tree migration   |
+| 2026-06-28 | Phase 07 complete — shadcn/Tailwind UI package migration                     |

@@ -1,5 +1,6 @@
-import { AvatarDS, Badge, Button } from '@finografic/design-system';
-import { css } from '@styled-system/css';
+import { Avatar, AvatarFallback } from '@workspace/ui/components/avatar';
+import { Badge } from '@workspace/ui/components/badge';
+import { Button } from '@workspace/ui/components/button';
 import React from 'react';
 import { Link, NavLink, Outlet, useNavigate } from 'react-router-dom';
 
@@ -12,6 +13,22 @@ const NAV_ITEMS = [
   { to: '/admin/settings', label: 'Settings', end: false },
 ];
 
+function navLinkClass({ isActive }: { isActive: boolean }): string {
+  return [
+    'rounded-lg px-3 py-2 text-sm font-medium no-underline transition-colors',
+    isActive ? 'bg-primary/10 text-primary' : 'text-muted-foreground hover:bg-muted hover:text-foreground',
+  ].join(' ');
+}
+
+function initials(name: string): string {
+  return name
+    .split(/\s+/)
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((part) => part[0]?.toUpperCase())
+    .join('');
+}
+
 export function AdminLayout(): React.JSX.Element {
   const { user, signOut } = useAuth();
   const navigate = useNavigate();
@@ -22,104 +39,51 @@ export function AdminLayout(): React.JSX.Element {
   };
 
   return (
-    <div className={css({ display: 'flex', minH: '100dvh', bg: 'bg' })}>
-      {/* Sidebar */}
-      <aside
-        className={css({
-          w: '56',
-          flexShrink: 0,
-          display: 'flex',
-          flexDir: 'column',
-          borderRight: '1px solid',
-          borderColor: 'border.subtle',
-          bg: 'bg.surface',
-        })}
-      >
-        <div
-          className={css({
-            px: '4',
-            py: '5',
-            borderBottom: '1px solid',
-            borderColor: 'border.subtle',
-          })}
-        >
-          <Link to="/" className={css({ textDecoration: 'none' })}>
-            <span
-              className={css({
-                fontWeight: 'bold',
-                fontSize: 'sm',
-                color: 'accent',
-              })}
-            >
-              monorepo-starter
-            </span>
+    <div className="flex min-h-dvh bg-background">
+      <aside className="hidden w-60 shrink-0 flex-col border-r bg-card md:flex">
+        <div className="border-b px-4 py-5">
+          <Link to="/" className="text-sm font-bold text-primary no-underline">
+            monorepo-starter
           </Link>
-          <Badge palette="primary" className={css({ mt: '1', display: 'block', w: 'fit' })}>
-            Admin
-          </Badge>
+          <div className="mt-2">
+            <Badge>Admin</Badge>
+          </div>
         </div>
 
-        <nav
-          className={css({
-            flex: 1,
-            px: '2',
-            py: '4',
-            display: 'flex',
-            flexDir: 'column',
-            gap: '1',
-          })}
-        >
+        <nav className="flex flex-1 flex-col gap-1 px-2 py-4">
           {NAV_ITEMS.map((item) => (
-            <NavLink
-              key={item.to}
-              to={item.to}
-              end={item.end}
-              className={({ isActive }) =>
-                css({
-                  display: 'block',
-                  px: '3',
-                  py: '2',
-                  borderRadius: 'md',
-                  fontSize: 'sm',
-                  fontWeight: 'medium',
-                  textDecoration: 'none',
-                  transition: 'all 0.15s ease',
-                  bg: isActive ? 'accent.subtle' : 'transparent',
-                  color: isActive ? 'accent' : 'fg.muted',
-                  _hover: { bg: 'bg.muted', color: 'fg' },
-                })
-              }
-            >
+            <NavLink key={item.to} to={item.to} end={item.end} className={navLinkClass}>
               {item.label}
             </NavLink>
           ))}
         </nav>
       </aside>
 
-      {/* Main */}
-      <div className={css({ flex: 1, display: 'flex', flexDir: 'column', minW: 0 })}>
-        {/* Topbar */}
-        <header
-          className={css({
-            h: '14',
-            px: '6',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'flex-end',
-            gap: '3',
-            borderBottom: '1px solid',
-            borderColor: 'border.subtle',
-            bg: 'bg.surface',
-          })}
-        >
-          <AvatarDS name={user?.name ?? 'User'} size="sm" />
-          <span className={css({ fontSize: 'sm', color: 'fg.muted' })}>{user?.email}</span>
-          <Button variant="ghost" size="sm" onClick={() => void handleSignOut()}>
-            Sign out
-          </Button>
+      <div className="flex min-w-0 flex-1 flex-col">
+        <header className="flex h-14 items-center justify-between gap-3 border-b bg-background/95 px-4 backdrop-blur sm:justify-end sm:px-6">
+          <Link to="/" className="text-sm font-bold text-primary no-underline md:hidden">
+            monorepo-starter
+          </Link>
+          <div className="flex items-center gap-3">
+            <Avatar size="sm">
+              <AvatarFallback>{initials(user?.name ?? 'User') || 'U'}</AvatarFallback>
+            </Avatar>
+            <span className="hidden text-sm text-muted-foreground sm:inline">{user?.email}</span>
+            <Button variant="ghost" size="sm" onClick={() => void handleSignOut()}>
+              Sign out
+            </Button>
+          </div>
         </header>
 
-        <main className={css({ flex: 1, p: '6', overflow: 'auto' })}>
+        <nav className="flex gap-1 overflow-x-auto border-b px-3 py-2 md:hidden">
+          {NAV_ITEMS.map((item) => (
+            <NavLink key={item.to} to={item.to} end={item.end} className={navLinkClass}>
+              {item.label}
+            </NavLink>
+          ))}
+        </nav>
+
+        <main className="flex-1 overflow-auto p-4 sm:p-6">
           <Outlet />
         </main>
       </div>

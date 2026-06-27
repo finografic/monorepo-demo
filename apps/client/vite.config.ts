@@ -8,12 +8,7 @@ export default defineConfig(({ mode }) => {
   const apiPort = rootEnv['API_PORT'] ?? '4000';
 
   return {
-    plugins: [
-      react({
-        jsxImportSource: '@emotion/react',
-      }),
-      tailwindcss(),
-    ],
+    plugins: [react(), tailwindcss()],
 
     resolve: {
       dedupe: ['react', 'react-dom'],
@@ -27,9 +22,9 @@ export default defineConfig(({ mode }) => {
         '@workspace/ui/components': resolve('../../packages/ui/src/components'),
         '@workspace/ui/hooks': resolve('../../packages/ui/src/hooks'),
         '@workspace/ui/lib': resolve('../../packages/ui/src/lib'),
-        '@styled-system/styles.css': resolve('styled-system/styles.css'),
-        '@styled-system/css': resolve('styled-system/css'),
-        '@styled-system/jsx': resolve('styled-system/jsx'),
+        'hooks': resolve('../../packages/ui/src/hooks'),
+        'ui': resolve('../../packages/ui/src/components'),
+        'utils': resolve('../../packages/ui/src/lib/utils'),
       },
     },
 

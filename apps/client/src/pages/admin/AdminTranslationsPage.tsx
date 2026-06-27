@@ -1,13 +1,16 @@
-import { Button, Spinner, TabsDS } from '@finografic/design-system';
-import { css } from '@styled-system/css';
+import { Button } from '@workspace/ui/components/button';
+import { Input } from '@workspace/ui/components/input';
+import { Spinner } from '@workspace/ui/components/spinner';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@workspace/ui/components/tabs';
 import { useTranslationDomains, useUpdateTranslation } from 'queries/translations';
-import React, { useMemo, useState } from 'react';
+import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { TranslationDomain, TranslationRow } from 'queries/translations';
 
 const LANGUAGES = ['en-GB', 'es-ES'];
+const DOMAINS: TranslationDomain[] = ['ui', 'app', 'admin'];
 
-function TranslationDomainTable({ domain }: { domain: TranslationDomain }) {
+function TranslationDomainTable({ domain }: { domain: TranslationDomain }): React.JSX.Element {
   const rowsQuery = useTranslationDomains(domain);
   const updateTranslation = useUpdateTranslation();
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -25,93 +28,55 @@ function TranslationDomainTable({ domain }: { domain: TranslationDomain }) {
 
   if (rowsQuery.isLoading) {
     return (
-      <div className={css({ display: 'flex', justifyContent: 'center', py: '8' })}>
-        <Spinner />
+      <div className="flex justify-center py-8">
+        <Spinner className="size-5" />
       </div>
     );
   }
 
   if (rowsQuery.error) {
     return (
-      <p className={css({ fontSize: 'sm', color: 'fg.error' })}>
+      <p className="text-sm text-destructive">
         {rowsQuery.error instanceof Error ? rowsQuery.error.message : 'Failed to load translations'}
       </p>
     );
   }
 
   return (
-    <div className={css({ display: 'flex', flexDir: 'column', gap: '2' })}>
+    <div className="flex flex-col gap-2">
       {(rowsQuery.data ?? []).map((row) => (
-        <div
-          key={row.id}
-          className={css({
-            border: '1px solid',
-            borderColor: 'border.subtle',
-            borderRadius: 'md',
-            p: '3',
-            bg: 'bg.surface',
-          })}
-        >
-          <div
-            className={css({
-              display: 'flex',
-              alignItems: 'flex-start',
-              justifyContent: 'space-between',
-              gap: '2',
-            })}
-          >
-            <code className={css({ fontSize: 'xs', color: 'fg.muted', flex: 1, wordBreak: 'break-all' })}>
-              {row.key}
-            </code>
-            {editingId !== row.id && (
+        <div key={row.id} className="rounded-lg border bg-card p-3 text-card-foreground">
+          <div className="flex items-start justify-between gap-2">
+            <code className="flex-1 break-all text-xs text-muted-foreground">{row.key}</code>
+            {editingId !== row.id ? (
               <Button variant="ghost" size="xs" onClick={() => startEdit(row)}>
                 Edit
               </Button>
-            )}
+            ) : null}
           </div>
 
           {editingId === row.id ? (
-            <div className={css({ mt: '2', display: 'flex', flexDir: 'column', gap: '2' })}>
+            <div className="mt-3 flex flex-col gap-2">
               {LANGUAGES.map((lng) => (
-                <div key={lng} className={css({ display: 'flex', gap: '2', alignItems: 'center' })}>
-                  <span
-                    className={css({
-                      fontSize: 'xs',
-                      fontWeight: 'medium',
-                      w: '12',
-                      flexShrink: 0,
-                      color: 'fg.muted',
-                    })}
-                  >
-                    {lng}
-                  </span>
-                  <input
+                <div key={lng} className="flex items-center gap-2">
+                  <span className="w-12 shrink-0 text-xs font-medium text-muted-foreground">{lng}</span>
+                  <Input
                     type="text"
                     value={draft[lng] ?? ''}
-                    onChange={(e) => setDraft((d) => ({ ...d, [lng]: e.target.value }))}
-                    className={css({
-                      flex: 1,
-                      fontSize: 'xs',
-                      px: '2',
-                      py: '1',
-                      borderRadius: 'sm',
-                      border: '1px solid',
-                      borderColor: 'border',
-                      bg: 'bg',
-                      outline: 'none',
-                      _focus: { borderColor: 'accent' },
-                    })}
+                    onChange={(e) => setDraft((current) => ({ ...current, [lng]: e.target.value }))}
+                    className="h-7 text-xs"
                   />
                 </div>
               ))}
-              <div className={css({ display: 'flex', gap: '2', mt: '1' })}>
+              <div className="mt-1 flex gap-2">
                 <Button
                   size="xs"
-                  palette="primary"
-                  loading={updateTranslation.isPending && updateTranslation.variables.id === row.id}
+                  disabled={updateTranslation.isPending && updateTranslation.variables.id === row.id}
                   onClick={() => void saveEdit(row.id)}
                 >
-                  Save
+                  {updateTranslation.isPending && updateTranslation.variables.id === row.id
+                    ? 'Saving...'
+                    : 'Save'}
                 </Button>
                 <Button size="xs" variant="ghost" onClick={() => setEditingId(null)}>
                   Cancel
@@ -119,14 +84,14 @@ function TranslationDomainTable({ domain }: { domain: TranslationDomain }) {
               </div>
             </div>
           ) : (
-            <div className={css({ mt: '1', display: 'flex', flexDir: 'column', gap: '0.5' })}>
+            <div className="mt-2 flex flex-col gap-1">
               {LANGUAGES.map((lng) => (
-                <p key={lng} className={css({ fontSize: 'xs' })}>
-                  <span className={css({ color: 'fg.muted', mr: '1' })}>{lng}:</span>
+                <p key={lng} className="text-xs">
+                  <span className="mr-1 text-muted-foreground">{lng}:</span>
                   {row.translations?.[lng] ? (
                     row.translations[lng]
                   ) : (
-                    <em className={css({ color: 'fg.subtle' })}>empty</em>
+                    <em className="text-muted-foreground">empty</em>
                   )}
                 </p>
               ))}
@@ -138,32 +103,32 @@ function TranslationDomainTable({ domain }: { domain: TranslationDomain }) {
   );
 }
 
-const UI_TABLE = <TranslationDomainTable domain="ui" />;
-const APP_TABLE = <TranslationDomainTable domain="app" />;
-const ADMIN_TABLE = <TranslationDomainTable domain="admin" />;
-
 export function AdminTranslationsPage(): React.JSX.Element {
   const { t } = useTranslation();
 
-  const tabs = useMemo(
-    () => [
-      { value: 'ui', label: t('admin.translations.tabs.ui', 'UI'), content: UI_TABLE },
-      { value: 'app', label: t('admin.translations.tabs.app', 'App'), content: APP_TABLE },
-      { value: 'admin', label: t('admin.translations.tabs.admin', 'Admin'), content: ADMIN_TABLE },
-    ],
-    [t],
-  );
-
   return (
     <div>
-      <h1 className={css({ fontSize: '2xl', fontWeight: 'bold', color: 'fg' })}>
+      <h1 className="text-2xl font-bold text-foreground">
         {t('admin.pages.translations.title', 'Translations')}
       </h1>
-      <p className={css({ fontSize: 'sm', color: 'fg.muted', mt: '1', mb: '6' })}>
+      <p className="mt-1 mb-6 text-sm text-muted-foreground">
         {t('admin.pages.translations.subtitle', 'Manage UI, app, and admin copy')}
       </p>
 
-      <TabsDS defaultValue="ui" tabs={tabs} />
+      <Tabs defaultValue="ui">
+        <TabsList>
+          {DOMAINS.map((domain) => (
+            <TabsTrigger key={domain} value={domain}>
+              {t(`admin.translations.tabs.${domain}`, domain.toUpperCase())}
+            </TabsTrigger>
+          ))}
+        </TabsList>
+        {DOMAINS.map((domain) => (
+          <TabsContent key={domain} value={domain} className="mt-4">
+            <TranslationDomainTable domain={domain} />
+          </TabsContent>
+        ))}
+      </Tabs>
     </div>
   );
 }

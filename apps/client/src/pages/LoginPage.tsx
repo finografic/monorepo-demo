@@ -1,8 +1,11 @@
-import { Button, Card } from '@finografic/design-system';
-import { css } from '@styled-system/css';
+import { Alert, AlertDescription } from '@workspace/ui/components/alert';
+import { Button } from '@workspace/ui/components/button';
+import { Card, CardContent } from '@workspace/ui/components/card';
+import { Input } from '@workspace/ui/components/input';
+import { Label } from '@workspace/ui/components/label';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useNavigate } from 'react-router-dom';
+import { Navigate, useNavigate } from 'react-router-dom';
 
 import { useAuth } from '../context/AuthContext';
 
@@ -21,8 +24,7 @@ export function LoginPage(): React.JSX.Element {
   const [isLoading, setIsLoading] = useState(false);
 
   if (isAuthenticated) {
-    navigate('/');
-    return <></>;
+    return <Navigate to="/" replace />;
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -57,48 +59,12 @@ export function LoginPage(): React.JSX.Element {
     }
   };
 
-  const inputClass = css({
-    w: 'full',
-    px: '3',
-    py: '2',
-    borderRadius: 'md',
-    border: '1px solid',
-    borderColor: 'border',
-    bg: 'bg.surface',
-    fontSize: 'sm',
-    color: 'fg',
-    outline: 'none',
-    _focus: {
-      borderColor: 'accent',
-      ring: '2px',
-      ringColor: 'accent.subtle',
-    },
-    _placeholder: { color: 'fg.subtle' },
-  });
-
-  const labelClass = css({
-    display: 'block',
-    fontSize: 'sm',
-    fontWeight: 'medium',
-    color: 'fg.muted',
-    mb: '1',
-  });
-
   return (
-    <div
-      className={css({
-        minH: '100dvh',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        bg: 'bg',
-        p: '4',
-      })}
-    >
-      <div className={css({ w: 'full', maxW: 'sm' })}>
-        <div className={css({ textAlign: 'center', mb: '8' })}>
-          <h1 className={css({ fontSize: '2xl', fontWeight: 'bold', color: 'fg' })}>{t('app.title')}</h1>
-          <p className={css({ fontSize: 'sm', color: 'fg.muted', mt: '1' })}>
+    <div className="flex min-h-dvh items-center justify-center bg-background p-4">
+      <div className="w-full max-w-sm">
+        <div className="mb-8 text-center">
+          <h1 className="text-2xl font-bold text-foreground">{t('app.title')}</h1>
+          <p className="mt-1 text-sm text-muted-foreground">
             {mode === 'signin'
               ? t('ui.common.signIn', 'Sign in to your account')
               : t('ui.common.createAccount', 'Create a new account')}
@@ -106,17 +72,12 @@ export function LoginPage(): React.JSX.Element {
         </div>
 
         <Card>
-          <div className={css({ p: '6' })}>
-            <form
-              onSubmit={(e) => void handleSubmit(e)}
-              className={css({ display: 'flex', flexDir: 'column', gap: '4' })}
-            >
-              {mode === 'signup' && (
-                <div>
-                  <label htmlFor="name" className={labelClass}>
-                    {t('ui.form.name', 'Name')}
-                  </label>
-                  <input
+          <CardContent className="p-6">
+            <form onSubmit={(e) => void handleSubmit(e)} className="flex flex-col gap-4">
+              {mode === 'signup' ? (
+                <div className="grid gap-1.5">
+                  <Label htmlFor="name">{t('ui.form.name', 'Name')}</Label>
+                  <Input
                     id="name"
                     type="text"
                     required
@@ -124,16 +85,13 @@ export function LoginPage(): React.JSX.Element {
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                     placeholder={t('ui.form.namePlaceholder', 'Your full name')}
-                    className={inputClass}
                   />
                 </div>
-              )}
+              ) : null}
 
-              <div>
-                <label htmlFor="email" className={labelClass}>
-                  {t('ui.form.email', 'Email')}
-                </label>
-                <input
+              <div className="grid gap-1.5">
+                <Label htmlFor="email">{t('ui.form.email', 'Email')}</Label>
+                <Input
                   id="email"
                   type="email"
                   required
@@ -141,15 +99,12 @@ export function LoginPage(): React.JSX.Element {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="you@example.com"
-                  className={inputClass}
                 />
               </div>
 
-              <div>
-                <label htmlFor="password" className={labelClass}>
-                  {t('ui.form.password', 'Password')}
-                </label>
-                <input
+              <div className="grid gap-1.5">
+                <Label htmlFor="password">{t('ui.form.password', 'Password')}</Label>
+                <Input
                   id="password"
                   type="password"
                   required
@@ -157,44 +112,41 @@ export function LoginPage(): React.JSX.Element {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
-                  className={inputClass}
                 />
               </div>
 
-              {error && <p className={css({ fontSize: 'sm', color: 'fg.error' })}>{error}</p>}
+              {error ? (
+                <Alert variant="destructive">
+                  <AlertDescription>{error}</AlertDescription>
+                </Alert>
+              ) : null}
 
-              <Button type="submit" palette="primary" fullWidth loading={isLoading}>
-                {mode === 'signin'
-                  ? t('ui.buttons.signIn', 'Sign In')
-                  : t('ui.buttons.signUp', 'Create Account')}
+              <Button type="submit" disabled={isLoading} className="w-full">
+                {isLoading
+                  ? t('ui.common.loading', 'Loading...')
+                  : mode === 'signin'
+                    ? t('ui.buttons.signIn', 'Sign In')
+                    : t('ui.buttons.signUp', 'Create Account')}
               </Button>
             </form>
 
-            <div className={css({ mt: '4', textAlign: 'center', fontSize: 'sm', color: 'fg.muted' })}>
+            <div className="mt-4 text-center text-sm text-muted-foreground">
               {mode === 'signin'
                 ? t('ui.common.noAccount', "Don't have an account?")
                 : t('ui.common.haveAccount', 'Already have an account?')}{' '}
-              <button
+              <Button
                 type="button"
+                variant="link"
+                className="h-auto p-0"
                 onClick={() => {
                   setMode(mode === 'signin' ? 'signup' : 'signin');
                   setError(null);
                 }}
-                className={css({
-                  color: 'accent',
-                  fontWeight: 'medium',
-                  cursor: 'pointer',
-                  bg: 'transparent',
-                  border: 'none',
-                  p: '0',
-                  fontSize: 'sm',
-                  _hover: { textDecoration: 'underline' },
-                })}
               >
                 {mode === 'signin' ? t('ui.buttons.signUp', 'Sign up') : t('ui.buttons.signIn', 'Sign in')}
-              </button>
+              </Button>
             </div>
-          </div>
+          </CardContent>
         </Card>
       </div>
     </div>

@@ -13,8 +13,8 @@ and CI-ready linting — all in a single repository you can clone and carve up.
 | Layer         | Technology                                                        |
 | :------------ | :---------------------------------------------------------------- |
 | Workspace     | pnpm workspaces + Turborepo                                       |
-| Client        | Vite 7, React 19, React Router v7                                 |
-| Styling       | Panda CSS, Emotion, `@finografic/design-system`                   |
+| Client        | Vite 8, React 19, React Router v7                                 |
+| Styling       | Tailwind 4 + shadcn components in `@workspace/ui`                 |
 | i18n          | i18next + i18next-http-backend + react-i18next                    |
 | Server        | Hono, `@hono/node-server`                                         |
 | Database      | Drizzle ORM, better-sqlite3                                       |
@@ -32,7 +32,7 @@ and CI-ready linting — all in a single repository you can clone and carve up.
 
 ## Apps
 
-### `apps/client` — Vite 7 + React 19
+### `apps/client` — Vite 8 + React 19
 
 React SPA served by Vite on port **3000** in development. All `/api` requests are proxied to the server.
 
@@ -54,8 +54,8 @@ server independently enforces the same roles on every API route.
 **Notable features:**
 
 - Language switcher component — calls the server i18n endpoint and stores the preference
-- Design tokens via Panda CSS + `@finografic/design-system` OKLCH colour palette
-- Emotion for component-scoped CSS-in-JS alongside Panda utility classes
+- shadcn components sourced from `packages/ui` and consumed as `@workspace/ui/*`
+- Tailwind 4 tokens and generated shadcn theme from `@workspace/ui/globals.css`
 
 ### `apps/server` — Hono API
 
@@ -166,7 +166,7 @@ This repo is designed to be carved up, not cloned wholesale. Each concern is iso
 
 - **Keep the full stack** — clone and extend in place
 - **Extract just the server** — copy `apps/server` + `config`; the Valibot env layer and Hono patterns are self-contained
-- **Extract just the client** — copy `apps/client`; swap the Panda CSS preset and design-system for your own tokens
+- **Extract just the client** — copy `apps/client` + `packages/ui`; swap the shadcn theme tokens for your own brand
 - **Use the toolchain only** — lift `turbo.json`, the oxlint/oxfmt config, and the Husky setup into an existing repo
 
 Internal packages use the `@workspace/*` scope. External published dependencies use real npm scopes.
