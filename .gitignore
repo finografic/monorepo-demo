@@ -26,6 +26,7 @@ deployments/
 .codex/*
 !.codex/hooks.json
 .worktrees/
+.ideas/
 
 # Graphify
 graphify-out/
@@ -106,3 +107,7 @@ ehthumbs.db
 Desktop.ini
 *~ehthumbs.db
 *~
+
+# moon
+.moon/cache
+.moon/docker

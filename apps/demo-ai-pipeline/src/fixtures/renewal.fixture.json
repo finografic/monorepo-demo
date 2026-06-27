@@ -1,0 +1,10 @@
+{
+  "promptId": "renewal",
+  "model": "claude-sonnet-4-6",
+  "content": "# Registration Renewal Eligibility\n\nThis document describes the eligibility check flow for vehicle registration renewal in the transport portal, including system interactions and decision logic.\n\n## Sequence Diagram\n\n```mermaid\nsequenceDiagram\n    actor Customer\n    participant Portal\n    participant Database\n    participant PaymentGateway\n\n    Customer->>Portal: Submit renewal request (plate + DOB)\n    Portal->>Database: Validate vehicle ownership\n    Database-->>Portal: Owner record returned\n    Portal->>Database: Check outstanding fines\n    Database-->>Portal: Fine status: clear\n    Portal->>Database: Check vehicle inspection status\n    Database-->>Portal: Inspection: current\n    Portal->>Portal: Calculate renewal fee\n    Portal->>Customer: Display fee summary + confirm\n    Customer->>Portal: Confirm payment\n    Portal->>PaymentGateway: Initiate payment\n    PaymentGateway-->>Portal: Payment authorised\n    Portal->>Database: Update registration record\n    Portal->>Customer: Send confirmation + new certificate\n```\n\n## Eligibility Decision Table\n\n| Check | Condition | Pass | Fail |\n| --- | --- | --- | --- |\n| Identity | Plate matches owner DOB | Continue | Block — identity mismatch |\n| Outstanding fines | No unpaid infringement notices | Continue | Block — must clear fines first |\n| Inspection status | Current roadworthy certificate | Continue | Block — inspection required |\n| Registration status | Not cancelled or suspended | Continue | Block — contact transport office |\n| Payment | Card authorised | Issue certificate | Retry or cancel |\n\n## Notes\n\n- All eligibility checks run in **parallel** where data dependencies allow, reducing latency\n- Failed checks return a specific error code so the portal can display targeted remediation steps\n- The payment step only proceeds when all prior checks pass; partial completion is not permitted\n- Certificates are generated as signed PDFs and stored for 7 years per retention policy\n",
+  "metrics": {
+    "tokens": 298,
+    "timeToFirstToken": 301,
+    "totalTime": 2150
+  }
+}

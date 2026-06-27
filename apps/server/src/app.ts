@@ -9,6 +9,7 @@ import { authRouter } from './routes/auth';
 import { healthRouter } from './routes/health';
 import { i18nRouter } from './routes/i18n';
 import { indexRouter } from './routes/index.route';
+import { streamRouter } from './routes/stream';
 import { translationsRouter } from './routes/translations';
 import { usersRouter } from './routes/users';
 
@@ -30,6 +31,7 @@ export const appWithRoutes = app
   .route('/api/health', healthRouter)
   .route('/api/auth', authRouter)
   .route('/api/i18n', i18nRouter)
+  .route('/api/stream', streamRouter)
   .route('/api/users', usersRouter)
   .route('/api/translations', translationsRouter);
 

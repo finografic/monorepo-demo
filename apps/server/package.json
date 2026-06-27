@@ -36,7 +36,13 @@
     "db:views:create": "tsx src/db/utils/create-view.ts all",
     "db:views:create:single": "tsx src/db/utils/create-view.ts",
     "db:cleanup:short-keys": "tsx src/scripts/cleanup-short-keys.ts",
-    "db:studio": "drizzle-kit studio --config ./drizzle.config.ts"
+    "db:studio": "drizzle-kit studio --config ./drizzle.config.ts",
+    "m:dev": "moon run :dev",
+    "m:build": "moon run :build",
+    "m:typecheck": "moon run :typecheck",
+    "m:lint": "moon run :lint",
+    "m:test": "moon run :test",
+    "m:clean": "moon run :clean"
   },
   "dependencies": {
     "@auth/core": "^0.34.0",
@@ -54,7 +60,8 @@
     "http-status-codes": "^2.3.0",
     "picocolors": "^1.1.1",
     "pino": "^10.3.1",
-    "valibot": "^1.2.0"
+    "valibot": "^1.2.0",
+    "@workspace/shared": "workspace:*"
   },
   "devDependencies": {
     "@clack/prompts": "^0.10.0",

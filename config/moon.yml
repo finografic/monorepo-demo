@@ -1,0 +1,15 @@
+$schema: 'https://moonrepo.dev/schemas/project.json'
+
+language: 'typescript'
+
+tasks:
+  typecheck:
+    command: 'pnpm typecheck'
+
+  lint:
+    command: 'pnpm lint'
+
+  clean:
+    command: 'pnpm clean'
+    options:
+      cache: false
