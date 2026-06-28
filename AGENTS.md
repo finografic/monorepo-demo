@@ -45,7 +45,10 @@ Shared across Claude Code, Cursor, and GitHub Copilot.
 ## Rules — Markdown Tables
 
 - Padded pipes: one space on each side of every `|`, including the separator row.
-- Align column widths so all cells in the same column are equal width.
+- **Do NOT manually align column widths or pad cells to equal width.** `oxfmt` (run automatically
+  by lint-staged on commit and by `pnpm format:fix`) fixes table alignment automatically. Spending
+  tokens counting characters and iterating on spacing is wasted effort — write the content, let the
+  formatter handle alignment.
 
 ---
 
@@ -81,7 +84,7 @@ Shared across Claude Code, Cursor, and GitHub Copilot.
 
 - This is a selective-extraction monorepo starter based on touch-monorepo; intentionally beyond bare-bones (auth, admin/CMS, Drizzle, i18n) and also a GitHub demo/portfolio piece.
 - `pnpm-workspace.yaml` declares: `config`, `packages/*`, `apps/*`.
-- Turbo drives `build`, `dev`, `lint`, `typecheck`, `test`, and `clean` tasks.
+- Moon drives `build`, `dev`, `lint`, `typecheck`, `test`, and `clean` tasks (Turbo removed).
 - `apps/client`: Vite 8 + React 19 + React Router v7 + shadcn/Tailwind 4; dev on port 3000, proxies `/api` → server. `apps/server`: Hono + @hono/node-server; `tsdown` build, `tsx watch` dev, default port 4000.
 - `@workspace/config`: Valibot env validation + dotenv with root-dir auto-discovery + workspace paths; hosts `db-setup.config.ts`.
 - Each app has a local `oxlint.config.ts` importing presets from `@finografic/oxc-config/oxlint`.
