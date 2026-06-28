@@ -81,6 +81,7 @@ const streamRouter = createRouter()
           ...fixture.metrics,
           totalTime,
           mode: 'fixture',
+          provider: 'fixture',
         },
       } satisfies StreamChunk);
       await s.write(`data: ${donePayload}\n\n`);
@@ -93,7 +94,7 @@ const streamRouter = createRouter()
     }
 
     const { promptId: _promptId, systemPrompt } = body.output;
-    const { client, model } = getAiProvider();
+    const { client, model, providerId } = getAiProvider();
 
     c.header('Content-Type', 'text/event-stream');
     c.header('Cache-Control', 'no-cache');
@@ -135,6 +136,7 @@ const streamRouter = createRouter()
             totalTime: Date.now() - startMs,
             model,
             mode: 'live',
+            provider: providerId,
           },
         } satisfies StreamChunk);
         await s.write(`data: ${donePayload}\n\n`);

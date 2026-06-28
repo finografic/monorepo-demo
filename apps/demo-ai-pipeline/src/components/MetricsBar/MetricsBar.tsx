@@ -1,4 +1,4 @@
-import type { GenerationStatus, MetricsData } from '@workspace/shared';
+import type { GenerationStatus, LlmProviderId, MetricsData } from '@workspace/shared';
 
 interface MetricsBarProps {
   status: GenerationStatus;
@@ -33,12 +33,22 @@ export function MetricsBar({ status, metrics }: MetricsBarProps) {
       <Stat label="First token" value={`${metrics.timeToFirstToken} ms`} />
       <Stat label="Total time" value={`${metrics.totalTime} ms`} />
       <Stat label="Model" value={metrics.model} />
-      {metrics.mode === 'fixture' && (
-        <span className="px-1.5 py-0.5 rounded bg-muted text-muted-foreground/70 text-[10px] uppercase tracking-wider">
-          fixture mode
-        </span>
-      )}
+      <ProviderBadge provider={metrics.provider} />
     </div>
+  );
+}
+
+const PROVIDER_LABELS: Record<LlmProviderId, string> = {
+  'fixture': 'fixture',
+  'lmstudio': 'LM Studio',
+  'opencode-go': 'OpenCode Go',
+};
+
+function ProviderBadge({ provider }: { provider: LlmProviderId }) {
+  return (
+    <span className="px-1.5 py-0.5 rounded bg-muted text-muted-foreground/70 text-[10px] uppercase tracking-wider">
+      {PROVIDER_LABELS[provider]}
+    </span>
   );
 }
 

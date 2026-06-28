@@ -1,5 +1,7 @@
 export type StreamMode = 'fixture' | 'live';
 
+export type LlmProviderId = 'fixture' | 'lmstudio' | 'opencode-go';
+
 export type GenerationStatus = 'idle' | 'streaming' | 'complete' | 'error';
 
 export interface StreamChunk {
@@ -15,6 +17,7 @@ export interface MetricsData {
   totalTime: number;
   model: string;
   mode: StreamMode;
+  provider: LlmProviderId;
 }
 
 export interface Prompt {
