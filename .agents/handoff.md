@@ -4,9 +4,10 @@
 
 This repo has moved from "monorepo starter" into a **portfolio monorepo** for presenting to a prospective TMR employer.
 
-Current focus is the **AI Markdown Pipeline** demo:
+Two demos are now complete:
 
-`apps/demo-ai-pipeline`
+1. `apps/demo-ai-pipeline` — AI/LLM streaming markdown pipeline (see full notes below)
+2. `apps/demo-datavis` — QLD transport data dashboard (Recharts + D3 + live CKAN API)
 
 The demo is meant to show:
 
@@ -282,6 +283,56 @@ Best way to describe the AI Markdown Pipeline:
 Best way to frame RAG:
 
 > The demo does not implement real retrieval yet, but the AI Service Finder fixture demonstrates the interface contract and UX pattern for RAG-style source context, confidence flags, stale-data warnings, knowledge graph relationships, and human review for transactional advice.
+
+---
+
+## demo-datavis — QLD Transport Data Dashboard
+
+**Status: complete base demo, ready to present.**
+
+Port: `3002` — `corepack pnpm --filter @workspace/demo-datavis dev`
+
+### Stack
+
+- Recharts (bar, area, dual-line charts)
+- D3 (d3-scale + d3-scale-chromatic — heatmap colour scale)
+- Static mock fixtures inspired by Queensland Open Data
+- One live CKAN API call (no auth required)
+
+### 6 Chart Views
+
+| Card                                       | Chart type           | Library          | Data                          |
+| ------------------------------------------ | -------------------- | ---------------- | ----------------------------- |
+| Service Centre Wait Times                  | Grouped bar          | Recharts         | Mock (8 QLD centres)          |
+| Registration Call Centre — Daily Enquiries | Area chart           | Recharts         | Mock (May 2026)               |
+| Traffic Volume — Hour × Day Heatmap        | SVG heatmap          | D3 colour scale  | Mock (7×24 grid)              |
+| Translink Monthly Performance              | Dual-line (2 y-axes) | Recharts         | Mock (Jan–Dec 2025)           |
+| Traffic Census — Road Network              | Horizontal bar       | Recharts         | Mock (top 10 roads)           |
+| Live: QLD Open Data Catalogue              | Dataset list         | fetch → CKAN API | **Live** from data.qld.gov.au |
+
+### Layout
+
+Exact mirror of demo-ai-pipeline: left sidebar with keyboard-navigable chart cards, main pane renders selected chart, footer shows data source attribution.
+
+### Accessibility
+
+- `role="img"` + `aria-labelledby` on every chart wrapper
+- sr-only `<table>` inside each chart (screen reader data fallback)
+- Keyboard navigation on sidebar cards (arrow keys + Enter/Space)
+- `isAnimationActive={false}` on all Recharts elements (respects reduced-motion intent)
+- Live panel uses `aria-live="polite"` on tooltip and `role="status"` on loading spinner
+
+### Validation
+
+- Typecheck: clean
+- Lint: one expected warning (CSS unassigned import in main.tsx — same pattern as demo-ai-pipeline)
+- Browser smoke: all 6 views confirmed working
+
+### Plan doc
+
+`docs/todo/TODO_DEMO_DATAVIS.md`
+
+---
 
 ## User Preferences
 
