@@ -74,7 +74,8 @@
     "update:oxc-config": "pnpm update @finografic/oxc-config --latest --recursive && pnpm update oxfmt --latest --recursive && pnpm update oxlint --latest --recursive",
     "update:project-scripts": "pnpm update @finografic/project-scripts --latest --recursive",
     "·········· UTILS": "·····················································",
-    "prepare": "husky"
+    "prepare": "husky",
+    "dev:all": "moon run client:dev server:dev demo-ai-pipeline:dev"
   },
   "devDependencies": {
     "@commitlint/cli": "^20.2.0",
