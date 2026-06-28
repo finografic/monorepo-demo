@@ -75,7 +75,8 @@
     "update:project-scripts": "pnpm update @finografic/project-scripts --latest --recursive",
     "·········· UTILS": "·····················································",
     "prepare": "husky",
-    "dev:all": "pkill -f \"vite|tsx watch\" 2>/dev/null; sleep 0.5; moon run client:dev server:dev demo-ai-pipeline:dev"
+    "kill:dev": "bash scripts/kill-dev.sh",
+    "dev:all": "pnpm kill:dev && moon run client:dev server:dev demo-ai-pipeline:dev"
   },
   "devDependencies": {
     "@commitlint/cli": "^20.2.0",
