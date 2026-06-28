@@ -1,4 +1,14 @@
 const config = {
+  sortAz: [
+    'bin',
+    'contributors',
+    'dependencies',
+    'devDependencies',
+    'keywords',
+    'peerDependencies',
+    'resolutions',
+  ],
+
   sortFirst: [
     // identity
     'name',
