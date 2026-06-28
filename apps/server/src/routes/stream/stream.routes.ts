@@ -1,9 +1,11 @@
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
-import type { PromptFixture } from '@workspace/shared';
+import type { PromptFixture, StreamChunk } from '@workspace/shared';
 import { stream } from 'hono/streaming';
 import { rateLimit } from 'middlewares/rate-limit';
+import * as v from 'valibot';
 
+import { getAiProvider } from 'lib/ai-provider';
 import { createRouter } from 'lib/create-app';
 
 const FIXTURES_DIR = resolve(import.meta.dirname, '../../../../demo-ai-pipeline/src/fixtures');
@@ -32,8 +34,13 @@ function splitIntoChunks(text: string, avgSize = 12): string[] {
 }
 
 function sleep(ms: number): Promise<void> {
-  return new Promise((resolve) => setTimeout(resolve, ms));
+  return new Promise((res) => setTimeout(res, ms));
 }
+
+const LiveBodySchema = v.object({
+  promptId: v.string(),
+  systemPrompt: v.pipe(v.string(), v.minLength(1)),
+});
 
 const streamRouter = createRouter()
   .get('/fixture/:promptId', async (c) => {
@@ -61,7 +68,7 @@ const streamRouter = createRouter()
           : 280 + Math.floor(Math.random() * 60);
         await sleep(delayMs);
 
-        const payload = JSON.stringify({ type: 'delta', text: chunk });
+        const payload = JSON.stringify({ type: 'delta', text: chunk } satisfies StreamChunk);
         await s.write(`data: ${payload}\n\n`);
 
         firstChunkSent = true;
@@ -75,19 +82,70 @@ const streamRouter = createRouter()
           totalTime,
           mode: 'fixture',
         },
-      });
+      } satisfies StreamChunk);
       await s.write(`data: ${donePayload}\n\n`);
     });
   })
   .post('/live', rateLimit({ limit: 10, windowMs: 60 * 60 * 1000 }), async (c) => {
-    return c.json(
-      {
-        error: 'NOT_IMPLEMENTED',
-        message:
-          'Live mode is not enabled in this deployment. Set STREAM_MODE=live with a valid ANTHROPIC_API_KEY to enable it.',
-      },
-      501,
-    );
+    const body = v.safeParse(LiveBodySchema, await c.req.json());
+    if (!body.success) {
+      return c.json({ error: 'BAD_REQUEST', message: 'promptId and systemPrompt are required' }, 400);
+    }
+
+    const { promptId: _promptId, systemPrompt } = body.output;
+    const { client, model } = getAiProvider();
+
+    c.header('Content-Type', 'text/event-stream');
+    c.header('Cache-Control', 'no-cache');
+    c.header('Connection', 'keep-alive');
+    c.header('X-Accel-Buffering', 'no');
+
+    const startMs = Date.now();
+    let firstChunkMs = 0;
+    let firstChunkSent = false;
+    let tokenCount = 0;
+
+    return stream(c, async (s) => {
+      try {
+        const aiStream = await client.chat.completions.create({
+          model,
+          messages: [{ role: 'user', content: systemPrompt }],
+          stream: true,
+        });
+
+        for await (const chunk of aiStream) {
+          const text = chunk.choices[0]?.delta?.content ?? '';
+          if (!text) continue;
+
+          if (!firstChunkSent) {
+            firstChunkMs = Date.now() - startMs;
+            firstChunkSent = true;
+          }
+          tokenCount += Math.ceil(text.length / 4);
+
+          const payload = JSON.stringify({ type: 'delta', text } satisfies StreamChunk);
+          await s.write(`data: ${payload}\n\n`);
+        }
+
+        const donePayload = JSON.stringify({
+          type: 'done',
+          metrics: {
+            tokens: tokenCount,
+            timeToFirstToken: firstChunkMs,
+            totalTime: Date.now() - startMs,
+            model,
+            mode: 'live',
+          },
+        } satisfies StreamChunk);
+        await s.write(`data: ${donePayload}\n\n`);
+      } catch (err) {
+        const errPayload = JSON.stringify({
+          type: 'error',
+          message: err instanceof Error ? err.message : 'Live generation failed',
+        } satisfies StreamChunk);
+        await s.write(`data: ${errPayload}\n\n`);
+      }
+    });
   });
 
 export { streamRouter };

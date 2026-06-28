@@ -1,3 +1,4 @@
+import type { StreamMode } from '@workspace/shared';
 import { MetricsBar } from 'components/MetricsBar/MetricsBar';
 import { PartialMarkdownGuard } from 'components/PartialMarkdownGuard/PartialMarkdownGuard';
 import { PromptSelector } from 'components/PromptSelector/PromptSelector';
@@ -11,7 +12,10 @@ import { useStreamingGeneration } from 'lib/useStreamingGeneration';
 export function DemoPage() {
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [showRaw, setShowRaw] = useState(false);
+  const [mode, setMode] = useState<StreamMode>('fixture');
   const { status, buffer, metrics, start, stop, clear } = useStreamingGeneration();
+
+  const selectedPrompt = PROMPTS.find((p) => p.id === selectedId) ?? null;
 
   function handleSelect(id: string) {
     setSelectedId(id);
@@ -20,9 +24,15 @@ export function DemoPage() {
   }
 
   function handleStart() {
-    if (!selectedId) return;
+    if (!selectedPrompt) return;
     setShowRaw(false);
-    start(selectedId);
+    start(selectedPrompt.id, mode, selectedPrompt.systemPrompt);
+  }
+
+  function handleModeChange(next: StreamMode) {
+    if (status === 'streaming') stop();
+    clear();
+    setMode(next);
   }
 
   return (
@@ -49,12 +59,16 @@ export function DemoPage() {
           <StreamingControls
             status={status}
             hasSelection={!!selectedId}
+            mode={mode}
+            onModeChange={handleModeChange}
             onStart={handleStart}
             onStop={stop}
             onClear={clear}
           />
           <p className="text-[10px] text-muted-foreground/60 mt-2 text-center">
-            Running in fixture mode — pre-recorded responses, no API cost
+            {mode === 'fixture'
+              ? 'Fixture mode — pre-recorded responses, no API cost'
+              : 'Live mode — calls local LM Studio via OpenAI-compatible API'}
           </p>
         </div>
       </aside>
