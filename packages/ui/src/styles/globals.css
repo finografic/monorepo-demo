@@ -5,8 +5,9 @@
 @import "../components/grid/grid.css";
 
 @custom-variant dark (&:is(.dark *));
-@source "../../../apps/**/*.{ts,tsx}";
-@source "../../../components/**/*.{ts,tsx}";
+@source "../../../../apps/**/*.{ts,tsx}";
+@source "../../../../components/**/*.{ts,tsx}";
+@source "../../../../packages/shared/src/**/*.{ts,tsx}";
 @source "../**/*.{ts,tsx}";
 @source inline("hidden sm:table-cell", "hidden md:table-cell", "hidden lg:table-cell", "hidden xl:table-cell", "hidden 2xl:table-cell");
 

@@ -1,4 +1,4 @@
-import { OptionCard } from '@workspace/shared';
+import { OptionCard, resolveBadgeClass } from '@workspace/shared';
 import { useCallback, useRef } from 'react';
 import type { ChartMeta } from 'data/types';
 
@@ -7,6 +7,29 @@ interface ChartSelectorProps {
   selectedId: string | null;
   onSelect: (id: string) => void;
 }
+
+const chartTagColors: Record<string, string> = {
+  'Grouped bar': 'sky',
+  'Bar chart': 'sky',
+  'Area chart': 'teal',
+  'Line chart': 'teal',
+  'Heatmap': 'purple',
+  'Scatter plot': 'orange',
+  'D3': 'amber',
+  'Customer service': 'green',
+  'KPI': 'rose',
+  'Call centre': 'blue',
+  'Trend': 'teal',
+  'Traffic patterns': 'purple',
+  'Translink': 'blue',
+  'Satisfaction': 'green',
+  'Road network': 'amber',
+  'Census': 'rose',
+  'Live API': 'green',
+  'CKAN': 'sky',
+  'TMR datasets': 'blue',
+  'Wait times': 'rose',
+};
 
 const LIVE_IDS = new Set(['live-catalogue', 'live-wait-times']);
 
@@ -52,7 +75,10 @@ export function ChartSelector({ charts, selectedId, onSelect }: ChartSelectorPro
             key={chart.id}
             title={chart.title}
             description={chart.description}
-            badges={chart.tags.map((tag) => ({ label: tag }))}
+            badges={chart.tags.map((tag) => ({
+              label: tag,
+              className: resolveBadgeClass(chartTagColors[tag] ?? 'blue'),
+            }))}
             selected={chart.id === selectedId}
             headerAction={LIVE_IDS.has(chart.id) ? LIVE_BADGE : undefined}
             onSelect={() => onSelect(chart.id)}

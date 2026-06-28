@@ -1,5 +1,5 @@
-import { OptionCard } from '@workspace/shared';
 import type { Prompt } from '@workspace/shared';
+import { OptionCard, resolveBadgeClass } from '@workspace/shared';
 import { useRef } from 'react';
 
 interface PromptSelectorProps {
@@ -11,13 +11,13 @@ interface PromptSelectorProps {
   onParameterChange: (parameterId: string, value: string) => void;
 }
 
-const capabilityColours: Record<string, string> = {
-  'Mermaid flowchart': 'bg-purple-200 text-purple-800 dark:bg-purple-200 dark:text-purple-950',
-  'Mermaid sequence': 'bg-purple-200 text-purple-800 dark:bg-purple-900/40 dark:text-purple-200',
-  'Markdown table': 'bg-green-200 text-green-800 dark:bg-green-900/40 dark:text-green-200',
-  'Code block': 'bg-amber-200 text-amber-700 dark:bg-amber-900/40 dark:text-amber-200',
-  'TypeScript': 'bg-sky-200 text-sky-800 dark:bg-sky-900/40 dark:text-sky-200',
-  'REST API': 'bg-amber-200 text-amber-700 dark:bg-amber-900/40 dark:text-amber-200',
+const capabilityColors: Record<string, string> = {
+  'Mermaid flowchart': 'purple',
+  'Mermaid sequence': 'purple',
+  'Markdown table': 'green',
+  'Code block': 'amber',
+  'TypeScript': 'sky',
+  'REST API': 'amber',
 };
 
 export function PromptSelector({
@@ -64,8 +64,7 @@ export function PromptSelector({
           const isSelected = prompt.id === selectedId;
           const badges = prompt.capabilities.map((cap) => ({
             label: cap,
-            className:
-              capabilityColours[cap] ?? 'bg-blue-100 text-blue-800 dark:bg-blue-900/40 dark:text-blue-200',
+            className: resolveBadgeClass(capabilityColors[cap] ?? 'blue'),
           }));
 
           return (
