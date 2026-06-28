@@ -17,31 +17,27 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup Node
-        uses: actions/setup-node@v4
+      - name: Setup toolchain
+        uses: moonrepo/setup-toolchain@v0
         with:
-          node-version: 24
-          registry-url: https://npm.pkg.github.com
-          scope: "@finografic"
+          auto-install: true
 
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v3
-        with:
-          version: 10
+      - name: Configure GitHub Packages registry
+        run: |
+          npm config set @finografic:registry https://npm.pkg.github.com
+          npm config set //npm.pkg.github.com/:_authToken ${{ secrets.NPM_TOKEN }}
 
       - name: Install deps
         run: pnpm install --frozen-lockfile
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Lint
-        run: pnpm lint:ci
+        run: moon run root:lint-ci
 
       - name: Lint markdown
-        run: pnpm lint:md
+        run: moon run root:lint-md
 
       - name: Type check
-        run: pnpm typecheck
+        run: moon run :typecheck
 
       - name: Format check
-        run: pnpm format:check
+        run: moon run root:format-check
