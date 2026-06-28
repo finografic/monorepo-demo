@@ -22,6 +22,7 @@
   "scripts": {
     "clean": "rm -rf dist",
     "lint": "oxlint -c ../oxlint.config.ts",
+    "lint:fix": "oxlint -c ../oxlint.config.ts --fix",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {

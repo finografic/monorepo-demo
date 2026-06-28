@@ -9,6 +9,11 @@ tasks:
   lint:
     command: 'pnpm lint'
 
+  lint:fix:
+    command: 'pnpm lint:fix'
+    options:
+      cache: false
+
   clean:
     command: 'pnpm clean'
     options:

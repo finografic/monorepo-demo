@@ -8,6 +8,7 @@
     "clean": "pnpm --package=@finografic/project-scripts dlx purge-builds --detach",
     "dev": "vite",
     "lint": "oxlint -c oxlint.config.ts",
+    "lint:fix": "oxlint -c oxlint.config.ts --fix",
     "start": "vite preview",
     "test": "vitest run",
     "test:watch": "vitest",

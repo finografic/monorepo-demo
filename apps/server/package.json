@@ -35,12 +35,7 @@
     "db:views:create:single": "tsx src/db/utils/create-view.ts",
     "dev": "tsx watch src/index.ts",
     "lint": "oxlint -c oxlint.config.ts",
-    "m:build": "moon run :build",
-    "m:clean": "moon run :clean",
-    "m:dev": "moon run :dev",
-    "m:lint": "moon run :lint",
-    "m:test": "moon run :test",
-    "m:typecheck": "moon run :typecheck",
+    "lint:fix": "oxlint -c oxlint.config.ts --fix",
     "start": "node dist/index.mjs",
     "typecheck": "tsc --noEmit"
   },

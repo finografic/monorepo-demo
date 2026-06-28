@@ -74,7 +74,6 @@ const config = {
         // build tooling
         '@vitejs/plugin-react',
         'tsdown',
-        'turbo',
         'vite',
         'vitest',
         // database
