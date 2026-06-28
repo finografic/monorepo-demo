@@ -1,23 +1,33 @@
 import type { Prompt } from '@workspace/shared';
+import { OptionCard } from 'components/OptionCard/OptionCard';
 import { useRef } from 'react';
 
 interface PromptSelectorProps {
   prompts: Prompt[];
   selectedId: string | null;
+  parameterValues: Record<string, string>;
   disabled?: boolean;
   onSelect: (id: string) => void;
+  onParameterChange: (parameterId: string, value: string) => void;
 }
 
 const capabilityColours: Record<string, string> = {
-  'Mermaid flowchart': 'bg-purple-800 text-purple-50 dark:bg-purple-200 dark:text-purple-950',
-  'Mermaid sequence': 'bg-purple-100 text-purple-800 dark:bg-purple-900/40 dark:text-purple-200',
-  'Markdown table': 'bg-green-100 text-green-800 dark:bg-green-900/40 dark:text-green-200',
-  'Code block': 'bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-200',
-  'TypeScript': 'bg-sky-100 text-sky-800 dark:bg-sky-900/40 dark:text-sky-200',
-  'REST API': 'bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-200',
+  'Mermaid flowchart': 'bg-purple-200 text-purple-800 dark:bg-purple-200 dark:text-purple-950',
+  'Mermaid sequence': 'bg-purple-200 text-purple-800 dark:bg-purple-900/40 dark:text-purple-200',
+  'Markdown table': 'bg-green-200 text-green-800 dark:bg-green-900/40 dark:text-green-200',
+  'Code block': 'bg-amber-200 text-amber-700 dark:bg-amber-900/40 dark:text-amber-200',
+  'TypeScript': 'bg-sky-200 text-sky-800 dark:bg-sky-900/40 dark:text-sky-200',
+  'REST API': 'bg-amber-200 text-amber-700 dark:bg-amber-900/40 dark:text-amber-200',
 };
 
-export function PromptSelector({ prompts, selectedId, disabled, onSelect }: PromptSelectorProps) {
+export function PromptSelector({
+  prompts,
+  selectedId,
+  parameterValues,
+  disabled,
+  onSelect,
+  onParameterChange,
+}: PromptSelectorProps) {
   const listRef = useRef<HTMLUListElement>(null);
 
   function handleKeyDown(e: React.KeyboardEvent, currentIndex: number) {
@@ -52,38 +62,52 @@ export function PromptSelector({ prompts, selectedId, disabled, onSelect }: Prom
       >
         {prompts.map((prompt, index) => {
           const isSelected = prompt.id === selectedId;
+          const badges = prompt.capabilities.map((cap) => ({
+            label: cap,
+            className: capabilityColours[cap] ?? 'bg-blue-100 text-blue-800 dark:bg-blue-900/40 dark:text-blue-200',
+          }));
+
           return (
-            <li
+            <OptionCard
               key={prompt.id}
-              role="option"
-              aria-selected={isSelected}
-              tabIndex={disabled ? -1 : 0}
-              onClick={() => !disabled && onSelect(prompt.id)}
+              title={prompt.title}
+              description={prompt.description}
+              badges={badges}
+              selected={isSelected}
+              disabled={!!disabled}
+              onSelect={() => onSelect(prompt.id)}
               onKeyDown={(e) => handleKeyDown(e, index)}
-              className={[
-                'rounded-lg border-2 p-4 cursor-pointer transition-all select-none outline-none',
-                'focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1',
-                isSelected
-                  ? 'border-primary bg-primary/5 shadow-sm'
-                  : 'border-border hover:border-primary/40 hover:bg-accent',
-                disabled ? 'opacity-50 cursor-default pointer-events-none' : '',
-              ]
-                .filter(Boolean)
-                .join(' ')}
             >
-              <p className="text-base font-semibold leading-snug text-foreground">{prompt.title}</p>
-              <p className="mt-2 text-sm leading-6 text-muted-foreground">{prompt.description}</p>
-              <div className="mt-3 flex flex-wrap gap-1.5">
-                {prompt.capabilities.map((cap) => (
-                  <span
-                    key={cap}
-                    className={`inline-block rounded-full px-2 py-1 text-xs font-medium ${capabilityColours[cap] ?? 'bg-blue-100 text-blue-800 dark:bg-blue-900/40 dark:text-blue-200'}`}
-                  >
-                    {cap}
-                  </span>
-                ))}
-              </div>
-            </li>
+              {isSelected && prompt.parameters?.length ? (
+                <div className="mt-4 space-y-3 border-t border-border/80 pt-4">
+                  {prompt.parameters.map((parameter) => (
+                    <div key={parameter.id} className="space-y-1.5">
+                      <label
+                        htmlFor={`prompt-param-${parameter.id}`}
+                        className="text-xs font-medium uppercase tracking-wider text-muted-foreground"
+                      >
+                        {parameter.label}
+                      </label>
+                      <select
+                        id={`prompt-param-${parameter.id}`}
+                        value={parameterValues[parameter.id] ?? parameter.defaultValue}
+                        disabled={disabled}
+                        onClick={(event) => event.stopPropagation()}
+                        onKeyDown={(event) => event.stopPropagation()}
+                        onChange={(event) => onParameterChange(parameter.id, event.target.value)}
+                        className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
+                      >
+                        {parameter.options.map((option) => (
+                          <option key={option.value} value={option.value}>
+                            {option.label}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                  ))}
+                </div>
+              ) : null}
+            </OptionCard>
           );
         })}
       </ul>

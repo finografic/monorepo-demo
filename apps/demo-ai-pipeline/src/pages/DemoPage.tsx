@@ -11,6 +11,30 @@ import { useEffect, useMemo, useState } from 'react';
 import { useStreamingGeneration } from 'lib/useStreamingGeneration';
 import qldLogoUrl from '../qld.svg';
 
+interface SourceReference {
+  label: string;
+  url: string;
+  note: string;
+}
+
+const SOURCE_REFERENCES: Record<string, SourceReference> = {
+  'service-finder-used-vehicle-transfer': {
+    label: 'Transport customer service centres',
+    url: 'https://www.data.qld.gov.au/dataset/transport-csc',
+    note: 'Mock RAG context — verify transactional advice against official TMR services.',
+  },
+  'service-finder-fine-payment': {
+    label: 'QLDTraffic GeoJSON API',
+    url: 'https://www.data.qld.gov.au/dataset/131940-traffic-and-travel-information-geojson-api',
+    note: 'Mock RAG context — traffic/open-data sources are not infringement determinations.',
+  },
+  'service-finder-change-address': {
+    label: 'Registration call centre enquiries',
+    url: 'https://www.data.qld.gov.au/dataset/registration-call-centre-enquiries-daily-for-last-month',
+    note: 'Mock RAG context — source shapes are illustrative, not official TMR reporting.',
+  },
+};
+
 export function DemoPage() {
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [showRaw, setShowRaw] = useState(false);
@@ -53,6 +77,10 @@ export function DemoPage() {
       ? (selectedParameterOptions.find((option) => option?.fixturePromptId)?.fixturePromptId ??
         selectedPrompt?.id)
       : selectedPrompt?.id;
+  const sourceReference =
+    selectedPrompt?.id === 'service-finder'
+      ? SOURCE_REFERENCES[selectedParameterOptions.find((option) => option?.fixturePromptId)?.fixturePromptId ?? '']
+      : undefined;
   const isWaitingForFirstPaint = status === 'streaming' && buffer.length === 0;
 
   useEffect(() => {
@@ -99,37 +127,11 @@ export function DemoPage() {
           <PromptSelector
             prompts={PROMPTS}
             selectedId={selectedId}
+            parameterValues={parameterValues}
             disabled={status === 'streaming'}
             onSelect={handleSelect}
+            onParameterChange={handleParameterChange}
           />
-
-          {selectedPromptParameters.length ? (
-            <div className="mt-4 space-y-3">
-              {selectedPromptParameters.map((parameter) => (
-                <div key={parameter.id} className="space-y-1.5">
-                  <label
-                    htmlFor={`prompt-param-${parameter.id}`}
-                    className="text-xs font-medium uppercase tracking-wider text-muted-foreground"
-                  >
-                    {parameter.label}
-                  </label>
-                  <select
-                    id={`prompt-param-${parameter.id}`}
-                    value={parameterValues[parameter.id] ?? parameter.defaultValue}
-                    disabled={status === 'streaming'}
-                    onChange={(event) => handleParameterChange(parameter.id, event.target.value)}
-                    className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
-                  >
-                    {parameter.options.map((option) => (
-                      <option key={option.value} value={option.value}>
-                        {option.label}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-              ))}
-            </div>
-          ) : null}
         </div>
 
         <div className="min-h-24 border-t border-border px-4 py-4">
@@ -176,8 +178,29 @@ export function DemoPage() {
           <div className="flex-1">
             <MetricsBar status={status} metrics={metrics} />
           </div>
+          {sourceReference ? <SourceAttribution source={sourceReference} /> : null}
         </div>
       </main>
+    </div>
+  );
+}
+
+function SourceAttribution({ source }: { source: SourceReference }) {
+  return (
+    <div className="basis-full text-xs text-muted-foreground">
+      <span className="font-medium">Source:</span>{' '}
+      <a
+        href={source.url}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="rounded underline underline-offset-2 transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+      >
+        {source.label}
+      </a>
+      <span className="mx-2 text-muted-foreground/40" aria-hidden="true">
+        ·
+      </span>
+      <span className="text-muted-foreground/70">{source.note}</span>
     </div>
   );
 }

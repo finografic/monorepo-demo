@@ -44,7 +44,7 @@ const LiveBodySchema = v.object({
   modelId: v.optional(v.string()),
 });
 
-const LIVE_MAX_TOKENS = 1200;
+const LIVE_MAX_TOKENS = 2400;
 
 function getStringDelta(delta: unknown, key: 'content' | 'reasoning_content'): string {
   if (!delta || typeof delta !== 'object') return '';
