@@ -9,12 +9,12 @@ interface PromptSelectorProps {
 }
 
 const capabilityColours: Record<string, string> = {
-  'Mermaid flowchart': 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300',
-  'Mermaid sequence': 'bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-300',
-  'Markdown table': 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300',
-  'Code block': 'bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-300',
-  'TypeScript': 'bg-sky-100 text-sky-700 dark:bg-sky-900/30 dark:text-sky-300',
-  'REST API': 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-300',
+  'Mermaid flowchart': 'bg-purple-800 text-purple-50 dark:bg-purple-200 dark:text-purple-950',
+  'Mermaid sequence': 'bg-purple-100 text-purple-800 dark:bg-purple-900/40 dark:text-purple-200',
+  'Markdown table': 'bg-green-100 text-green-800 dark:bg-green-900/40 dark:text-green-200',
+  'Code block': 'bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-200',
+  'TypeScript': 'bg-sky-100 text-sky-800 dark:bg-sky-900/40 dark:text-sky-200',
+  'REST API': 'bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-200',
 };
 
 export function PromptSelector({ prompts, selectedId, disabled, onSelect }: PromptSelectorProps) {
@@ -40,7 +40,7 @@ export function PromptSelector({ prompts, selectedId, disabled, onSelect }: Prom
 
   return (
     <div>
-      <h2 className="text-xs font-semibold uppercase tracking-widest text-muted-foreground mb-3">
+      <h2 className="mb-4 text-sm font-semibold uppercase tracking-widest text-muted-foreground">
         Choose a prompt
       </h2>
       <ul
@@ -48,7 +48,7 @@ export function PromptSelector({ prompts, selectedId, disabled, onSelect }: Prom
         role="listbox"
         aria-label="Curated prompts"
         aria-orientation="vertical"
-        className="space-y-2"
+        className="space-y-3"
       >
         {prompts.map((prompt, index) => {
           const isSelected = prompt.id === selectedId;
@@ -61,7 +61,7 @@ export function PromptSelector({ prompts, selectedId, disabled, onSelect }: Prom
               onClick={() => !disabled && onSelect(prompt.id)}
               onKeyDown={(e) => handleKeyDown(e, index)}
               className={[
-                'rounded-lg border p-3 cursor-pointer transition-all select-none outline-none',
+                'rounded-lg border-2 p-4 cursor-pointer transition-all select-none outline-none',
                 'focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1',
                 isSelected
                   ? 'border-primary bg-primary/5 shadow-sm'
@@ -71,13 +71,13 @@ export function PromptSelector({ prompts, selectedId, disabled, onSelect }: Prom
                 .filter(Boolean)
                 .join(' ')}
             >
-              <p className="text-sm font-medium text-foreground leading-snug">{prompt.title}</p>
-              <p className="text-xs text-muted-foreground mt-1 leading-snug">{prompt.description}</p>
-              <div className="flex flex-wrap gap-1 mt-2">
+              <p className="text-base font-semibold leading-snug text-foreground">{prompt.title}</p>
+              <p className="mt-2 text-sm leading-6 text-muted-foreground">{prompt.description}</p>
+              <div className="mt-3 flex flex-wrap gap-1.5">
                 {prompt.capabilities.map((cap) => (
                   <span
                     key={cap}
-                    className={`inline-block text-[10px] font-medium px-1.5 py-0.5 rounded-full ${capabilityColours[cap] ?? 'bg-muted text-muted-foreground'}`}
+                    className={`inline-block rounded-full px-2 py-1 text-xs font-medium ${capabilityColours[cap] ?? 'bg-blue-100 text-blue-800 dark:bg-blue-900/40 dark:text-blue-200'}`}
                   >
                     {cap}
                   </span>

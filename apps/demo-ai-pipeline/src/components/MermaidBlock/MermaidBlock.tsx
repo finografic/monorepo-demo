@@ -30,7 +30,17 @@ function ensureMermaid() {
 }
 
 function appendDiagramStyles(svg: string, styles: string): string {
-  return svg.replace(/<svg([^>]*)>/, `<svg$1>${styles}`);
+  return svg.replace(/<svg([^>]*)>/, `<svg$1 aria-hidden="true" focusable="false">${styles}`);
+}
+
+function getDiagramLabel(code: string): string {
+  const firstLine = code.trimStart().split('\n')[0]?.toLowerCase() ?? '';
+
+  if (firstLine.startsWith('sequencediagram')) return 'Mermaid sequence diagram';
+  if (firstLine.startsWith('flowchart')) return 'Mermaid flowchart diagram';
+  if (firstLine.startsWith('graph')) return 'Mermaid graph diagram';
+
+  return 'Mermaid diagram';
 }
 
 export function MermaidBlock({ code }: MermaidBlockProps) {
@@ -38,6 +48,7 @@ export function MermaidBlock({ code }: MermaidBlockProps) {
   const [svg, setSvg] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
+  const diagramLabel = getDiagramLabel(code);
 
   useEffect(() => {
     ensureMermaid();
@@ -72,7 +83,7 @@ export function MermaidBlock({ code }: MermaidBlockProps) {
     <div
       ref={containerRef}
       role="img"
-      aria-label="Mermaid diagram"
+      aria-label={diagramLabel}
       className="my-4 overflow-auto rounded-lg border border-border bg-card p-4 max-h-[70vh]"
     >
       {svg ? (

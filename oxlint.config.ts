@@ -17,7 +17,7 @@ export default defineConfig({
   env,
   options,
   categories,
-  rules: { ...rules, ...loosenRules },
+  rules: { ...rules, ...loosenRules, 'react/react-in-jsx-scope': 'off' },
   overrides: [testOverrides, configOverrides],
   ignorePatterns: [...ignorePatterns],
 } satisfies OxlintConfig);

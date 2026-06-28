@@ -9,6 +9,7 @@ import { PROMPTS } from 'prompts/index';
 import { useEffect, useMemo, useState } from 'react';
 
 import { useStreamingGeneration } from 'lib/useStreamingGeneration';
+import qldLogoUrl from '../qld.svg';
 
 export function DemoPage() {
   const [selectedId, setSelectedId] = useState<string | null>(null);
@@ -52,6 +53,7 @@ export function DemoPage() {
       ? (selectedParameterOptions.find((option) => option?.fixturePromptId)?.fixturePromptId ??
         selectedPrompt?.id)
       : selectedPrompt?.id;
+  const isWaitingForFirstPaint = status === 'streaming' && buffer.length === 0;
 
   useEffect(() => {
     if (cacheKey && status !== 'streaming') restore(cacheKey);
@@ -85,15 +87,15 @@ export function DemoPage() {
   return (
     <div className="flex flex-col md:flex-row h-screen overflow-hidden bg-background">
       {/* Left panel — prompt selection */}
-      <aside className="md:w-80 lg:w-96 flex-none border-b md:border-b-0 md:border-r border-border flex flex-col overflow-hidden">
-        <div className="px-5 py-4 border-b border-border">
-          <h1 className="text-sm font-semibold text-foreground">AI Markdown Pipeline</h1>
-          <p className="text-xs text-muted-foreground mt-0.5">
+      <aside className="flex-none overflow-hidden border-b border-border md:w-[30rem] md:border-b-0 md:border-r lg:w-[32rem] flex flex-col">
+        <div className="border-b border-border px-5 py-5">
+          <h1 className="text-base font-semibold text-foreground">AI Markdown Pipeline</h1>
+          <p className="mt-1 text-sm text-muted-foreground">
             Streaming markdown · Mermaid diagrams · Syntax highlighting
           </p>
         </div>
 
-        <div className="flex-1 overflow-y-auto px-4 py-4">
+        <div className="flex-1 overflow-y-auto px-4 py-5">
           <PromptSelector
             prompts={PROMPTS}
             selectedId={selectedId}
@@ -107,7 +109,7 @@ export function DemoPage() {
                 <div key={parameter.id} className="space-y-1.5">
                   <label
                     htmlFor={`prompt-param-${parameter.id}`}
-                    className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground"
+                    className="text-xs font-medium uppercase tracking-wider text-muted-foreground"
                   >
                     {parameter.label}
                   </label>
@@ -116,7 +118,7 @@ export function DemoPage() {
                     value={parameterValues[parameter.id] ?? parameter.defaultValue}
                     disabled={status === 'streaming'}
                     onChange={(event) => handleParameterChange(parameter.id, event.target.value)}
-                    className="w-full rounded-md border border-border bg-background px-2 py-2 text-xs text-foreground shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
+                    className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
                   >
                     {parameter.options.map((option) => (
                       <option key={option.value} value={option.value}>
@@ -130,7 +132,7 @@ export function DemoPage() {
           ) : null}
         </div>
 
-        <div className="px-4 py-3 border-t border-border">
+        <div className="min-h-24 border-t border-border px-4 py-4">
           <StreamingControls
             status={status}
             hasSelection={!!selectedId}
@@ -143,7 +145,7 @@ export function DemoPage() {
             onStop={stop}
             onClear={handleClear}
           />
-          <p className="text-[10px] text-muted-foreground/60 mt-2 text-center">
+          <p className="mt-2 text-center text-xs text-muted-foreground/70">
             {mode === 'fixture'
               ? 'Fixture mode — pre-recorded responses, no API cost'
               : 'Live mode — calls the configured OpenAI-compatible server provider'}
@@ -154,18 +156,48 @@ export function DemoPage() {
       {/* Right panel — output */}
       <main className="flex-1 flex flex-col overflow-hidden">
         {/* Scrollable output area */}
-        <div className="flex-1 overflow-y-auto px-6 py-5" aria-live="polite" aria-label="Generated content">
-          <PartialMarkdownGuard buffer={buffer} showRaw={showRaw} />
+        <div
+          className="flex-1 overflow-y-auto px-8 py-6"
+          aria-live="polite"
+          aria-label="Generated content"
+        >
+          {isWaitingForFirstPaint ? (
+            <GeneratingPlaceholder />
+          ) : buffer.length ? (
+            <PartialMarkdownGuard buffer={buffer} showRaw={showRaw} />
+          ) : (
+            <StandbyPlaceholder />
+          )}
         </div>
 
         {/* Bottom bar — toggle + metrics */}
-        <div className="border-t border-border px-5 py-2.5 flex items-center gap-4 flex-wrap bg-background">
+        <div className="flex min-h-24 flex-wrap items-center gap-5 border-t border-border bg-background px-8 py-4">
           <SourceToggle showRaw={showRaw} onToggle={() => setShowRaw((v) => !v)} />
           <div className="flex-1">
             <MetricsBar status={status} metrics={metrics} />
           </div>
         </div>
       </main>
+    </div>
+  );
+}
+
+function StandbyPlaceholder() {
+  return (
+    <div className="flex min-h-full items-center justify-center">
+      <div className="flex flex-col items-center gap-5 text-center">
+        <img src={qldLogoUrl} alt="Queensland Government" className="w-72 max-w-[70vw]" />
+        <p className="text-base font-medium text-primary">Select a prompt and click Generate to begin.</p>
+      </div>
+    </div>
+  );
+}
+
+function GeneratingPlaceholder() {
+  return (
+    <div className="flex min-h-full items-center justify-center" role="status" aria-live="polite">
+      <span className="h-14 w-14 animate-spin rounded-full border-4 border-primary/20 border-t-primary/70" />
+      <span className="sr-only">Generating response</span>
     </div>
   );
 }

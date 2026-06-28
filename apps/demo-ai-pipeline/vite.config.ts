@@ -21,6 +21,9 @@ export default defineConfig(({ mode }) => {
         '@workspace/ui/globals.css': resolve('../../packages/ui/src/styles/globals.css'),
         '@workspace/ui': resolve('../../packages/ui/src'),
         '@workspace/shared': resolve('../../packages/shared/src/index.ts'),
+        'hooks': resolve('../../packages/ui/src/hooks'),
+        'ui': resolve('../../packages/ui/src/components'),
+        'utils': resolve('../../packages/ui/src/lib/utils'),
       },
     },
 

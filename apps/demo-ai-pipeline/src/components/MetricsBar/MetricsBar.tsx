@@ -13,10 +13,10 @@ export function MetricsBar({ status, metrics }: MetricsBarProps) {
       <div
         aria-live="polite"
         aria-label="Generation in progress"
-        className="flex items-center gap-4 text-xs text-muted-foreground"
+        className="flex items-center gap-4 text-sm text-muted-foreground"
       >
-        <span className="inline-block h-1.5 w-24 rounded-full bg-muted overflow-hidden">
-          <span className="block h-full w-1/2 bg-primary/50 animate-pulse rounded-full" />
+        <span className="inline-block h-2 w-28 overflow-hidden rounded-full bg-muted">
+          <span className="block h-full w-1/2 animate-pulse rounded-full bg-primary/50" />
         </span>
         <span className="animate-pulse">Streaming…</span>
       </div>
@@ -27,7 +27,7 @@ export function MetricsBar({ status, metrics }: MetricsBarProps) {
     <div
       aria-live="polite"
       aria-label="Generation metrics"
-      className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-muted-foreground"
+      className="flex flex-wrap items-center gap-x-5 gap-y-2 text-sm text-muted-foreground"
     >
       <Stat label="Tokens" value={String(metrics.tokens)} />
       <Stat label="First token" value={`${metrics.timeToFirstToken} ms`} />
@@ -50,7 +50,7 @@ const PROVIDER_LABELS: Record<LlmProviderId, string> = {
 
 function ProviderBadge({ provider }: { provider: LlmProviderId }) {
   return (
-    <span className="px-1.5 py-0.5 rounded bg-muted text-muted-foreground/70 text-[10px] uppercase tracking-wider">
+    <span className="rounded bg-muted px-2 py-1 text-xs uppercase tracking-wider text-muted-foreground/70">
       {PROVIDER_LABELS[provider]}
     </span>
   );
