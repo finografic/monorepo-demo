@@ -12,6 +12,7 @@ export default defineConfig({
       'components': resolve('src/components'),
       'pages': resolve('src/pages'),
       'data': resolve('src/data'),
+      '@workspace/shared': resolve('../../packages/shared/src'),
       '@workspace/ui/globals.css': resolve('../../packages/ui/src/styles/globals.css'),
       '@workspace/ui': resolve('../../packages/ui/src'),
       'hooks': resolve('../../packages/ui/src/hooks'),

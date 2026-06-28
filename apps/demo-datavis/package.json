@@ -15,6 +15,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@workspace/shared": "workspace:*",
     "@workspace/ui": "workspace:*",
     "d3-array": "^3.2.4",
     "d3-axis": "^3.0.0",

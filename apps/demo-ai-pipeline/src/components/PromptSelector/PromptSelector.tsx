@@ -1,5 +1,5 @@
+import { OptionCard } from '@workspace/shared';
 import type { Prompt } from '@workspace/shared';
-import { OptionCard } from 'components/OptionCard/OptionCard';
 import { useRef } from 'react';
 
 interface PromptSelectorProps {
@@ -64,7 +64,8 @@ export function PromptSelector({
           const isSelected = prompt.id === selectedId;
           const badges = prompt.capabilities.map((cap) => ({
             label: cap,
-            className: capabilityColours[cap] ?? 'bg-blue-100 text-blue-800 dark:bg-blue-900/40 dark:text-blue-200',
+            className:
+              capabilityColours[cap] ?? 'bg-blue-100 text-blue-800 dark:bg-blue-900/40 dark:text-blue-200',
           }));
 
           return (

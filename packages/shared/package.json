@@ -10,5 +10,12 @@
     "lint": "oxlint -c ../../oxlint.config.ts",
     "lint:fix": "oxlint -c ../../oxlint.config.ts --fix",
     "typecheck": "tsc --noEmit"
+  },
+  "peerDependencies": {
+    "react": "^19.0.0"
+  },
+  "devDependencies": {
+    "@types/react": "^19.2.2",
+    "typescript": "^5.9.3"
   }
 }
