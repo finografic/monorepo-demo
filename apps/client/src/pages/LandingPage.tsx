@@ -85,7 +85,7 @@ export function LandingPage(): React.JSX.Element {
         <Badge className="mb-4">{t('app.badge', 'Open-source starter')}</Badge>
 
         <h1 className="text-4xl font-bold tracking-tight text-foreground">
-          {t('app.title', 'monorepo-starter')}
+          {t('app.title', 'monorepo-demo')}
         </h1>
 
         <p className="mx-auto mt-4 max-w-2xl text-lg text-muted-foreground">

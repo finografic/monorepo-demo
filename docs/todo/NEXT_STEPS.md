@@ -100,7 +100,7 @@ The starter doubles as a portfolio piece — design-system usage must be visible
 - [ ] End-to-end flow: landing → login → dashboard → users table → translations editor
 - [ ] Sign-up flow on `/login` page (toggle form mode)
 - [ ] `clear-all-cookies` endpoint tested (useful for debugging)
-- [ ] Auth cookie name confirms `monorepo-starter.session_token` in DevTools
+- [ ] Auth cookie name confirms `monorepo-demo.session_token` in DevTools
 - [ ] i18n language switch persists across page refresh (browser language detector)
 - [x] Typecheck: `pnpm typecheck` passes across all packages
 - [ ] Update `ROADMAP.md` Done table

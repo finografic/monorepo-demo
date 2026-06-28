@@ -9,7 +9,7 @@ export function configureOpenAPI(app: AppOpenAPI): void {
       documentation: {
         openapi: '3.1.0',
         info: {
-          title: 'monorepo-starter API',
+          title: 'monorepo-demo API',
           version: '0.0.1',
           description: 'Hono + Drizzle + Auth.js starter API',
         },

@@ -1,4 +1,4 @@
-# @finografic/monorepo-starter — Roadmap
+# @finografic/monorepo-demo — Roadmap
 
 > **Status:** Phase 04 complete. Auth, i18n, admin CMS, full client UI, and DS integration all done.
 > 📅 2026-05-27
@@ -17,28 +17,28 @@ starter based on `/Users/justin/repos-finografic/touch-monorepo`.
 
 Detailed execution lives in:
 
-- [TODO — Phase 01 Root Bootstrap](/docs/todo/TODO_PHASE_01_ROOT_BOOTSTRAP.md)
-- [TODO — Phase 02 App Shell Extraction](/docs/todo/TODO_PHASE_02_APP_SHELL_EXTRACTION.md)
-- [TODO — Phase 03 Shared Platform Extraction](/docs/todo/TODO_PHASE_03_SHARED_PLATFORM_EXTRACTION.md)
+- [DONE — Phase 01 Root Bootstrap](/docs/todo/DONE_PHASE_01_ROOT_BOOTSTRAP.md)
+- [DONE — Phase 02 App Shell Extraction](/docs/todo/DONE_PHASE_02_APP_SHELL_EXTRACTION.md)
+- [DONE — Phase 03 Shared Platform Extraction](/docs/todo/DONE_PHASE_03_SHARED_PLATFORM_EXTRACTION.md)
 - [TODO — Phase 04 Data Auth and I18n](/docs/todo/TODO_PHASE_04_DATA_AUTH_AND_I18N.md)
-- [TODO — Phase 06 LLAAB Client/Server Patterns](/docs/todo/TODO_PHASE_06_LLAAB_CLIENT_SERVER_PATTERNS.md)
-- [TODO — Phase 07 Shadcn Tailwind Migration](/docs/todo/TODO_PHASE_07_SHADCN_TAILWIND_MIGRATION.md)
+- [DONE — Phase 06 LLAAB Client/Server Patterns](/docs/todo/DONE_PHASE_06_LLAAB_CLIENT_SERVER_PATTERNS.md)
+- [DONE — Phase 07 Shadcn Tailwind Migration](/docs/todo/DONE_PHASE_07_SHADCN_TAILWIND_MIGRATION.md)
 
 ## P0 — Active
 
 - ~~Migrate the client UI layer from `@finografic/design-system` + Panda CSS to shadcn + Tailwind 4
-  using the proven LLAAB package/layout patterns.~~ **Complete.** Detail: [TODO — Phase 07 Shadcn Tailwind Migration](/docs/todo/TODO_PHASE_07_SHADCN_TAILWIND_MIGRATION.md)
+  using the proven LLAAB package/layout patterns.~~ **Complete.** Detail: [DONE — Phase 07 Shadcn Tailwind Migration](/docs/todo/DONE_PHASE_07_SHADCN_TAILWIND_MIGRATION.md)
 - ~~Adopt the newer LLAAB client/server architecture patterns: Vite 8, Hono RPC, TanStack Query,
-  route-folder server structure, and React Router data-router setup.~~ **Complete.** Detail: [TODO — Phase 06 LLAAB Client/Server Patterns](/docs/todo/TODO_PHASE_06_LLAAB_CLIENT_SERVER_PATTERNS.md)
-- ~~Root monorepo bootstrap and planning docs.~~ **Complete.** Detail: [TODO — Phase 01 Root Bootstrap](/docs/todo/TODO_PHASE_01_ROOT_BOOTSTRAP.md)
+  route-folder server structure, and React Router data-router setup.~~ **Complete.** Detail: [DONE — Phase 06 LLAAB Client/Server Patterns](/docs/todo/DONE_PHASE_06_LLAAB_CLIENT_SERVER_PATTERNS.md)
+- ~~Root monorepo bootstrap and planning docs.~~ **Complete.** Detail: [DONE — Phase 01 Root Bootstrap](/docs/todo/DONE_PHASE_01_ROOT_BOOTSTRAP.md)
 
 ## P1 — Next Up
 
-- ~~Extract minimal `apps/client` and `apps/server` shells from the source repo without business features.~~ **Complete.** Detail: [TODO — Phase 02 App Shell Extraction](/docs/todo/TODO_PHASE_02_APP_SHELL_EXTRACTION.md)
+- ~~Extract minimal `apps/client` and `apps/server` shells from the source repo without business features.~~ **Complete.** Detail: [DONE — Phase 02 App Shell Extraction](/docs/todo/DONE_PHASE_02_APP_SHELL_EXTRACTION.md)
 
 ## P2 — Planned
 
-- ~~Reintroduce shared packages only where they remain generic after cleanup.~~ **Complete.** Detail: [TODO — Phase 03 Shared Platform Extraction](/docs/todo/TODO_PHASE_03_SHARED_PLATFORM_EXTRACTION.md)
+- ~~Reintroduce shared packages only where they remain generic after cleanup.~~ **Complete.** Detail: [DONE — Phase 03 Shared Platform Extraction](/docs/todo/DONE_PHASE_03_SHARED_PLATFORM_EXTRACTION.md)
 - ~~Add optional platform layers for Drizzle, Auth.js, and i18next as starter-grade skeletons, not full product implementations.~~ **Complete.** Detail: [TODO — Phase 04 Data Auth and I18n](/docs/todo/TODO_PHASE_04_DATA_AUTH_AND_I18N.md)
 
 ## P3 — Backlog

@@ -1,7 +1,6 @@
-# TODO — Phase 03 Shared Platform Extraction
+# DONE — Phase 03 Shared Platform Extraction
 
-> **Status:** Complete. Evaluation done, config extracted on 2026-05-27.
-> 📅 2026-05-27
+> **Completed:** 2026-05-27 — shared platform evaluated; `@workspace/config` extracted.
 
 ## Goal
 

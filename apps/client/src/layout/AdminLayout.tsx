@@ -43,7 +43,7 @@ export function AdminLayout(): React.JSX.Element {
       <aside className="hidden w-60 shrink-0 flex-col border-r bg-card md:flex">
         <div className="border-b px-4 py-5">
           <Link to="/" className="text-sm font-bold text-primary no-underline">
-            monorepo-starter
+            monorepo-demo
           </Link>
           <div className="mt-2">
             <Badge>Admin</Badge>
@@ -62,7 +62,7 @@ export function AdminLayout(): React.JSX.Element {
       <div className="flex min-w-0 flex-1 flex-col">
         <header className="flex h-14 items-center justify-between gap-3 border-b bg-background/95 px-4 backdrop-blur sm:justify-end sm:px-6">
           <Link to="/" className="text-sm font-bold text-primary no-underline md:hidden">
-            monorepo-starter
+            monorepo-demo
           </Link>
           <div className="flex items-center gap-3">
             <Avatar size="sm">

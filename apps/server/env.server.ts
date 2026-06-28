@@ -8,7 +8,7 @@ const ServerEnvSchema = v.pipe(
     DB_NAME: v.optional(v.string(), 'development.sqlite.db'),
     AUTH_SECRET: v.pipe(v.string(), v.minLength(16)),
     AUTH_URL: v.optional(v.string()),
-    AUTH_COOKIE_PREFIX: v.optional(v.string(), 'monorepo-starter'),
+    AUTH_COOKIE_PREFIX: v.optional(v.string(), 'monorepo-demo'),
     TOKEN_COOKIE_SUFFIX: v.optional(v.string(), 'session_token'),
     DATA_COOKIE_SUFFIX: v.optional(v.string(), 'session_data'),
     AUTH_INVALIDATE_JWT_ON_SERVER_BOOT: v.optional(v.string()),

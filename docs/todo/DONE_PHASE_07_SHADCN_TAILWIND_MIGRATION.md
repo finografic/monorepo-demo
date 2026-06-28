@@ -1,7 +1,6 @@
-# TODO — Phase 07 Shadcn + Tailwind Migration
+# DONE — Phase 07 Shadcn + Tailwind Migration
 
-> **Status:** Planned.
-> 📅 2026-06-28
+> **Completed:** 2026-06-28 — shadcn/Tailwind UI package migration shipped.
 
 ## Goal
 

@@ -1,7 +1,6 @@
-# TODO — Phase 06 LLAAB Client/Server Patterns
+# DONE — Phase 06 LLAAB Client/Server Patterns
 
-> **Status:** Planned.
-> 📅 2026-06-28
+> **Completed:** 2026-06-28 — Vite 8, Hono RPC, TanStack Query, and route-tree migration shipped.
 
 ## Goal
 

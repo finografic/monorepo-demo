@@ -19,10 +19,10 @@ export const REPOS: RepoMeta[] = [
     dependabot: true,
   },
   {
-    id: 'monorepo-starter',
+    id: 'monorepo-demo',
     owner: 'finografic',
-    repo: 'monorepo-starter',
-    title: 'finografic/monorepo-starter',
+    repo: 'monorepo-demo',
+    title: 'finografic/monorepo-demo',
     description: 'Portfolio monorepo with multiple apps — mixed dev toolchain dependencies.',
     tags: ['pnpm', 'Monorepo', 'Portfolio', 'Dependabot'],
     dependabot: true,

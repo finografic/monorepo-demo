@@ -1,4 +1,4 @@
-# @finografic/monorepo-starter
+# @finografic/monorepo-demo
 
 > A selective-extraction, full-stack pnpm monorepo starter — pick what you need, delete the rest.
 
@@ -101,7 +101,7 @@ Centralised environment configuration shared by both apps.
 ## Project Structure
 
 ```
-monorepo-starter/
+monorepo-demo/
 ├── apps/
 │   ├── client/          # Vite 7 + React 19 SPA
 │   └── server/          # Hono API server

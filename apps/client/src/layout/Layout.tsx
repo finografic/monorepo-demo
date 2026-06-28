@@ -39,7 +39,7 @@ export function Layout(): React.JSX.Element {
       <header className="sticky top-0 z-30 flex h-14 items-center justify-between border-b bg-background/95 px-4 backdrop-blur supports-[backdrop-filter]:bg-background/75 sm:px-6">
         <div className="flex items-center gap-5">
           <Link to="/" className="text-sm font-bold text-foreground no-underline">
-            monorepo-starter
+            monorepo-demo
           </Link>
           <nav className="flex items-center gap-4">
             <NavLink to="/" end className={navLinkClass}>

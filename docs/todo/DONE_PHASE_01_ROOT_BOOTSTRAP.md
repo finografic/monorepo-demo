@@ -1,7 +1,6 @@
-# TODO — Phase 01 Root Bootstrap
+# DONE — Phase 01 Root Bootstrap
 
-> **Status:** Complete. All items done on 2026-05-27.
-> 📅 2026-05-27
+> **Completed:** 2026-05-27 — root monorepo workspace bootstrap shipped.
 
 ## Goal
 

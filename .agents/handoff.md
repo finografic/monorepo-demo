@@ -1,4 +1,4 @@
-# monorepo-starter — Handoff
+# monorepo-demo — Handoff
 
 ## Current Objective
 

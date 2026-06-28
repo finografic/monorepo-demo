@@ -1,5 +1,5 @@
 {
-  "name": "@finografic/monorepo-starter",
+  "name": "@finografic/monorepo-demo",
   "version": "0.0.1",
   "private": true,
   "description": "Full-stack pnpm monorepo starter — Vite 8 + React 19 + React Router v7 client; Hono + Drizzle ORM + Auth.js API server; shadcn + Tailwind 4 UI package; shared Valibot-validated env config; Moon task orchestration; oxlint toolchain; role-based access control and OpenAPI docs with Scalar UI.",
@@ -11,15 +11,15 @@
     "starter",
     "typescript"
   ],
-  "homepage": "https://github.com/finografic/monorepo-starter",
-  "bugs": "https://github.com/finografic/monorepo-starter/issues",
+  "homepage": "https://github.com/finografic/monorepo-demo",
+  "bugs": "https://github.com/finografic/monorepo-demo/issues",
   "license": "MIT",
   "author": {
     "name": "Justin Rankin",
     "email": "justin.blair.rankin@gmail.com",
     "url": "https://finografic.github.io/cv-justin-rankin"
   },
-  "repository": "finografic/monorepo-starter.git",
+  "repository": "finografic/monorepo-demo.git",
   "scripts": {
     "---------- DEV_AND_BUILD": "---------------------------------------------",
     "dev": "moon run client:dev server:dev",

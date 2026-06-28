@@ -1,7 +1,6 @@
-# TODO — Phase 02 App Shell Extraction
+# DONE — Phase 02 App Shell Extraction
 
-> **Status:** Complete. App shells extracted on 2026-05-27.
-> 📅 2026-05-27
+> **Completed:** 2026-05-27 — minimal client and server app shells extracted.
 
 ## Goal
 

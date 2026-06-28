@@ -81,6 +81,7 @@ Shared across Claude Code, Cursor, and GitHub Copilot.
 - Prefer the published `@finografic/project-scripts` from the registry; use `file:`/`link:` only when explicitly testing local project-scripts changes.
 - `pnpm link` writes persistent `link:` specifiers in `package.json` and `pnpm-workspace.yaml` overrides — global unlink does not restore registry ranges.
 - Only list seeds in `config/db-setup.config.ts` for schemas/tables that exist in this repo.
+- Prefer keeping `index.ts`/`index.tsx` as re-export barrels; split implementation into sibling modules (e.g. `{id}.prompt.ts`) rather than inlining into index files.
 
 ## Learned Workspace Facts
 
@@ -92,7 +93,7 @@ Shared across Claude Code, Cursor, and GitHub Copilot.
 - Each app has a local `oxlint.config.ts` importing presets from `@finografic/oxc-config/oxlint`.
 - Root `package.json` does NOT set `"type": "module"` — each sub-package declares its own.
 - `packages/ui` contains owned shadcn components and Tailwind 4 globals (`@workspace/ui/*`); shadcn theme `baseColor: neutral`, `style: radix-vega`; semantic text tokens in `globals.css` (`--foreground`, `--muted-foreground`); `body` uses `text-foreground`, most paragraph copy `text-muted-foreground`; root scale via `html { font-size: 112.5%; }`.
-- `packages/core` and `packages/shared` were intentionally skipped; `apps/` plus `packages/ui` is valid.
+- `packages/core` was intentionally skipped in Phase 03; `packages/shared` (`@workspace/shared`) holds demo/shared DTOs and UI; portfolio demos live under `apps/demo-*` (`demo-ai-pipeline`, `demo-datavis`, `demo-xscan`, `demo-ecosystem`).
 - No deployment workflow — GitHub Pages removed as unsuitable for full-stack monorepo.
 - Root `db:reset` chains drop → migrate → `db:setup` via the `@finografic/project-scripts` `db-setup` CLI (`NODE_OPTIONS='--import tsx' db-setup -y`); do not duplicate a local db-setup script.
 - `config/db-setup.config.ts` seeds: `user`, `supported_languages`, `translations_ui`, `translations_app`, `translations_admin`; `viewConfigs` is empty (no SQL views). Seed files use underscore names matching schema exports.
