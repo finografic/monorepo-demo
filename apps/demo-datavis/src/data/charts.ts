@@ -3,9 +3,10 @@ import type { ChartMeta } from './types';
 export const CHARTS: ChartMeta[] = [
   {
     id: 'wait-times',
-    title: 'Service Centre Wait Times',
-    description: 'Average customer wait and serve times across QLD transport service centres.',
-    tags: ['Bar chart', 'Customer service', 'KPI'],
+    title: 'Service Centre Wait vs Serve Times',
+    description:
+      'Compare average customer wait time and serve time side-by-side across QLD transport service centres.',
+    tags: ['Grouped bar', 'Customer service', 'KPI'],
     source: 'Customer service centre wait times',
     sourceUrl: 'https://www.data.qld.gov.au/dataset/customer-service-centre-wait-times',
   },
@@ -36,7 +37,7 @@ export const CHARTS: ChartMeta[] = [
   },
   {
     id: 'traffic-census',
-    title: 'Traffic Census — Road Network',
+    title: 'Traffic Census - Road Network',
     description:
       'Annual average daily traffic (AADT) for top 10 state-declared roads, with heavy vehicle share.',
     tags: ['Bar chart', 'Road network', 'Census'],
@@ -52,5 +53,14 @@ export const CHARTS: ChartMeta[] = [
     tags: ['Live API', 'CKAN', 'TMR datasets'],
     source: 'Queensland Open Data Portal — CKAN Action API',
     sourceUrl: 'https://www.data.qld.gov.au/api/3/action/package_search',
+  },
+  {
+    id: 'live-wait-times',
+    title: 'Live: Wait Time vs Customer Volume',
+    description:
+      'Scatter plot of live QLD service centre data — reveals whether busier centres also make customers wait longer.',
+    tags: ['Live API', 'Scatter plot', 'Wait times'],
+    source: 'Customer service centre wait times — CKAN DataStore API',
+    sourceUrl: 'https://www.data.qld.gov.au/dataset/customer-service-centre-wait-times',
   },
 ];

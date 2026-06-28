@@ -1,5 +1,6 @@
 import { CallVolumeChart } from 'components/charts/CallVolumeChart';
 import { LiveCatalogue } from 'components/charts/LiveCatalogue';
+import { LiveWaitTimesChart } from 'components/charts/LiveWaitTimesChart';
 import { TrafficCensus } from 'components/charts/TrafficCensus';
 import { TrafficHeatmap } from 'components/charts/TrafficHeatmap';
 import { TranslinkPerformance } from 'components/charts/TranslinkPerformance';
@@ -24,6 +25,8 @@ function ChartComponent({ id }: { id: string }) {
       return <TrafficCensus />;
     case 'live-catalogue':
       return <LiveCatalogue />;
+    case 'live-wait-times':
+      return <LiveWaitTimesChart />;
     default:
       return null;
   }
@@ -34,13 +37,15 @@ export function ChartPane({ chart }: ChartPaneProps) {
     <div className="flex h-full flex-col">
       {/* Chart header */}
       <div className="border-b border-border px-8 py-5">
-        <h2 className="text-base font-semibold text-foreground">{chart.title}</h2>
+        <h2 className="text-2xl font-semibold text-foreground">{chart.title}</h2>
         <p className="mt-1 text-sm text-muted-foreground">{chart.description}</p>
       </div>
 
       {/* Chart area */}
-      <div className="flex-1 overflow-y-auto px-8 py-6">
-        <ChartComponent id={chart.id} />
+      <div className="flex-1 min-h-0 overflow-y-auto overflow-x-hidden px-8 py-6 flex flex-col">
+        <div className="my-auto w-full [@media(min-height:800px)]:pb-[25vh]">
+          <ChartComponent id={chart.id} />
+        </div>
       </div>
 
       {/* Footer — data attribution */}
@@ -59,7 +64,7 @@ export function ChartPane({ chart }: ChartPaneProps) {
         <span className="text-muted-foreground/40 text-xs hidden sm:inline" aria-hidden="true">
           ·
         </span>
-        {chart.id === 'live-catalogue' ? (
+        {chart.id === 'live-catalogue' || chart.id === 'live-wait-times' ? (
           <p className="text-xs text-emerald-700 dark:text-emerald-400 font-medium">
             Live data — Queensland Open Data CKAN API
           </p>

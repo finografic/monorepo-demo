@@ -28,7 +28,7 @@ export function ChartSelector({ charts, selectedId, onSelect }: ChartSelectorPro
     [charts, onSelect],
   );
 
-  const isLive = (id: string) => id === 'live-catalogue';
+  const isLive = (id: string) => id === 'live-catalogue' || id === 'live-wait-times';
 
   return (
     <nav aria-label="Available charts">
@@ -50,7 +50,7 @@ export function ChartSelector({ charts, selectedId, onSelect }: ChartSelectorPro
               onClick={() => onSelect(chart.id)}
               onKeyDown={(e) => handleKeyDown(e, index)}
               className={[
-                'cursor-pointer rounded-xl border p-4 transition-all select-none outline-none',
+                'cursor-pointer rounded-xl border-2 p-4 transition-all select-none outline-none',
                 'focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1',
                 selected
                   ? 'border-primary bg-primary/5 shadow-sm'

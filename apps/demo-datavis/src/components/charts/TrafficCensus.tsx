@@ -57,10 +57,10 @@ export function TrafficCensus() {
             }
           />
           <Bar dataKey="aadtK" radius={BAR_RADIUS} isAnimationActive={false}>
-            {chartData.map((row) => (
+            {chartData.map((row, i) => (
               <Cell
                 key={`${row.road}-${row.location}`}
-                fill={`oklch(${0.489 - chartData.indexOf(row) * 0.028} ${0.161 - chartData.indexOf(row) * 0.01} 254.944)`}
+                fill={`oklch(${0.237 + i * 0.028} ${0.161 - i * 0.01} 254.944)`}
               />
             ))}
           </Bar>

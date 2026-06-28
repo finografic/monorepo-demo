@@ -9,34 +9,38 @@ export function DemoPage() {
   const selectedChart = CHARTS.find((c) => c.id === selectedId) ?? null;
 
   return (
-    <div className="flex flex-col md:flex-row h-screen overflow-hidden bg-background">
-      {/* Left panel — chart selection */}
-      <aside
-        className="flex-none overflow-hidden border-b border-border md:w-[30rem] md:border-b-0 md:border-r lg:w-[32rem] flex flex-col"
-        aria-label="Chart navigation"
-      >
-        <div className="border-b border-border px-5 py-5">
-          <h1 className="text-base font-semibold text-foreground">Transport Data Dashboard</h1>
-          <p className="mt-1 text-sm text-muted-foreground">
-            QLD transport data · Recharts · D3 · CKAN live API
-          </p>
-        </div>
+    <div className="flex flex-col h-screen overflow-hidden bg-background">
+      {/* Full-width blue header */}
+      <header className="flex-none bg-primary px-6 py-4">
+        <h1 className="text-base font-semibold text-primary-foreground">Transport Data Dashboard</h1>
+        <p className="mt-0.5 text-sm text-primary-foreground/75">
+          QLD transport data · Recharts · D3 · CKAN live API
+        </p>
+      </header>
 
-        <div className="flex-1 overflow-y-auto px-4 py-5">
-          <ChartSelector charts={CHARTS} selectedId={selectedId} onSelect={setSelectedId} />
-        </div>
+      {/* Content row below header */}
+      <div className="flex flex-1 overflow-hidden">
+        {/* Left panel — chart selection */}
+        <aside
+          className="flex-none w-[30rem] lg:w-[32rem] border-r border-border flex flex-col overflow-hidden"
+          aria-label="Chart navigation"
+        >
+          <div className="flex-1 overflow-y-auto px-4 py-5">
+            <ChartSelector charts={CHARTS} selectedId={selectedId} onSelect={setSelectedId} />
+          </div>
 
-        <div className="border-t border-border px-5 py-3">
-          <p className="text-xs text-muted-foreground/60 text-center">
-            WCAG 2.1 AA · Accessible data tables · Keyboard navigable
-          </p>
-        </div>
-      </aside>
+          <div className="border-t border-border px-5 py-3">
+            <p className="text-xs text-muted-foreground/60 text-center">
+              WCAG 2.1 AA · Accessible data tables · Keyboard navigable
+            </p>
+          </div>
+        </aside>
 
-      {/* Right panel — chart output */}
-      <main className="flex-1 flex flex-col overflow-hidden">
-        {selectedChart ? <ChartPane chart={selectedChart} /> : <StandbyPlaceholder />}
-      </main>
+        {/* Right panel — chart output */}
+        <main className="flex-1 flex flex-col overflow-hidden">
+          {selectedChart ? <ChartPane chart={selectedChart} /> : <StandbyPlaceholder />}
+        </main>
+      </div>
     </div>
   );
 }
@@ -62,7 +66,7 @@ function StandbyPlaceholder() {
         </div>
         <p className="text-base font-semibold text-foreground">Select a chart to begin</p>
         <p className="text-sm text-muted-foreground">
-          Choose from 5 mock datasets and 1 live API view in the sidebar.
+          Choose from 5 mock datasets and 2 live API views in the sidebar.
         </p>
       </div>
     </div>
