@@ -72,6 +72,8 @@ Shared across Claude Code, Cursor, and GitHub Copilot.
 
 - Do not create git commits unless the user explicitly asks.
 - When changing typography, prepend new body fonts to the stack and keep existing fallbacks unless the user asks to remove a family entirely.
+- Prefer global typography/theme token changes (html root font-size, CSS variables in `globals.css`) over per-component text size tweaks.
+- npm dependency upgrades use pnpm + syncpack (Moon/Proto pin Node/pnpm/moon only); `deps:update` chains `pnpm syncpack:fix` after `--latest --recursive`; syncpack v14+ uses `fix` not `fix-mismatches`.
 - For `@finografic/design-system`, ship prebuilt `dist/` from CI in the npm tarball; do not commit `dist/` or use postinstall build scripts.
 - In this workspace, do not remove unused imports on save (`source.organizeImports: never`); sort only via `source.sortImports: explicit`. Keep `source.fixAll.oxc: explicit` for oxlint fixes without organize-imports cleanup.
 - Prefer adding missing imports on save (`source.addMissingImports: explicit`) and TypeScript auto-import suggestions while typing.
@@ -82,17 +84,16 @@ Shared across Claude Code, Cursor, and GitHub Copilot.
 
 ## Learned Workspace Facts
 
-- This is a selective-extraction monorepo starter based on touch-monorepo; intentionally beyond bare-bones (auth, admin/CMS, Drizzle, i18n) and also a GitHub demo/portfolio piece.
+- This is a selective-extraction monorepo starter based on touch-monorepo (auth/server/db); use LLAAB and vite-monorepo for shadcn/Tailwind UI patterns; intentionally beyond bare-bones (auth, admin/CMS, Drizzle, i18n) and also a GitHub demo/portfolio piece.
 - `pnpm-workspace.yaml` declares: `config`, `packages/*`, `apps/*`.
-- Moon drives `build`, `dev`, `lint`, `typecheck`, `test`, and `clean` tasks (Turbo removed).
+- Moon drives `build`, `dev`, `lint`, `typecheck`, `test`, and `clean` tasks (Turbo removed); Moon/Proto pin toolchain (Node, pnpm, moon)—npm deps are upgraded via pnpm + syncpack.
 - `apps/client`: Vite 8 + React 19 + React Router v7 + shadcn/Tailwind 4; dev on port 3000, proxies `/api` → server. `apps/server`: Hono + @hono/node-server; `tsdown` build, `tsx watch` dev, default port 4000.
 - `@workspace/config`: Valibot env validation + dotenv with root-dir auto-discovery + workspace paths; hosts `db-setup.config.ts`.
 - Each app has a local `oxlint.config.ts` importing presets from `@finografic/oxc-config/oxlint`.
 - Root `package.json` does NOT set `"type": "module"` — each sub-package declares its own.
-- `packages/ui` contains owned shadcn source components and Tailwind 4 globals, exported as `@workspace/ui/*`.
+- `packages/ui` contains owned shadcn components and Tailwind 4 globals (`@workspace/ui/*`); shadcn theme `baseColor: neutral`, `style: radix-vega`; semantic text tokens in `globals.css` (`--foreground`, `--muted-foreground`); `body` uses `text-foreground`, most paragraph copy `text-muted-foreground`; root scale via `html { font-size: 112.5%; }`.
 - `packages/core` and `packages/shared` were intentionally skipped; `apps/` plus `packages/ui` is valid.
 - No deployment workflow — GitHub Pages removed as unsuitable for full-stack monorepo.
-- For selective extraction: use touch-monorepo for auth/server/db patterns; use LLAAB and vite-monorepo for shadcn/Tailwind UI package patterns.
 - Root `db:reset` chains drop → migrate → `db:setup` via the `@finografic/project-scripts` `db-setup` CLI (`NODE_OPTIONS='--import tsx' db-setup -y`); do not duplicate a local db-setup script.
 - `config/db-setup.config.ts` seeds: `user`, `supported_languages`, `translations_ui`, `translations_app`, `translations_admin`; `viewConfigs` is empty (no SQL views). Seed files use underscore names matching schema exports.
 

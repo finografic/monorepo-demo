@@ -51,7 +51,7 @@
     "@types/react-dom": "^19.2.2",
     "oxfmt": "^0.56.0",
     "oxlint": "^1.71.0",
-    "oxlint-tsgolint": "^0.21.1",
+    "oxlint-tsgolint": "^0.23.0",
     "tailwindcss": "^4.3.0",
     "typescript": "^5.9.3"
   }

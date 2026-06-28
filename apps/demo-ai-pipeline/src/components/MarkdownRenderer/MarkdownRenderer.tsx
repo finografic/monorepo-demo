@@ -23,7 +23,9 @@ const components: Components = {
 
     if (!isBlock && !className) {
       return (
-        <code className="font-mono text-sm bg-muted px-1.5 py-0.5 rounded text-foreground">{children}</code>
+        <code className="font-mono text-[0.85em] bg-muted/70 px-1.5 py-0.5 rounded border border-border/50 text-foreground">
+          {children}
+        </code>
       );
     }
 
@@ -39,7 +41,7 @@ const components: Components = {
       <div
         role="region"
         aria-label="Data table"
-        className="my-4 overflow-x-auto rounded-lg border border-border"
+        className="my-6 overflow-x-auto rounded-lg border border-border shadow-sm"
       >
         <table className="min-w-full text-sm">{children}</table>
       </div>
@@ -48,16 +50,22 @@ const components: Components = {
 
   th({ children }) {
     return (
-      <th className="px-4 py-2.5 text-left font-semibold bg-muted text-foreground border-b border-border">
+      <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider bg-muted text-muted-foreground border-b border-border">
         {children}
       </th>
     );
   },
 
-  td({ children }) {
+  tr({ children }) {
     return (
-      <td className="px-4 py-2.5 text-muted-foreground border-b border-border last:border-b-0">{children}</td>
+      <tr className="border-b border-border last:border-b-0 hover:bg-muted/30 transition-colors">
+        {children}
+      </tr>
     );
+  },
+
+  td({ children }) {
+    return <td className="px-4 py-2.5 text-foreground/80">{children}</td>;
   },
 
   a({ href, children }) {
@@ -74,26 +82,44 @@ const components: Components = {
   },
 
   h1({ children }) {
-    return <h1 className="text-2xl font-bold mt-6 mb-3 text-foreground">{children}</h1>;
+    return (
+      <h1 className="text-2xl font-bold mt-8 mb-4 text-foreground pb-2 border-b border-border">{children}</h1>
+    );
   },
   h2({ children }) {
-    return <h2 className="text-xl font-semibold mt-5 mb-2.5 text-foreground">{children}</h2>;
+    return (
+      <h2 className="text-xl font-semibold mt-7 mb-3 text-foreground pb-1.5 border-b border-border/50">
+        {children}
+      </h2>
+    );
   },
   h3({ children }) {
-    return <h3 className="text-lg font-semibold mt-4 mb-2 text-foreground">{children}</h3>;
+    return <h3 className="text-base font-semibold mt-5 mb-2 text-foreground">{children}</h3>;
   },
   p({ children }) {
-    return <p className="my-3 text-foreground/90 leading-relaxed">{children}</p>;
+    return <p className="my-3 text-foreground/85 leading-7">{children}</p>;
   },
   ul({ children }) {
-    return <ul className="my-3 ml-5 list-disc space-y-1 text-foreground/90">{children}</ul>;
+    return <ul className="my-3 ml-6 list-disc space-y-1.5 text-foreground/85">{children}</ul>;
   },
   ol({ children }) {
-    return <ol className="my-3 ml-5 list-decimal space-y-1 text-foreground/90">{children}</ol>;
+    return <ol className="my-3 ml-6 list-decimal space-y-1.5 text-foreground/85">{children}</ol>;
+  },
+  li({ children }) {
+    return <li className="leading-7">{children}</li>;
+  },
+  strong({ children }) {
+    return <strong className="font-semibold text-foreground">{children}</strong>;
+  },
+  em({ children }) {
+    return <em className="italic text-foreground/90">{children}</em>;
+  },
+  hr() {
+    return <hr className="my-6 border-border" />;
   },
   blockquote({ children }) {
     return (
-      <blockquote className="my-3 pl-4 border-l-4 border-primary/40 text-muted-foreground italic">
+      <blockquote className="my-4 pl-4 border-l-4 border-primary/50 bg-muted/30 rounded-r-md py-2 text-muted-foreground italic">
         {children}
       </blockquote>
     );
