@@ -132,9 +132,6 @@ importers:
       '@workspace/ui':
         specifier: workspace:*
         version: link:../../packages/ui
-      dompurify:
-        specifier: ^3.4.11
-        version: 3.4.11
       mermaid:
         specifier: ^11.4.1
         version: 11.16.0

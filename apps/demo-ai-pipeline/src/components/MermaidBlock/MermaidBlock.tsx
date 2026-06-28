@@ -1,10 +1,21 @@
-import DOMPurify from 'dompurify';
 import mermaid from 'mermaid';
 import { useEffect, useId, useRef, useState } from 'react';
 
 interface MermaidBlockProps {
   code: string;
 }
+
+const MERMAID_COLORS = {
+  nodeFill: '#dbeafe',
+  nodeStroke: '#2563eb',
+  nodeText: '#0f172a',
+  edgeText: '#1e3a8a',
+  line: '#64748b',
+  actorFill: '#dbeafe',
+  actorStroke: '#2563eb',
+  nodeLabelFontSize: '13px',
+  edgeLabelFontSize: '13px',
+} as const;
 
 let mermaidInitialised = false;
 
@@ -17,36 +28,36 @@ function ensureMermaid() {
     securityLevel: 'strict',
     fontFamily: 'inherit',
     themeVariables: {
-      primaryColor: '#dbeafe',
-      primaryBorderColor: '#2563eb',
-      primaryTextColor: '#0f172a',
+      primaryColor: MERMAID_COLORS.nodeFill,
+      primaryBorderColor: MERMAID_COLORS.nodeStroke,
+      primaryTextColor: MERMAID_COLORS.nodeText,
       secondaryColor: '#ccfbf1',
       secondaryBorderColor: '#0f766e',
-      secondaryTextColor: '#0f172a',
+      secondaryTextColor: MERMAID_COLORS.nodeText,
       tertiaryColor: '#fef3c7',
       tertiaryBorderColor: '#d97706',
-      tertiaryTextColor: '#0f172a',
-      lineColor: '#64748b',
-      textColor: '#0f172a',
+      tertiaryTextColor: MERMAID_COLORS.nodeText,
+      lineColor: MERMAID_COLORS.line,
+      textColor: MERMAID_COLORS.nodeText,
       mainBkg: '#ffffff',
-      nodeBorder: '#2563eb',
+      nodeBorder: MERMAID_COLORS.nodeStroke,
       clusterBkg: '#f8fafc',
       clusterBorder: '#cbd5e1',
-      actorBkg: '#dbeafe',
-      actorBorder: '#2563eb',
-      actorTextColor: '#0f172a',
-      actorLineColor: '#64748b',
-      signalColor: '#475569',
-      signalTextColor: '#334155',
+      actorBkg: MERMAID_COLORS.actorFill,
+      actorBorder: MERMAID_COLORS.actorStroke,
+      actorTextColor: MERMAID_COLORS.nodeText,
+      actorLineColor: MERMAID_COLORS.line,
+      signalColor: MERMAID_COLORS.line,
+      signalTextColor: MERMAID_COLORS.edgeText,
       labelBoxBkgColor: '#ffffff',
       labelBoxBorderColor: '#94a3b8',
-      labelTextColor: '#0f172a',
-      loopTextColor: '#0f172a',
+      labelTextColor: MERMAID_COLORS.edgeText,
+      loopTextColor: MERMAID_COLORS.nodeText,
       activationBkgColor: '#e0f2fe',
       activationBorderColor: '#0284c7',
       noteBkgColor: '#fef3c7',
       noteBorderColor: '#d97706',
-      noteTextColor: '#0f172a',
+      noteTextColor: MERMAID_COLORS.nodeText,
     },
     flowchart: {
       useMaxWidth: true,
@@ -67,22 +78,52 @@ function appendDiagramStyles(svg: string): string {
       .node circle,
       .node ellipse,
       .node path {
-        fill: #dbeafe !important;
-        stroke: #2563eb !important;
+        fill: ${MERMAID_COLORS.nodeFill} !important;
+        stroke: ${MERMAID_COLORS.nodeStroke} !important;
         stroke-width: 1.5px !important;
       }
 
       .node .label,
       .nodeLabel,
       .label,
-      .edgeLabel,
-      .edgeLabel p,
-      .messageText,
       .loopText,
       .labelText,
       text {
-        color: #0f172a !important;
-        fill: #0f172a !important;
+        color: ${MERMAID_COLORS.nodeText} !important;
+        fill: ${MERMAID_COLORS.nodeText} !important;
+        font-weight: 500 !important;
+      }
+
+      foreignObject {
+        overflow: visible !important;
+      }
+
+      foreignObject > div,
+      foreignObject span,
+      foreignObject p {
+        overflow: visible !important;
+        text-align: center !important;
+      }
+
+      .node foreignObject > div {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        min-width: 100% !important;
+      }
+
+      .node foreignObject span,
+      .node foreignObject p {
+        color: ${MERMAID_COLORS.nodeText} !important;
+        font-size: ${MERMAID_COLORS.nodeLabelFontSize} !important;
+      }
+
+      .edgeLabel,
+      .edgeLabel p,
+      .messageText {
+        color: ${MERMAID_COLORS.edgeText} !important;
+        fill: ${MERMAID_COLORS.edgeText} !important;
+        font-size: ${MERMAID_COLORS.edgeLabelFontSize} !important;
         font-weight: 500 !important;
       }
 
@@ -92,31 +133,31 @@ function appendDiagramStyles(svg: string): string {
       .messageLine1,
       .actor-line,
       .loopLine {
-        stroke: #64748b !important;
+        stroke: ${MERMAID_COLORS.line} !important;
         stroke-width: 1.4px !important;
       }
 
       marker path {
-        fill: #64748b !important;
-        stroke: #64748b !important;
+        fill: ${MERMAID_COLORS.line} !important;
+        stroke: ${MERMAID_COLORS.line} !important;
       }
 
       .actor,
       .actor-man line,
       .actor-man circle {
-        fill: #dbeafe !important;
-        stroke: #2563eb !important;
+        fill: ${MERMAID_COLORS.actorFill} !important;
+        stroke: ${MERMAID_COLORS.actorStroke} !important;
       }
 
       .actor > rect,
       .sequenceNumber {
-        fill: #dbeafe !important;
-        stroke: #2563eb !important;
+        fill: ${MERMAID_COLORS.actorFill} !important;
+        stroke: ${MERMAID_COLORS.actorStroke} !important;
       }
 
       .actor > text,
       .actor tspan {
-        fill: #0f172a !important;
+        fill: ${MERMAID_COLORS.nodeText} !important;
       }
     </style>
   `;
@@ -137,17 +178,9 @@ export function MermaidBlock({ code }: MermaidBlockProps) {
     mermaid
       .render(`mermaid_${id}`, code)
       .then(({ svg: rendered }) => {
-        if (!cancelled) {
-          setSvg(
-            DOMPurify.sanitize(appendDiagramStyles(rendered), {
-              USE_PROFILES: { svg: true, svgFilters: true },
-              // style: preserve Mermaid's inline max-width on the root <svg> so diagrams
-              // are not stretched beyond their natural size by the w-full container
-              ADD_ATTR: ['style', 'class', 'xmlns'],
-              ADD_TAGS: ['style'],
-            }),
-          );
-        }
+        if (cancelled) return undefined;
+        setSvg(appendDiagramStyles(rendered));
+        return undefined;
       })
       .catch((err: unknown) => {
         if (!cancelled) setError(err instanceof Error ? err.message : 'Diagram render error');

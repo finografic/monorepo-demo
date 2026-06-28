@@ -57,17 +57,19 @@ Initialized once via a module-level guard in `MermaidBlock`. Config:
 
 ```ts
 mermaid.initialize({
-  theme: 'default' | 'dark',   // follows prefers-color-scheme
-  securityLevel: 'strict',     // Mermaid's internal DOMPurify pass
+  theme: 'base',
+  securityLevel: 'strict',     // Mermaid's internal sanitisation pass
   fontFamily: 'inherit',
-  flowchart: { useMaxWidth: true, htmlLabels: true, padding: 20 },
+  flowchart: { useMaxWidth: true, htmlLabels: false, padding: 20 },
   sequence: { useMaxWidth: true },
+  themeVariables: { ... },
 });
 ```
 
-SVG output is additionally sanitized with **DOMPurify** (`USE_PROFILES: { svg: true, svgFilters: true }`)
-before injection. Mermaid's inline `max-width` on the root `<svg>` is preserved via `ADD_ATTR: ['style']`
-so diagrams are not stretched beyond their natural size.
+SVG output is rendered from Mermaid with `securityLevel: 'strict'` and then injected directly. Do not
+run a second DOMPurify pass over Mermaid SVG output unless the sanitizer is explicitly configured to
+preserve Mermaid's generated label markup; otherwise flowchart node labels can be stripped while the
+node shapes remain.
 
 ### Theming Mermaid
 
