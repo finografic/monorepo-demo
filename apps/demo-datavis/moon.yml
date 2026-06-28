@@ -11,5 +11,3 @@ tasks:
 
   build:
     command: 'pnpm build'
-    outputs:
-      - 'dist'
