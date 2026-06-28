@@ -1,0 +1,13 @@
+{
+  "name": "xscan-vendor",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@clack/prompts": "^1.6.0",
+    "@finografic/cli-kit": "^1.4.0",
+    "js-yaml": "^4.1.1",
+    "node-fetch": "^3.3.2",
+    "picocolors": "^1.1.1",
+    "semver": "^7.7.4"
+  }
+}
