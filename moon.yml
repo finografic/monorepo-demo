@@ -1,0 +1,36 @@
+$schema: 'https://moonrepo.dev/schemas/project.json'
+
+language: 'typescript'
+
+tasks:
+  format-check:
+    command: 'pnpm format:check'
+
+  format-fix:
+    command: 'pnpm format:fix'
+    options:
+      cache: false
+
+  lint-ci:
+    command: 'pnpm lint:ci'
+
+  lint-md:
+    command: 'pnpm lint:md'
+
+  lint-md-fix:
+    command: 'pnpm lint:md:fix'
+    options:
+      cache: false
+
+  syncpack-lint:
+    command: 'pnpm syncpack:lint'
+
+  syncpack-fix:
+    command: 'pnpm syncpack:fix'
+    options:
+      cache: false
+
+  syncpack-format:
+    command: 'pnpm syncpack:format'
+    options:
+      cache: false

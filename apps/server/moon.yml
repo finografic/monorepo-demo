@@ -28,7 +28,7 @@ tasks:
   lint:
     command: 'pnpm lint'
 
-  lint:fix:
+  lint-fix:
     command: 'pnpm lint:fix'
     options:
       cache: false

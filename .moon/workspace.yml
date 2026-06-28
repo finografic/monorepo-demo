@@ -2,9 +2,15 @@
 # Accepts a list of globs, a mapping of projects to relative file paths,
 # or both values.
 projects:
-  - 'apps/*'
-  - 'packages/*'
-  - 'config'
+  root: '.'
+  config: 'config'
+  shared: 'packages/shared'
+  ui: 'packages/ui'
+  client: 'apps/client'
+  server: 'apps/server'
+  demo-ai-pipeline: 'apps/demo-ai-pipeline'
+  demo-datavis: 'apps/demo-datavis'
+  demo-ecosystem: 'apps/demo-ecosystem'
 
 # Configures the version control system (VCS). Also known as
 # source code management (SCM).

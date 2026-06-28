@@ -31,7 +31,7 @@
     "test": "moon run :test",
     "·········· LINTING": "···················································",
     "lint": "moon run :lint",
-    "lint:fix": "moon run :lint:fix",
+    "lint:fix": "moon run :lint-fix",
     "lint:ci": "oxlint -c oxlint.config.ts --quiet",
     "lint:md": "md-lint",
     "lint:md:fix": "md-lint --fix",
