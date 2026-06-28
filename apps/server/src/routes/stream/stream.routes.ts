@@ -1,6 +1,7 @@
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
-import type { PromptFixture, StreamChunk } from '@workspace/shared';
+import { DEFAULT_LIVE_MODEL_ID, findLiveModel, isLiveModelId } from '@workspace/shared';
+import type { MetricsData, PromptFixture, StreamChunk } from '@workspace/shared';
 import { stream } from 'hono/streaming';
 import { rateLimit } from 'middlewares/rate-limit';
 import * as v from 'valibot';
@@ -40,7 +41,31 @@ function sleep(ms: number): Promise<void> {
 const LiveBodySchema = v.object({
   promptId: v.string(),
   systemPrompt: v.pipe(v.string(), v.minLength(1)),
+  modelId: v.optional(v.string()),
 });
+
+const LIVE_MAX_TOKENS = 1200;
+
+function getStringDelta(delta: unknown, key: 'content' | 'reasoning_content'): string {
+  if (!delta || typeof delta !== 'object') return '';
+  const value = (delta as Record<string, unknown>)[key];
+  return typeof value === 'string' ? value : '';
+}
+
+function getNumber(value: unknown): number | undefined {
+  return typeof value === 'number' && Number.isFinite(value) ? value : undefined;
+}
+
+function estimateCostUsd(inputTokens: number, outputTokens: number, modelId: string): number | undefined {
+  const model = findLiveModel(modelId);
+  if (!model) return undefined;
+
+  const inputCost = (inputTokens / 1_000_000) * model.inputCostUsdPerMillion;
+  const outputCost = (outputTokens / 1_000_000) * model.outputCostUsdPerMillion;
+  const total = inputCost + outputCost;
+
+  return Number(total.toFixed(6));
+}
 
 const streamRouter = createRouter()
   .get('/fixture/:promptId', async (c) => {
@@ -93,8 +118,20 @@ const streamRouter = createRouter()
       return c.json({ error: 'BAD_REQUEST', message: 'promptId and systemPrompt are required' }, 400);
     }
 
+    const requestedModelId = body.output.modelId ?? process.env.OPENCODE_MODEL ?? DEFAULT_LIVE_MODEL_ID;
+    if (!isLiveModelId(requestedModelId)) {
+      return c.json(
+        {
+          error: 'UNSUPPORTED_MODEL',
+          message: `Model is not allowed for this demo: ${requestedModelId}`,
+        },
+        400,
+      );
+    }
+
     const { promptId: _promptId, systemPrompt } = body.output;
-    const { client, model, providerId } = getAiProvider();
+    const { client, model, providerId } = getAiProvider({ modelId: requestedModelId });
+    const modelInfo = findLiveModel(model);
 
     c.header('Content-Type', 'text/event-stream');
     c.header('Cache-Control', 'no-cache');
@@ -105,17 +142,43 @@ const streamRouter = createRouter()
     let firstChunkMs = 0;
     let firstChunkSent = false;
     let tokenCount = 0;
+    let reasoningTokenCount = 0;
+    let inputTokens: number | undefined;
+    let outputTokens: number | undefined;
+    let estimatedCostUsd: number | undefined;
 
     return stream(c, async (s) => {
       try {
         const aiStream = await client.chat.completions.create({
           model,
           messages: [{ role: 'user', content: systemPrompt }],
+          max_tokens: LIVE_MAX_TOKENS,
           stream: true,
+          stream_options: { include_usage: true },
         });
 
         for await (const chunk of aiStream) {
-          const text = chunk.choices[0]?.delta?.content ?? '';
+          const delta = chunk.choices[0]?.delta;
+          const text = getStringDelta(delta, 'content');
+          const reasoningText = getStringDelta(delta, 'reasoning_content');
+
+          if (reasoningText) {
+            reasoningTokenCount += Math.ceil(reasoningText.length / 4);
+          }
+
+          const { usage } = chunk as unknown as { usage?: Record<string, unknown> };
+          if (usage) {
+            inputTokens = getNumber(usage.prompt_tokens) ?? inputTokens;
+            outputTokens = getNumber(usage.completion_tokens) ?? outputTokens;
+            reasoningTokenCount =
+              getNumber(usage.reasoning_tokens) ??
+              getNumber(
+                (usage.completion_tokens_details as Record<string, unknown> | undefined)?.reasoning_tokens,
+              ) ??
+              reasoningTokenCount;
+            estimatedCostUsd = getNumber(usage.estimated_cost) ?? estimatedCostUsd;
+          }
+
           if (!text) continue;
 
           if (!firstChunkSent) {
@@ -128,17 +191,31 @@ const streamRouter = createRouter()
           await s.write(`data: ${payload}\n\n`);
         }
 
+        const finalEstimatedCostUsd =
+          estimatedCostUsd ??
+          estimateCostUsd(
+            inputTokens ?? Math.ceil(systemPrompt.length / 4),
+            outputTokens ?? tokenCount,
+            model,
+          );
+        const metrics = {
+          tokens: tokenCount,
+          timeToFirstToken: firstChunkMs,
+          totalTime: Date.now() - startMs,
+          model,
+          mode: 'live',
+          provider: providerId,
+          ...(inputTokens !== undefined ? { inputTokens } : {}),
+          ...(outputTokens !== undefined ? { outputTokens } : {}),
+          ...(reasoningTokenCount ? { reasoningTokens: reasoningTokenCount } : {}),
+          ...(finalEstimatedCostUsd !== undefined ? { estimatedCostUsd: finalEstimatedCostUsd } : {}),
+          ...(modelInfo ? { isReasoning: modelInfo.isReasoning } : {}),
+        } satisfies MetricsData;
+
         const donePayload = JSON.stringify({
           type: 'done',
-          metrics: {
-            tokens: tokenCount,
-            timeToFirstToken: firstChunkMs,
-            totalTime: Date.now() - startMs,
-            model,
-            mode: 'live',
-            provider: providerId,
-          },
-        } satisfies StreamChunk);
+          metrics,
+        } satisfies StreamChunk & { metrics: MetricsData });
         await s.write(`data: ${donePayload}\n\n`);
       } catch (err) {
         const errPayload = JSON.stringify({

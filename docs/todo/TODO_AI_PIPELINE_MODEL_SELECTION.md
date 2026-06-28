@@ -19,6 +19,17 @@ Key observations from the smoke test response:
 - `max_tokens: 20` was too small for a reasoning model to complete a thought — reasoning budget
   must be allocated separately from completion budget.
 
+Current decision:
+
+- Use `qwen3.7-plus` as the default hosted live model. It is not the cheapest option, but it is a
+  better fit for this formatting-sensitive demo than the lowest-cost flash models.
+- Keep `deepseek-v4-flash` as the budget/fast option after the pipeline works.
+- Keep `glm-5.2` as an optional premium/reasoning option, not the default.
+- First make live mode work with the **current** five prompts. Do not replace fixture topics at the
+  same time.
+- After live mode is proven, apply `docs/todo/TODO_5_FIXTURES.md` and regenerate the final
+  TMR-specific fixture set from the better prompts.
+
 ---
 
 ## Phase A — Model Discovery
@@ -43,7 +54,7 @@ curl "$OPENCODE_BASE_URL/models" \
 - [ ] Confirm whether request model IDs use the `frank/` prefix or the short form (`glm-5.2`)
 - [ ] Confirm whether the `model` field in the SSE done event should use the API-returned name
       (`frank/GLM-5.2`) or the configured name for display purposes
-- [ ] Update `OPENCODE_MODEL` default in `ai-provider.ts` once a preferred model is confirmed
+- [x] Update `OPENCODE_MODEL` default in `ai-provider.ts` once a preferred model is confirmed
 
 ---
 
@@ -109,10 +120,10 @@ export interface ModelOption {
 export type ModelTag = 'reasoning' | 'fast' | 'cheap' | 'code' | 'vision';
 ```
 
-- [ ] Define `ModelOption` type in `@workspace/shared`
-- [ ] Populate initial model list once Phase A (discovery) is complete
-- [ ] Export a `MODELS` constant filtered to `blocked: false` for the client
-- [ ] Export a `MODEL_IDS` allowlist for server-side validation
+- [x] Define `ModelOption` type in `@workspace/shared`
+- [x] Populate initial model list once Phase A (discovery) is complete
+- [x] Export live model options for the client
+- [x] Export live model ID allowlist for server-side validation
 
 ### C2: Block list and allow list
 
@@ -154,29 +165,29 @@ const LiveBodySchema = v.object({
 });
 ```
 
-- [ ] Add `modelId` to `LiveBodySchema` in `stream.routes.ts`
-- [ ] Validate `modelId` against server-side allow list
-- [ ] Pass validated `modelId` to `getAiProvider()` or override `model` after provider creation
-- [ ] Return `400` with a clear message if `modelId` is not in the allow list
+- [x] Add `modelId` to `LiveBodySchema` in `stream.routes.ts`
+- [x] Validate `modelId` against server-side allow list
+- [x] Pass validated `modelId` to `getAiProvider()` or override `model` after provider creation
+- [x] Return `400` with a clear message if `modelId` is not in the allow list
 
 ### C4: Model selector component
 
 New component: `apps/demo-ai-pipeline/src/components/ModelSelector/ModelSelector.tsx`
 
-- [ ] Render a `<select>` (or shadcn `Select`) listing available `ModelOption[]`
+- [x] Render a `<select>` (or shadcn `Select`) listing available `ModelOption[]`
 - [ ] Group options by tag (e.g. "Reasoning", "Fast / Cheap") using `<optgroup>`
 - [ ] Disable/grey out blocked models rather than hiding entirely (shows the list exists but
       prevents selection — better for demo transparency)
-- [ ] Show a tooltip or badge on reasoning models warning about longer TTFT
-- [ ] Only render when mode is `live` — fixture mode ignores model selection
-- [ ] Emit `onModelChange: (modelId: string) => void`
+- [x] Show a tooltip or badge on reasoning models warning about longer TTFT
+- [x] Only render when mode is `live` — fixture mode ignores model selection
+- [x] Emit `onModelChange: (modelId: string) => void`
 
 ### C5: Wire into DemoPage
 
-- [ ] Add `modelId` state to `DemoPage` (default: env-configured model or first allowed model)
-- [ ] Pass `modelId` to `StreamingControls` → `ModelSelector`
-- [ ] Pass `modelId` to `start(promptId, mode, systemPrompt, modelId)`
-- [ ] Update `useStreamingGeneration` to include `modelId` in POST body
+- [x] Add `modelId` state to `DemoPage` (default: env-configured model or first allowed model)
+- [x] Pass `modelId` to `StreamingControls` → `ModelSelector`
+- [x] Pass `modelId` to `start(promptId, mode, systemPrompt, modelId)`
+- [x] Update `useStreamingGeneration` to include `modelId` in POST body
 
 ---
 
@@ -192,9 +203,10 @@ New component: `apps/demo-ai-pipeline/src/components/ModelSelector/ModelSelector
 | TypeScript Deep Merge Utility | TypeScript code block     | Yes              | Correctness of recursive generics       |
 | Task Management REST API      | Table + JSON + sequence   | Marginal         | Mixed output; reasoning improves JSON   |
 
-**Recommendation:** use a fast non-reasoning model as the default for the demo. Reserve a
-reasoning model as an optional selection for the code and complex diagram prompts. This keeps TTFT
-low for the demo's first impression and avoids blank-content issues.
+**Recommendation:** use `qwen3.7-plus` as the default live model for the demo. Reserve cheaper
+models such as `deepseek-v4-flash` for a budget option after validation, and reserve reasoning
+models such as `glm-5.2` for optional comparison. This keeps the published demo more reliable while
+still controlling cost.
 
 If a cheaper non-reasoning model is not available on OpenCode Go, then:
 
@@ -206,13 +218,46 @@ If a cheaper non-reasoning model is not available on OpenCode Go, then:
 
 ## Phase E — Cost Controls
 
-- [ ] Set `max_tokens: 1200` per live request (covers the longest demo prompt outputs)
+- [x] Set `max_tokens: 1200` per live request (covers the longest demo prompt outputs)
 - [ ] Add per-session request cap: 5 live calls per demo session (in-memory, resets on refresh)
-- [ ] Log `prompt_tokens`, `completion_tokens`, `reasoning_tokens`, `estimated_cost` from the
+- [x] Log `prompt_tokens`, `completion_tokens`, `reasoning_tokens`, `estimated_cost` from the
       done event if OpenCode returns them (confirmed: `estimated_cost` appeared in smoke test)
-- [ ] Display estimated cost in `MetricsBar` when non-zero (useful for demo transparency)
+- [x] Display estimated cost in `MetricsBar` when non-zero (useful for demo transparency)
 - [ ] Cache last response per `promptId + modelId` for the session — hitting Generate twice with
       the same selection returns the cached result without a second API call
+
+---
+
+## Phase G — Recommended Execution Order
+
+### G1: Prove live mode with current prompts
+
+- [x] Add shared model registry with `qwen3.7-plus` as the default
+- [x] Add server-side model allowlist validation
+- [x] Pass `modelId` from the live-mode UI to `POST /api/stream/live`
+- [x] Add `max_tokens: 1200`
+- [x] Read both `delta.content` and `delta.reasoning_content`; stream only final content by default
+- [x] Surface token/cost metadata when available
+- [ ] Smoke test all current five prompts against `qwen3.7-plus`
+
+### G2: Validate model suitability
+
+Reject a model for this demo if it:
+
+- breaks markdown fences
+- emits invalid Mermaid syntax
+- emits malformed JSON examples
+- ignores requested sections
+- produces excessive rambling
+- has poor TTFT for a public demo
+
+### G3: Regenerate final TMR fixture set
+
+- [ ] Apply `docs/todo/TODO_5_FIXTURES.md`
+- [ ] Replace current prompt topics with the final TMR-specific five
+- [ ] Generate live outputs with `qwen3.7-plus`
+- [ ] Edit/polish the best outputs into deterministic fixture JSON files
+- [ ] Keep fixture mode as the default public experience
 
 ---
 

@@ -5,7 +5,7 @@ export interface UseStreamingGenerationReturn {
   status: GenerationStatus;
   buffer: string;
   metrics: MetricsData | null;
-  start: (promptId: string, mode: StreamMode, systemPrompt: string) => void;
+  start: (promptId: string, mode: StreamMode, systemPrompt: string, modelId?: string) => void;
   stop: () => void;
   clear: () => void;
 }
@@ -31,7 +31,7 @@ export function useStreamingGeneration(): UseStreamingGenerationReturn {
     setMetrics(null);
   }, []);
 
-  const start = useCallback((promptId: string, mode: StreamMode, systemPrompt: string) => {
+  const start = useCallback((promptId: string, mode: StreamMode, systemPrompt: string, modelId?: string) => {
     abortRef.current?.abort();
     const controller = new AbortController();
     abortRef.current = controller;
@@ -50,7 +50,7 @@ export function useStreamingGeneration(): UseStreamingGenerationReturn {
                 method: 'POST',
                 signal: controller.signal,
                 headers: { 'Accept': 'text/event-stream', 'Content-Type': 'application/json' },
-                body: JSON.stringify({ promptId, systemPrompt }),
+                body: JSON.stringify({ promptId, systemPrompt, modelId }),
               })
             : await fetch(`/api/stream/fixture/${promptId}`, {
                 signal: controller.signal,

@@ -1,3 +1,4 @@
+import { DEFAULT_LIVE_MODEL_ID, LIVE_MODEL_OPTIONS } from '@workspace/shared';
 import type { StreamMode } from '@workspace/shared';
 import { MetricsBar } from 'components/MetricsBar/MetricsBar';
 import { PartialMarkdownGuard } from 'components/PartialMarkdownGuard/PartialMarkdownGuard';
@@ -13,6 +14,7 @@ export function DemoPage() {
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [showRaw, setShowRaw] = useState(false);
   const [mode, setMode] = useState<StreamMode>('fixture');
+  const [selectedModelId, setSelectedModelId] = useState(DEFAULT_LIVE_MODEL_ID);
   const { status, buffer, metrics, start, stop, clear } = useStreamingGeneration();
 
   const selectedPrompt = PROMPTS.find((p) => p.id === selectedId) ?? null;
@@ -26,7 +28,7 @@ export function DemoPage() {
   function handleStart() {
     if (!selectedPrompt) return;
     setShowRaw(false);
-    start(selectedPrompt.id, mode, selectedPrompt.systemPrompt);
+    start(selectedPrompt.id, mode, selectedPrompt.systemPrompt, selectedModelId);
   }
 
   function handleModeChange(next: StreamMode) {
@@ -60,7 +62,10 @@ export function DemoPage() {
             status={status}
             hasSelection={!!selectedId}
             mode={mode}
+            liveModels={LIVE_MODEL_OPTIONS}
+            selectedModelId={selectedModelId}
             onModeChange={handleModeChange}
+            onModelChange={setSelectedModelId}
             onStart={handleStart}
             onStop={stop}
             onClear={clear}
@@ -68,7 +73,7 @@ export function DemoPage() {
           <p className="text-[10px] text-muted-foreground/60 mt-2 text-center">
             {mode === 'fixture'
               ? 'Fixture mode — pre-recorded responses, no API cost'
-              : 'Live mode — calls local LM Studio via OpenAI-compatible API'}
+              : 'Live mode — calls the configured OpenAI-compatible server provider'}
           </p>
         </div>
       </aside>

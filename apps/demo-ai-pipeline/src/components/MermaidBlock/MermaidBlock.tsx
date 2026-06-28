@@ -13,24 +13,115 @@ function ensureMermaid() {
   mermaidInitialised = true;
   mermaid.initialize({
     startOnLoad: false,
-    theme: window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'default',
+    theme: 'base',
     securityLevel: 'strict',
     fontFamily: 'inherit',
+    themeVariables: {
+      primaryColor: '#dbeafe',
+      primaryBorderColor: '#2563eb',
+      primaryTextColor: '#0f172a',
+      secondaryColor: '#ccfbf1',
+      secondaryBorderColor: '#0f766e',
+      secondaryTextColor: '#0f172a',
+      tertiaryColor: '#fef3c7',
+      tertiaryBorderColor: '#d97706',
+      tertiaryTextColor: '#0f172a',
+      lineColor: '#64748b',
+      textColor: '#0f172a',
+      mainBkg: '#ffffff',
+      nodeBorder: '#2563eb',
+      clusterBkg: '#f8fafc',
+      clusterBorder: '#cbd5e1',
+      actorBkg: '#dbeafe',
+      actorBorder: '#2563eb',
+      actorTextColor: '#0f172a',
+      actorLineColor: '#64748b',
+      signalColor: '#475569',
+      signalTextColor: '#334155',
+      labelBoxBkgColor: '#ffffff',
+      labelBoxBorderColor: '#94a3b8',
+      labelTextColor: '#0f172a',
+      loopTextColor: '#0f172a',
+      activationBkgColor: '#e0f2fe',
+      activationBorderColor: '#0284c7',
+      noteBkgColor: '#fef3c7',
+      noteBorderColor: '#d97706',
+      noteTextColor: '#0f172a',
+    },
     flowchart: {
       useMaxWidth: true,
-      // TODO: htmlLabels:true makes Mermaid render labels via <foreignObject> (HTML inside SVG),
-      // which DOMPurify strips even when ADD_TAGS includes foreignObject — labels render empty.
-      // Root cause not fully resolved: securityLevel:'strict' may conflict with foreignObject injection.
-      // Options to investigate: securityLevel:'loose' (less safe), skip DOMPurify on flowcharts,
-      // or use a post-render DOM manipulation approach instead of dangerouslySetInnerHTML.
-      // See: docs/markdown-rendering-styles.md § Diagrams
-      // htmlLabels: true,
+      htmlLabels: false,
       padding: 20,
     },
     sequence: {
       useMaxWidth: true,
     },
   });
+}
+
+function appendDiagramStyles(svg: string): string {
+  const styles = `
+    <style>
+      .node rect,
+      .node polygon,
+      .node circle,
+      .node ellipse,
+      .node path {
+        fill: #dbeafe !important;
+        stroke: #2563eb !important;
+        stroke-width: 1.5px !important;
+      }
+
+      .node .label,
+      .nodeLabel,
+      .label,
+      .edgeLabel,
+      .edgeLabel p,
+      .messageText,
+      .loopText,
+      .labelText,
+      text {
+        color: #0f172a !important;
+        fill: #0f172a !important;
+        font-weight: 500 !important;
+      }
+
+      .edgePath path,
+      .flowchart-link,
+      .messageLine0,
+      .messageLine1,
+      .actor-line,
+      .loopLine {
+        stroke: #64748b !important;
+        stroke-width: 1.4px !important;
+      }
+
+      marker path {
+        fill: #64748b !important;
+        stroke: #64748b !important;
+      }
+
+      .actor,
+      .actor-man line,
+      .actor-man circle {
+        fill: #dbeafe !important;
+        stroke: #2563eb !important;
+      }
+
+      .actor > rect,
+      .sequenceNumber {
+        fill: #dbeafe !important;
+        stroke: #2563eb !important;
+      }
+
+      .actor > text,
+      .actor tspan {
+        fill: #0f172a !important;
+      }
+    </style>
+  `;
+
+  return svg.replace(/<svg([^>]*)>/, `<svg$1>${styles}`);
 }
 
 export function MermaidBlock({ code }: MermaidBlockProps) {
@@ -46,23 +137,17 @@ export function MermaidBlock({ code }: MermaidBlockProps) {
     mermaid
       .render(`mermaid_${id}`, code)
       .then(({ svg: rendered }) => {
-        if (!cancelled)
-          {setSvg(
-            DOMPurify.sanitize(rendered, {
+        if (!cancelled) {
+          setSvg(
+            DOMPurify.sanitize(appendDiagramStyles(rendered), {
               USE_PROFILES: { svg: true, svgFilters: true },
               // style: preserve Mermaid's inline max-width on the root <svg> so diagrams
               // are not stretched beyond their natural size by the w-full container
               ADD_ATTR: ['style', 'class', 'xmlns'],
-              // TODO (htmlLabels): when htmlLabels:true is re-enabled, Mermaid renders labels
-              // via <foreignObject> (HTML inside SVG). DOMPurify strips these even with:
-              //   ADD_TAGS: ['foreignObject', 'div', 'span', 'p', 'b', 'i', 'br'],
-              //   ADD_ATTR: [..., 'requiredExtensions'],
-              // Root cause: securityLevel:'strict' likely conflicts with foreignObject injection.
-              // Options: securityLevel:'loose' (less safe), post-render DOM patching, or skip
-              // DOMPurify on the flowchart SVG and rely solely on Mermaid's own strict-mode sanitisation.
-              // See: docs/markdown-rendering-styles.md § Diagrams (Open Issues)
+              ADD_TAGS: ['style'],
             }),
-          );}
+          );
+        }
       })
       .catch((err: unknown) => {
         if (!cancelled) setError(err instanceof Error ? err.message : 'Diagram render error');

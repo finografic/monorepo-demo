@@ -18,6 +18,11 @@ export interface MetricsData {
   model: string;
   mode: StreamMode;
   provider: LlmProviderId;
+  inputTokens?: number;
+  outputTokens?: number;
+  reasoningTokens?: number;
+  estimatedCostUsd?: number;
+  isReasoning?: boolean;
 }
 
 export interface Prompt {

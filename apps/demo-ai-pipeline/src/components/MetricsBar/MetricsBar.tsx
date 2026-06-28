@@ -33,6 +33,10 @@ export function MetricsBar({ status, metrics }: MetricsBarProps) {
       <Stat label="First token" value={`${metrics.timeToFirstToken} ms`} />
       <Stat label="Total time" value={`${metrics.totalTime} ms`} />
       <Stat label="Model" value={metrics.model} />
+      {metrics.estimatedCostUsd ? (
+        <Stat label="Est. cost" value={`$${metrics.estimatedCostUsd.toFixed(6)}`} />
+      ) : null}
+      {metrics.reasoningTokens ? <Stat label="Reasoning" value={String(metrics.reasoningTokens)} /> : null}
       <ProviderBadge provider={metrics.provider} />
     </div>
   );

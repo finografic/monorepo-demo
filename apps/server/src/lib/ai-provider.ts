@@ -1,3 +1,4 @@
+import { DEFAULT_LIVE_MODEL_ID } from '@workspace/shared';
 import type { LlmProviderId } from '@workspace/shared';
 import OpenAI from 'openai';
 
@@ -7,7 +8,11 @@ export interface AiProvider {
   providerId: LlmProviderId;
 }
 
-export function getAiProvider(): AiProvider {
+interface GetAiProviderOptions {
+  modelId?: string;
+}
+
+export function getAiProvider(options: GetAiProviderOptions = {}): AiProvider {
   const mode = process.env.LLM_MODE ?? 'local';
 
   if (mode === 'hosted') {
@@ -19,7 +24,7 @@ export function getAiProvider(): AiProvider {
         apiKey,
         baseURL: process.env.OPENCODE_BASE_URL ?? 'https://opencode.ai/zen/go/v1',
       }),
-      model: process.env.OPENCODE_MODEL ?? 'glm-5.2',
+      model: options.modelId ?? process.env.OPENCODE_MODEL ?? DEFAULT_LIVE_MODEL_ID,
       providerId: 'opencode-go',
     };
   }

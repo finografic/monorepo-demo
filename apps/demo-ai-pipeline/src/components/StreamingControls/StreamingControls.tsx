@@ -1,10 +1,14 @@
-import type { GenerationStatus, StreamMode } from '@workspace/shared';
+import type { GenerationStatus, ModelOption, StreamMode } from '@workspace/shared';
+import { ModelSelector } from 'components/ModelSelector/ModelSelector';
 
 interface StreamingControlsProps {
   status: GenerationStatus;
   hasSelection: boolean;
   mode: StreamMode;
+  liveModels: readonly ModelOption[];
+  selectedModelId: string;
   onModeChange: (mode: StreamMode) => void;
+  onModelChange: (modelId: string) => void;
   onStart: () => void;
   onStop: () => void;
   onClear: () => void;
@@ -14,7 +18,10 @@ export function StreamingControls({
   status,
   hasSelection,
   mode,
+  liveModels,
+  selectedModelId,
   onModeChange,
+  onModelChange,
   onStart,
   onStop,
   onClear,
@@ -43,6 +50,15 @@ export function StreamingControls({
           </button>
         ))}
       </div>
+
+      {mode === 'live' ? (
+        <ModelSelector
+          models={liveModels}
+          selectedModelId={selectedModelId}
+          disabled={isStreaming}
+          onModelChange={onModelChange}
+        />
+      ) : null}
 
       {/* Action buttons */}
       <div className="flex gap-2">
