@@ -31,6 +31,21 @@ export interface Prompt {
   description: string;
   capabilities: CapabilityTag[];
   systemPrompt: string;
+  parameters?: PromptParameter[];
+}
+
+export interface PromptParameter {
+  id: string;
+  label: string;
+  defaultValue: string;
+  options: PromptParameterOption[];
+}
+
+export interface PromptParameterOption {
+  value: string;
+  label: string;
+  promptText: string;
+  fixturePromptId?: string;
 }
 
 export type CapabilityTag =
@@ -39,7 +54,19 @@ export type CapabilityTag =
   | 'Markdown table'
   | 'Code block'
   | 'TypeScript'
-  | 'REST API';
+  | 'REST API'
+  | 'Decision table'
+  | 'OIDC/Auth'
+  | 'Payment flow'
+  | 'Status model'
+  | 'WCAG notes'
+  | 'Secure data'
+  | 'Audit trail'
+  | 'Payment states'
+  | 'Error JSON'
+  | 'AI/RAG'
+  | 'Knowledge graph'
+  | 'Human review';
 
 export interface PromptFixture {
   promptId: string;

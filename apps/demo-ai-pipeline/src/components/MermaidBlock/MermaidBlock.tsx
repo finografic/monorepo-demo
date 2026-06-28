@@ -1,21 +1,11 @@
+import { styles as stylesMermaid } from 'components/MermaidBlock/mermaid.styles';
+import { MERMAID_THEME } from 'components/MermaidBlock/mermaid.theme';
 import mermaid from 'mermaid';
 import { useEffect, useId, useRef, useState } from 'react';
 
 interface MermaidBlockProps {
   code: string;
 }
-
-const MERMAID_COLORS = {
-  nodeFill: '#dbeafe',
-  nodeStroke: '#2563eb',
-  nodeText: '#0f172a',
-  edgeText: '#1e3a8a',
-  line: '#64748b',
-  actorFill: '#dbeafe',
-  actorStroke: '#2563eb',
-  nodeLabelFontSize: '13px',
-  edgeLabelFontSize: '13px',
-} as const;
 
 let mermaidInitialised = false;
 
@@ -27,38 +17,7 @@ function ensureMermaid() {
     theme: 'base',
     securityLevel: 'strict',
     fontFamily: 'inherit',
-    themeVariables: {
-      primaryColor: MERMAID_COLORS.nodeFill,
-      primaryBorderColor: MERMAID_COLORS.nodeStroke,
-      primaryTextColor: MERMAID_COLORS.nodeText,
-      secondaryColor: '#ccfbf1',
-      secondaryBorderColor: '#0f766e',
-      secondaryTextColor: MERMAID_COLORS.nodeText,
-      tertiaryColor: '#fef3c7',
-      tertiaryBorderColor: '#d97706',
-      tertiaryTextColor: MERMAID_COLORS.nodeText,
-      lineColor: MERMAID_COLORS.line,
-      textColor: MERMAID_COLORS.nodeText,
-      mainBkg: '#ffffff',
-      nodeBorder: MERMAID_COLORS.nodeStroke,
-      clusterBkg: '#f8fafc',
-      clusterBorder: '#cbd5e1',
-      actorBkg: MERMAID_COLORS.actorFill,
-      actorBorder: MERMAID_COLORS.actorStroke,
-      actorTextColor: MERMAID_COLORS.nodeText,
-      actorLineColor: MERMAID_COLORS.line,
-      signalColor: MERMAID_COLORS.line,
-      signalTextColor: MERMAID_COLORS.edgeText,
-      labelBoxBkgColor: '#ffffff',
-      labelBoxBorderColor: '#94a3b8',
-      labelTextColor: MERMAID_COLORS.edgeText,
-      loopTextColor: MERMAID_COLORS.nodeText,
-      activationBkgColor: '#e0f2fe',
-      activationBorderColor: '#0284c7',
-      noteBkgColor: '#fef3c7',
-      noteBorderColor: '#d97706',
-      noteTextColor: MERMAID_COLORS.nodeText,
-    },
+    themeVariables: { ...MERMAID_THEME },
     flowchart: {
       useMaxWidth: true,
       htmlLabels: false,
@@ -70,98 +29,7 @@ function ensureMermaid() {
   });
 }
 
-function appendDiagramStyles(svg: string): string {
-  const styles = `
-    <style>
-      .node rect,
-      .node polygon,
-      .node circle,
-      .node ellipse,
-      .node path {
-        fill: ${MERMAID_COLORS.nodeFill} !important;
-        stroke: ${MERMAID_COLORS.nodeStroke} !important;
-        stroke-width: 1.5px !important;
-      }
-
-      .node .label,
-      .nodeLabel,
-      .label,
-      .loopText,
-      .labelText,
-      text {
-        color: ${MERMAID_COLORS.nodeText} !important;
-        fill: ${MERMAID_COLORS.nodeText} !important;
-        font-weight: 500 !important;
-      }
-
-      foreignObject {
-        overflow: visible !important;
-      }
-
-      foreignObject > div,
-      foreignObject span,
-      foreignObject p {
-        overflow: visible !important;
-        text-align: center !important;
-      }
-
-      .node foreignObject > div {
-        display: flex !important;
-        align-items: center !important;
-        justify-content: center !important;
-        min-width: 100% !important;
-      }
-
-      .node foreignObject span,
-      .node foreignObject p {
-        color: ${MERMAID_COLORS.nodeText} !important;
-        font-size: ${MERMAID_COLORS.nodeLabelFontSize} !important;
-      }
-
-      .edgeLabel,
-      .edgeLabel p,
-      .messageText {
-        color: ${MERMAID_COLORS.edgeText} !important;
-        fill: ${MERMAID_COLORS.edgeText} !important;
-        font-size: ${MERMAID_COLORS.edgeLabelFontSize} !important;
-        font-weight: 500 !important;
-      }
-
-      .edgePath path,
-      .flowchart-link,
-      .messageLine0,
-      .messageLine1,
-      .actor-line,
-      .loopLine {
-        stroke: ${MERMAID_COLORS.line} !important;
-        stroke-width: 1.4px !important;
-      }
-
-      marker path {
-        fill: ${MERMAID_COLORS.line} !important;
-        stroke: ${MERMAID_COLORS.line} !important;
-      }
-
-      .actor,
-      .actor-man line,
-      .actor-man circle {
-        fill: ${MERMAID_COLORS.actorFill} !important;
-        stroke: ${MERMAID_COLORS.actorStroke} !important;
-      }
-
-      .actor > rect,
-      .sequenceNumber {
-        fill: ${MERMAID_COLORS.actorFill} !important;
-        stroke: ${MERMAID_COLORS.actorStroke} !important;
-      }
-
-      .actor > text,
-      .actor tspan {
-        fill: ${MERMAID_COLORS.nodeText} !important;
-      }
-    </style>
-  `;
-
+function appendDiagramStyles(svg: string, styles: string): string {
   return svg.replace(/<svg([^>]*)>/, `<svg$1>${styles}`);
 }
 
@@ -179,7 +47,7 @@ export function MermaidBlock({ code }: MermaidBlockProps) {
       .render(`mermaid_${id}`, code)
       .then(({ svg: rendered }) => {
         if (cancelled) return undefined;
-        setSvg(appendDiagramStyles(rendered));
+        setSvg(appendDiagramStyles(rendered, stylesMermaid));
         return undefined;
       })
       .catch((err: unknown) => {

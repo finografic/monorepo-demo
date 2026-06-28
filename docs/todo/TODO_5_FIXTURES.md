@@ -447,38 +447,38 @@ export const PROMPTS: Prompt[] = [
 
 Create or replace these fixture files:
 
-- [ ] `apps/demo-ai-pipeline/src/fixtures/registration-renewal.fixture.json`
-- [ ] `apps/demo-ai-pipeline/src/fixtures/licence-renewal.fixture.json`
-- [ ] `apps/demo-ai-pipeline/src/fixtures/change-address.fixture.json`
-- [ ] `apps/demo-ai-pipeline/src/fixtures/fine-payment.fixture.json`
-- [ ] `apps/demo-ai-pipeline/src/fixtures/service-finder.fixture.json`
+- [x] `apps/demo-ai-pipeline/src/fixtures/registration-renewal.fixture.json`
+- [x] `apps/demo-ai-pipeline/src/fixtures/licence-renewal.fixture.json`
+- [x] `apps/demo-ai-pipeline/src/fixtures/change-address.fixture.json`
+- [x] `apps/demo-ai-pipeline/src/fixtures/fine-payment.fixture.json`
+- [x] `apps/demo-ai-pipeline/src/fixtures/service-finder-used-vehicle-transfer.fixture.json`
+- [x] `apps/demo-ai-pipeline/src/fixtures/service-finder-fine-payment.fixture.json`
+- [x] `apps/demo-ai-pipeline/src/fixtures/service-finder-change-address.fixture.json`
 
 Remove or stop referencing:
 
-- [ ] `apps/demo-ai-pipeline/src/fixtures/workflow.fixture.json`
-- [ ] `apps/demo-ai-pipeline/src/fixtures/state-mgmt.fixture.json`
-- [ ] `apps/demo-ai-pipeline/src/fixtures/deep-merge.fixture.json`
-- [ ] `apps/demo-ai-pipeline/src/fixtures/rest-api.fixture.json`
-
-The old `renewal.fixture.json` can either be renamed and rewritten or replaced with a fresh
-`registration-renewal.fixture.json`.
+- [x] `apps/demo-ai-pipeline/src/fixtures/workflow.fixture.json`
+- [x] `apps/demo-ai-pipeline/src/fixtures/state-mgmt.fixture.json`
+- [x] `apps/demo-ai-pipeline/src/fixtures/deep-merge.fixture.json`
+- [x] `apps/demo-ai-pipeline/src/fixtures/rest-api.fixture.json`
+- [x] `apps/demo-ai-pipeline/src/fixtures/renewal.fixture.json`
 
 ---
 
 ## Implementation Tasks
 
-- [ ] Update prompt IDs and labels in `apps/demo-ai-pipeline/src/prompts/index.ts`
-- [ ] Confirm server fixture lookup supports hyphenated IDs
-- [ ] Generate the five new markdown fixture contents
-- [ ] Split each fixture into chunks using the existing fixture format
+- [x] Update prompt IDs and labels in `apps/demo-ai-pipeline/src/prompts/index.ts`
+- [x] Confirm server fixture lookup supports hyphenated IDs
+- [x] Generate the five new markdown fixture contents
+- [x] Split each fixture into chunks using the existing fixture format
 - [ ] Ensure all diagrams render without clipped labels
-- [ ] Ensure each fixture includes at least one table
-- [ ] Ensure at least two fixtures include JSON or TypeScript-highlighted code blocks
-- [ ] Update any tests that assert old prompt titles or fixture IDs
-- [ ] Run `pnpm typecheck`
-- [ ] Run the relevant demo tests
+- [x] Ensure each fixture includes at least one table
+- [x] Ensure at least two fixtures include JSON or TypeScript-highlighted code blocks
+- [x] Update any tests that assert old prompt titles or fixture IDs
+- [x] Run `pnpm typecheck`
+- [x] Run the relevant demo tests
 - [ ] Browser smoke all five prompt cards
-- [ ] Run `graphify update .`
+- [x] Run `graphify update .`
 
 ---
 

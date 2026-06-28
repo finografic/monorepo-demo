@@ -1,0 +1,10 @@
+{
+  "promptId": "service-finder-used-vehicle-transfer",
+  "model": "qwen3.7-plus",
+  "content": "# AI Service Finder Response\n\nA customer says: \"I bought a used car and need to put it in my name.\" This response should guide them toward the likely registration transfer service while keeping eligibility and document advice cautious.\n\n## Recommended Service\n\n| Recommendation | Reason |\n| --- | --- |\n| Transfer vehicle registration | The intent mentions buying a used vehicle and changing the registered operator. |\n| Check identity requirements | The buyer must prove identity before the transfer can proceed. |\n| Check payment requirements | Transfer duty or fees may apply depending on vehicle and customer details. |\n\n## Required Documents\n\n| Item | Why it may be needed |\n| --- | --- |\n| Proof of identity | Confirms the buyer account. |\n| Vehicle details | Identifies the registration record. |\n| Seller/buyer declaration | Supports the transfer request. |\n| Payment method | Required when transfer fees apply. |\n\n## Confidence and Review Flags\n\n| Signal | Assessment |\n| --- | --- |\n| Intent confidence | High |\n| Human review | Required if ownership details conflict |\n| Sensitive data | Do not display unrelated vehicle or seller records |\n\n## Context Graph\n\n```mermaid\ngraph LR\n    Intent[Customer intent] --> Service[Transfer registration]\n    Service --> Vehicle[Vehicle record]\n    Service --> Buyer[Buyer identity]\n    Service --> Seller[Seller details]\n    Service --> Pay[Fees]\n    Vehicle --> Policy[Eligibility rules]\n    Policy --> Review[Human review]\n```\n\n## Safe Response Notes\n\n- Present this as guidance, not a final eligibility decision.\n- Link to the official transfer service before collecting sensitive details.\n- Ask for only the minimum information needed to route the customer.\n",
+  "metrics": {
+    "tokens": 322,
+    "timeToFirstToken": 278,
+    "totalTime": 2150
+  }
+}

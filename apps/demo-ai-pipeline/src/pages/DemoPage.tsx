@@ -6,7 +6,7 @@ import { PromptSelector } from 'components/PromptSelector/PromptSelector';
 import { SourceToggle } from 'components/SourceToggle/SourceToggle';
 import { StreamingControls } from 'components/StreamingControls/StreamingControls';
 import { PROMPTS } from 'prompts/index';
-import { useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 import { useStreamingGeneration } from 'lib/useStreamingGeneration';
 
@@ -15,26 +15,71 @@ export function DemoPage() {
   const [showRaw, setShowRaw] = useState(false);
   const [mode, setMode] = useState<StreamMode>('fixture');
   const [selectedModelId, setSelectedModelId] = useState(DEFAULT_LIVE_MODEL_ID);
-  const { status, buffer, metrics, start, stop, clear } = useStreamingGeneration();
+  const [parameterValues, setParameterValues] = useState<Record<string, string>>({});
+  const { status, buffer, metrics, start, stop, clear, restore } = useStreamingGeneration();
 
   const selectedPrompt = PROMPTS.find((p) => p.id === selectedId) ?? null;
+  const selectedPromptParameters = useMemo(() => selectedPrompt?.parameters ?? [], [selectedPrompt]);
+  const selectedParameterOptions = selectedPromptParameters.map((parameter) => {
+    const value = parameterValues[parameter.id] ?? parameter.defaultValue;
+    return parameter.options.find((item) => item.value === value) ?? parameter.options[0] ?? null;
+  });
+  const selectedPromptParameterText = selectedPromptParameters
+    .map((parameter, index) => {
+      const option = selectedParameterOptions[index];
+      return option ? `${parameter.label}: ${option.promptText}` : null;
+    })
+    .filter(Boolean)
+    .join('\n');
+
+  const selectedSystemPrompt = selectedPromptParameterText
+    ? `${selectedPrompt?.systemPrompt}\n\n${selectedPromptParameterText}`
+    : selectedPrompt?.systemPrompt;
+
+  const cacheKey = useMemo(() => {
+    if (!selectedPrompt) return null;
+
+    const parameterKey = selectedPromptParameters
+      .map((parameter) => `${parameter.id}:${parameterValues[parameter.id] ?? parameter.defaultValue}`)
+      .join('|');
+    const modelKey = mode === 'live' ? selectedModelId : 'fixture';
+
+    return [mode, selectedPrompt.id, modelKey, parameterKey].filter(Boolean).join('::');
+  }, [mode, parameterValues, selectedModelId, selectedPrompt, selectedPromptParameters]);
+
+  const fixturePromptId =
+    mode === 'fixture'
+      ? (selectedParameterOptions.find((option) => option?.fixturePromptId)?.fixturePromptId ??
+        selectedPrompt?.id)
+      : selectedPrompt?.id;
+
+  useEffect(() => {
+    if (cacheKey && status !== 'streaming') restore(cacheKey);
+  }, [cacheKey, restore, status]);
 
   function handleSelect(id: string) {
-    setSelectedId(id);
     if (status === 'streaming') stop();
-    clear();
+    setSelectedId(id);
   }
 
   function handleStart() {
-    if (!selectedPrompt) return;
+    if (!selectedPrompt || !selectedSystemPrompt || !cacheKey || !fixturePromptId) return;
     setShowRaw(false);
-    start(selectedPrompt.id, mode, selectedPrompt.systemPrompt, selectedModelId);
+    start(cacheKey, fixturePromptId, mode, selectedSystemPrompt, selectedModelId);
   }
 
   function handleModeChange(next: StreamMode) {
     if (status === 'streaming') stop();
-    clear();
     setMode(next);
+  }
+
+  function handleClear() {
+    clear(cacheKey ?? undefined);
+  }
+
+  function handleParameterChange(parameterId: string, value: string) {
+    if (status === 'streaming') stop();
+    setParameterValues((current) => ({ ...current, [parameterId]: value }));
   }
 
   return (
@@ -55,6 +100,34 @@ export function DemoPage() {
             disabled={status === 'streaming'}
             onSelect={handleSelect}
           />
+
+          {selectedPromptParameters.length ? (
+            <div className="mt-4 space-y-3">
+              {selectedPromptParameters.map((parameter) => (
+                <div key={parameter.id} className="space-y-1.5">
+                  <label
+                    htmlFor={`prompt-param-${parameter.id}`}
+                    className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground"
+                  >
+                    {parameter.label}
+                  </label>
+                  <select
+                    id={`prompt-param-${parameter.id}`}
+                    value={parameterValues[parameter.id] ?? parameter.defaultValue}
+                    disabled={status === 'streaming'}
+                    onChange={(event) => handleParameterChange(parameter.id, event.target.value)}
+                    className="w-full rounded-md border border-border bg-background px-2 py-2 text-xs text-foreground shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
+                  >
+                    {parameter.options.map((option) => (
+                      <option key={option.value} value={option.value}>
+                        {option.label}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              ))}
+            </div>
+          ) : null}
         </div>
 
         <div className="px-4 py-3 border-t border-border">
@@ -68,7 +141,7 @@ export function DemoPage() {
             onModelChange={setSelectedModelId}
             onStart={handleStart}
             onStop={stop}
-            onClear={clear}
+            onClear={handleClear}
           />
           <p className="text-[10px] text-muted-foreground/60 mt-2 text-center">
             {mode === 'fixture'

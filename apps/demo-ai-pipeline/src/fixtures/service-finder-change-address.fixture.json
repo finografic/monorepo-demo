@@ -1,0 +1,10 @@
+{
+  "promptId": "service-finder-change-address",
+  "model": "qwen3.7-plus",
+  "content": "# AI Service Finder Response\n\nA customer says: \"I moved house and need to update my details.\" The assistant should guide them to a change-of-address service and warn when linked transport records may need confirmation.\n\n## Recommended Service\n\n| Recommendation | Reason |\n| --- | --- |\n| Change customer address | The user wants to update personal contact details. |\n| Authenticated profile update | Address changes require identity confirmation. |\n| Linked record check | Licences, registrations, and notices may use the address. |\n\n## Required Information\n\n| Item | Use |\n| --- | --- |\n| New residential address | Main profile update. |\n| Mailing address | Needed if different from residential address. |\n| Effective date | Determines when the change applies. |\n| Contact email | Used for confirmation. |\n\n## Confidence and Review Flags\n\n| Signal | Assessment |\n| --- | --- |\n| Intent confidence | High |\n| Human review | Required if identity cannot be verified |\n| Sensitive data | Address must not be sent to analytics or logs |\n\n## Context Graph\n\n```mermaid\ngraph LR\n    Intent[Customer intent] --> Service[Change address]\n    Service --> Identity[Identity check]\n    Service --> Profile[Customer profile]\n    Profile --> Licence[Licence record]\n    Profile --> Rego[Registration record]\n    Service --> Audit[Audit log]\n    Identity --> Review[Manual review]\n```\n\n## Safe Response Notes\n\n- Keep the response short and action-oriented.\n- Confirm whether mailing and residential addresses differ.\n- Explain that some records may update immediately while others need review.\n",
+  "metrics": {
+    "tokens": 310,
+    "timeToFirstToken": 286,
+    "totalTime": 2200
+  }
+}

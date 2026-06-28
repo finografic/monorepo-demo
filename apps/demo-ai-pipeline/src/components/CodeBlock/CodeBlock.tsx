@@ -12,24 +12,41 @@ export function CodeBlock({ code, language }: CodeBlockProps) {
   const [copied, setCopied] = useState(false);
   const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
   const copyTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const isPlainText = language === '' || language === 'text';
+  const isCompactToken = isPlainText && !code.includes('\n') && code.length <= 48;
 
   useEffect(() => {
+    if (isCompactToken) {
+      setHtml(null);
+      return;
+    }
+
     let cancelled = false;
     getHighlighter().then((hl) => {
-      if (cancelled) return;
+      if (cancelled) return undefined;
       setHtml(highlightCode(hl, code, language, isDark));
+      return undefined;
     });
     return () => {
       cancelled = true;
     };
-  }, [code, language, isDark]);
+  }, [code, language, isDark, isCompactToken]);
 
   function handleCopy() {
     navigator.clipboard.writeText(code).then(() => {
       setCopied(true);
       if (copyTimerRef.current) clearTimeout(copyTimerRef.current);
       copyTimerRef.current = setTimeout(() => setCopied(false), 2000);
+      return undefined;
     });
+  }
+
+  if (isCompactToken) {
+    return (
+      <code className="inline-flex max-w-full rounded-md border border-border/70 bg-muted/60 px-2 py-1 font-mono text-[0.82rem] font-medium leading-none text-foreground/85">
+        {code}
+      </code>
+    );
   }
 
   return (

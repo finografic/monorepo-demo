@@ -1,0 +1,10 @@
+{
+  "promptId": "service-finder-fine-payment",
+  "model": "qwen3.7-plus",
+  "content": "# AI Service Finder Response\n\nA customer says: \"I received a transport fine and want to know what to do next.\" The assistant should route them to payment or review pathways without making legal or enforcement determinations.\n\n## Recommended Service\n\n| Recommendation | Reason |\n| --- | --- |\n| Pay or manage infringement | The customer intent refers to a fine. |\n| Infringement lookup | Notice details are needed before options can be shown. |\n| Review pathway | Some customers may need dispute or hardship options. |\n\n## Required Information\n\n| Item | Use |\n| --- | --- |\n| Notice number | Finds the infringement record. |\n| Surname or organisation | Helps verify lookup. |\n| Due date | Determines urgency and available actions. |\n| Contact details | Used for receipt or review updates. |\n\n## Confidence and Review Flags\n\n| Signal | Assessment |\n| --- | --- |\n| Intent confidence | Medium-high |\n| Human review | Required for dispute advice |\n| Sensitive data | Avoid showing full offence details until verified |\n\n## Context Graph\n\n```mermaid\ngraph LR\n    Intent[Customer intent] --> Service[Fine management]\n    Service --> Notice[Notice lookup]\n    Notice --> Pay[Payment option]\n    Notice --> Review[Review option]\n    Notice --> Support[Support pathway]\n    Pay --> Receipt[Receipt]\n    Review --> Human[Human review]\n```\n\n## Safe Response Notes\n\n- Do not state whether the fine is valid.\n- Offer payment, review, and support paths neutrally.\n- Make payment status and receipt handling explicit.\n",
+  "metrics": {
+    "tokens": 296,
+    "timeToFirstToken": 282,
+    "totalTime": 2100
+  }
+}
