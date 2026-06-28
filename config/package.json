@@ -7,22 +7,22 @@
   "types": "./src/index.ts",
   "exports": {
     ".": {
-      "import": "./src/index.ts",
-      "types": "./src/index.ts"
+      "types": "./src/index.ts",
+      "import": "./src/index.ts"
     },
     "./env": {
-      "import": "./src/env.ts",
-      "types": "./src/env.ts"
+      "types": "./src/env.ts",
+      "import": "./src/env.ts"
     },
     "./paths": {
-      "import": "./src/paths.ts",
-      "types": "./src/paths.ts"
+      "types": "./src/paths.ts",
+      "import": "./src/paths.ts"
     }
   },
   "scripts": {
-    "typecheck": "tsc --noEmit",
+    "clean": "rm -rf dist",
     "lint": "oxlint -c ../oxlint.config.ts",
-    "clean": "rm -rf dist"
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "dotenv": "^16.5.0",
@@ -30,7 +30,7 @@
   },
   "devDependencies": {
     "@finografic/project-scripts": "^1.5.4",
-    "@types/node": "^24.0.0",
+    "@types/node": "^24.12.0",
     "typescript": "^5.9.3"
   }
 }

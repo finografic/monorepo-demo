@@ -5,14 +5,14 @@
   "type": "module",
   "scripts": {
     "---------- DEV_AND_BUILD": "---------------------------------------------",
-    "dev": "vite",
-    "build": "tsc --project tsconfig.json && vite build",
-    "start": "vite preview",
     "·········· CLEAN": "·····················································",
-    "clean": "pnpm --package=@finografic/project-scripts dlx purge-builds --detach",
     "·········· LINTING": "···················································",
-    "typecheck": "tsc --noEmit",
-    "lint": "oxlint -c oxlint.config.ts"
+    "build": "tsc --project tsconfig.json && vite build",
+    "clean": "pnpm --package=@finografic/project-scripts dlx purge-builds --detach",
+    "dev": "vite",
+    "lint": "oxlint -c oxlint.config.ts",
+    "start": "vite preview",
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "@tanstack/react-query": "^5.101.1",
@@ -28,12 +28,12 @@
   },
   "devDependencies": {
     "@tailwindcss/vite": "^4.3.0",
-    "@types/node": "^24.0.0",
+    "@types/node": "^24.12.0",
     "@types/react": "^19.2.2",
     "@types/react-dom": "^19.2.2",
     "@vitejs/plugin-react": "^6.0.3",
-    "typescript": "^5.9.3",
     "tailwindcss": "^4.3.0",
+    "typescript": "^5.9.3",
     "vite": "^8.1.0",
     "vitest": "^4.0.18"
   }
