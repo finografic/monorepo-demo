@@ -39,9 +39,10 @@ Set these repository variables when live API features should work from Pages:
 | Variable                  | Value                                                                          |
 | ------------------------- | ------------------------------------------------------------------------------ |
 | `DEMO_API_BASE_URL`       | Hosted Hono API origin, for example `https://monorepo-demo-api.up.railway.app` |
-| `DEMO_XSCAN_API_BASE_URL` | Hosted xscan API origin, if xscan is deployed separately                       |
+| `DEMO_XSCAN_API_BASE_URL` | Optional hosted xscan API origin, if xscan is deployed separately              |
 
-If both live demos use the same Hono service, use the same origin for both values.
+The root login app and all demo auth guards use `DEMO_API_BASE_URL` for Auth.js session checks. If xscan is served by
+the same Hono service, leave `DEMO_XSCAN_API_BASE_URL` unset so the workflow falls back to `DEMO_API_BASE_URL`.
 
 ## Railway API
 
@@ -92,6 +93,9 @@ For local development, defaults stay browser-friendly:
 ## Protection Boundary
 
 Frontend code on GitHub Pages is public. Do not rely on static UI checks to protect paid APIs.
+
+The demo apps include a client-side session guard so unauthenticated visitors are redirected to `/login` with the
+attempted demo URL preserved. This improves the portfolio UX, but it does not make static JavaScript private.
 
 Protect these on the Node side:
 

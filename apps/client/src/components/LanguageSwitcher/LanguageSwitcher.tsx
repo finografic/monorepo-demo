@@ -19,7 +19,7 @@ export function LanguageSwitcher(): React.JSX.Element {
   };
 
   return (
-    <div className="flex items-center gap-1">
+    <div className="flex items-center gap-2">
       {SUPPORTED_LANGUAGES.map((lng) => (
         <Button
           key={lng}
@@ -29,7 +29,7 @@ export function LanguageSwitcher(): React.JSX.Element {
           aria-label={`Switch to ${lng}`}
           aria-pressed={current === lng}
           onClick={() => handleChange(lng)}
-          className="px-2 text-xs tracking-wide"
+          className="px-3 text-xs tracking-wide"
         >
           {LABELS[lng]}
         </Button>

@@ -31,7 +31,7 @@ export function StreamingControls({
 
   const modeLabels: Record<StreamMode, string> = {
     fixture: 'Fixture',
-    live: 'Live API',
+    live: 'Live LLM API',
   };
 
   return (

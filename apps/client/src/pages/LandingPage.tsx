@@ -39,7 +39,7 @@ const DEMOS = [
     id: 'ai-pipeline',
     title: 'AI Markdown Pipeline',
     description:
-      'LLM-powered markdown workspace with live streaming, fixture replay, Mermaid diagrams, Shiki code highlighting, and RAG-style service guidance.',
+      'LLM-powered markdown generation using public Queensland TMR data, with live streaming, fixture replay, Mermaid diagrams, Shiki code highlighting, and RAG-style service guidance.',
     tags: ['LLM UI', 'Streaming SSE', 'Mermaid', 'Shiki'],
     url: demoUrl('demo-ai-pipeline', 'http://localhost:3001', import.meta.env['VITE_DEMO_AI_PIPELINE_URL']),
   },
@@ -47,8 +47,8 @@ const DEMOS = [
     id: 'datavis',
     title: 'Transport Data Dashboard',
     description:
-      'Accessible Queensland transport dashboard with interactive charts, keyboard-friendly views, source links, and live Open Data catalogue integration.',
-    tags: ['Data viz', 'Recharts', 'D3', 'WCAG AA'],
+      'Accessible Queensland TMR dashboard with interactive charts, keyboard-friendly views, source links, and live Open Data catalogue integration.',
+    tags: ['Data visualisation', 'Recharts', 'D3', 'WCAG AA'],
     url: demoUrl('demo-datavis', 'http://localhost:3002', import.meta.env['VITE_DEMO_DATAVIS_URL']),
   },
   {
@@ -93,7 +93,8 @@ const FEATURES = [
     titleKey: 'app.features.stack.title',
     titleDefault: 'Modern Stack',
     descKey: 'app.features.stack.desc',
-    descDefault: 'Hono + Drizzle ORM on the server. Vite 8 + React 19 + React Router v7 on the client.',
+    descDefault:
+      'Hono + Drizzle ORM server. Vite 8, React 19, React Router v7, Tanstack Query + Hono RPC client.',
   },
 ];
 
@@ -104,7 +105,7 @@ export function LandingPage(): React.JSX.Element {
   return (
     <div className="mx-auto max-w-6xl px-4 py-12">
       <section className="mb-16 text-center">
-        <Badge className="mb-4">{t('app.badge', 'Open-source starter')}</Badge>
+        <Badge className="mb-4 px-3 py-1">{t('app.badge', 'Open-source starter')}</Badge>
 
         <h1 className="text-4xl font-bold tracking-tight text-foreground">
           {t('app.title', 'monorepo-demo')}
@@ -116,19 +117,19 @@ export function LandingPage(): React.JSX.Element {
 
         <div className="mt-8 flex flex-wrap justify-center gap-3">
           {isAuthenticated && role === 'admin' ? (
-            <Button asChild>
+            <Button asChild className="min-h-11 px-5 text-sm font-semibold">
               <Link to="/admin">{t('ui.nav.adminPanel', 'Admin Panel')}</Link>
             </Button>
           ) : isAuthenticated ? (
-            <Button asChild>
+            <Button asChild className="min-h-11 px-5 text-sm font-semibold">
               <Link to="/dashboard">{t('ui.nav.dashboard', 'Go to Dashboard')}</Link>
             </Button>
           ) : (
             <>
-              <Button asChild>
+              <Button asChild className="min-h-11 px-5 text-sm font-semibold">
                 <Link to="/login">{t('ui.buttons.signIn', 'Sign In')}</Link>
               </Button>
-              <Button asChild variant="outline">
+              <Button asChild variant="outline" className="min-h-11 px-5 text-sm font-semibold">
                 <a href={GITHUB_URL} target="_blank" rel="noopener noreferrer">
                   {t('ui.buttons.viewSource', 'View on GitHub')}
                 </a>
@@ -148,7 +149,7 @@ export function LandingPage(): React.JSX.Element {
           {DEMOS.map((demo) => (
             <Card key={demo.id} className="flex flex-col transition-shadow border-2 hover:shadow-md">
               <CardContent className="flex flex-1 flex-col gap-3 p-5">
-                <p className="font-semibold leading-snug text-foreground">{demo.title}</p>
+                <p className="text-base font-semibold leading-snug text-foreground">{demo.title}</p>
 
                 <p className="flex-1 text-sm leading-snug text-muted-foreground">{demo.description}</p>
 
@@ -163,7 +164,7 @@ export function LandingPage(): React.JSX.Element {
                   ))}
                 </div>
 
-                <Button asChild size="sm" className="mt-2">
+                <Button asChild className="mt-2 min-h-11 px-5 text-sm font-semibold">
                   <a href={demo.url}>Open demo</a>
                 </Button>
               </CardContent>
@@ -180,9 +181,9 @@ export function LandingPage(): React.JSX.Element {
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           {FEATURES.map((feature) => (
             <Card key={feature.key} className="border-2">
-              <CardContent className="flex items-start gap-4 p-5">
+              <CardContent className="flex items-center gap-4 px-5 py-3">
                 <div
-                  className="flex h-10 w-10 shrink-0 items-center justify-center rounded-md bg-primary/10 text-2xl"
+                  className="flex w-12 shrink-0 items-center justify-center text-4xl leading-none"
                   aria-hidden="true"
                 >
                   {feature.icon}

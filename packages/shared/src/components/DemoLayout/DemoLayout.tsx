@@ -47,8 +47,6 @@ const NAV_ITEMS = [
   { label: 'Demo 3', href: appUrl('demo-xscan/', 'http://localhost:3003') },
 ] as const;
 
-const SIGN_IN_URL = appUrl('login', 'http://localhost:3000/login');
-
 export function DemoLayout({
   header,
   footer,
@@ -67,7 +65,7 @@ export function DemoLayout({
             ) : null}
           </div>
 
-          <div className="flex w-2/3 items-center justify-end gap-4">
+          <div className="flex w-2/3 items-center justify-end">
             <NavigationMenu viewport={false} className="max-w-none flex-none justify-end">
               <NavigationMenuList className="justify-end gap-4">
                 {NAV_ITEMS.map((item) => (
@@ -82,15 +80,6 @@ export function DemoLayout({
                 ))}
               </NavigationMenuList>
             </NavigationMenu>
-
-            <div className="flex items-center border-l border-primary-foreground/25 pl-4">
-              <a
-                href={SIGN_IN_URL}
-                className="rounded-md px-3 py-2 text-sm font-medium text-primary-foreground underline-offset-4 hover:bg-primary-foreground/15 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-foreground"
-              >
-                Sign in
-              </a>
-            </div>
           </div>
         </div>
       </header>

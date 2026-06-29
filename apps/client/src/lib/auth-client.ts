@@ -1,4 +1,6 @@
-const AUTH_BASE = '/api/auth';
+import { apiBaseUrl } from './api-base-url';
+
+const AUTH_BASE = `${apiBaseUrl()}/api/auth`;
 
 let csrfCache: { token: string; expiresAt: number } | null = null;
 const CSRF_TTL_MS = 30_000;

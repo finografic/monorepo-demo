@@ -1,20 +1,48 @@
-import { Alert, AlertDescription } from '@workspace/ui/components/alert';
+import { Alert, AlertDescription, AlertTitle } from '@workspace/ui/components/alert';
 import { Button } from '@workspace/ui/components/button';
 import { Card, CardContent } from '@workspace/ui/components/card';
 import { Input } from '@workspace/ui/components/input';
 import { Label } from '@workspace/ui/components/label';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Navigate, useNavigate } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 
 import { useAuth } from '../context/AuthContext';
 
 type Mode = 'signin' | 'signup';
 
+function isSafeRedirectUrl(rawRedirectTo: string | null): string {
+  if (typeof window === 'undefined') {
+    return '/';
+  }
+
+  const fallbackUrl = new URL(import.meta.env.BASE_URL, window.location.origin);
+  if (!rawRedirectTo) {
+    return fallbackUrl.href;
+  }
+
+  try {
+    const redirectUrl = new URL(rawRedirectTo, window.location.href);
+    const localDemoPorts = new Set(['3000', '3001', '3002', '3003']);
+    const isLocalDemo =
+      ['localhost', '127.0.0.1', '::1'].includes(redirectUrl.hostname) &&
+      localDemoPorts.has(redirectUrl.port);
+
+    if (redirectUrl.origin === window.location.origin || isLocalDemo) {
+      return redirectUrl.href;
+    }
+  } catch {
+    return fallbackUrl.href;
+  }
+
+  return fallbackUrl.href;
+}
+
 export function LoginPage(): React.JSX.Element {
   const { t } = useTranslation();
   const { signIn, signUp, isAuthenticated } = useAuth();
-  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const redirectTo = isSafeRedirectUrl(searchParams.get('redirectTo'));
 
   const [mode, setMode] = useState<Mode>('signin');
   const [email, setEmail] = useState('');
@@ -23,9 +51,11 @@ export function LoginPage(): React.JSX.Element {
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
-  if (isAuthenticated) {
-    return <Navigate to="/" replace />;
-  }
+  useEffect(() => {
+    if (isAuthenticated) {
+      window.location.replace(redirectTo);
+    }
+  }, [isAuthenticated, redirectTo]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -39,7 +69,7 @@ export function LoginPage(): React.JSX.Element {
           setError(result.error);
           return;
         }
-        navigate('/');
+        window.location.assign(redirectTo);
       } else {
         const result = await signUp(email, password, name);
         if (result.error) {
@@ -52,7 +82,7 @@ export function LoginPage(): React.JSX.Element {
           setMode('signin');
           return;
         }
-        navigate('/');
+        window.location.assign(redirectTo);
       }
     } finally {
       setIsLoading(false);
@@ -63,7 +93,7 @@ export function LoginPage(): React.JSX.Element {
     <div className="flex min-h-dvh items-center justify-center bg-background p-4">
       <div className="w-full max-w-sm">
         <div className="mb-8 text-center">
-          <h1 className="text-2xl font-bold text-foreground">{t('app.title')}</h1>
+          <h1 className="text-2xl font-bold text-foreground">{t('app.title', '')}</h1>
           <p className="mt-1 text-sm text-muted-foreground">
             {mode === 'signin'
               ? t('ui.common.signIn', 'Sign in to your account')
@@ -129,6 +159,17 @@ export function LoginPage(): React.JSX.Element {
                     : t('ui.buttons.signUp', 'Create Account')}
               </Button>
             </form>
+
+            {mode === 'signin' ? (
+              <Alert className="mt-4 p-3 text-sm border-emerald-200 bg-emerald-200 text-emerald-800">
+                <AlertTitle>Demo account</AlertTitle>
+                <AlertDescription className="text-emerald-700">
+                  <span className="font-mono">user@example.com</span>
+                  <br />
+                  <span className="font-mono">user1234</span>
+                </AlertDescription>
+              </Alert>
+            ) : null}
 
             <div className="mt-4 text-center text-sm text-muted-foreground">
               {mode === 'signin'

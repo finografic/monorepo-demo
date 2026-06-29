@@ -58,7 +58,7 @@ export function Layout(): React.JSX.Element {
           </nav>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-4">
           <LanguageSwitcher />
           {isAuthenticated ? (
             <>
@@ -71,7 +71,7 @@ export function Layout(): React.JSX.Element {
               </Button>
             </>
           ) : (
-            <Button asChild size="sm">
+            <Button asChild size="sm" className="px-4">
               <Link to="/login">{t('ui.buttons.signIn', 'Sign in')}</Link>
             </Button>
           )}

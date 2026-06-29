@@ -4,6 +4,7 @@ import HttpBackend from 'i18next-http-backend';
 import { initReactI18next } from 'react-i18next';
 import type { SupportedLanguage } from './i18n.constants';
 
+import { apiBaseUrl } from '../lib/api-base-url';
 import { DEFAULT_LANGUAGE, I18N_NAMESPACE, LOCALE_MAPPING, SUPPORTED_LANGUAGES } from './i18n.constants';
 
 void i18n
@@ -15,7 +16,7 @@ void i18n
     defaultNS: I18N_NAMESPACE,
 
     backend: {
-      loadPath: '/api/i18n/translations?lng={{lng}}',
+      loadPath: `${apiBaseUrl()}/api/i18n/translations?lng={{lng}}`,
       requestOptions: import.meta.env.DEV ? { cache: 'no-cache' } : { cache: 'default' },
     },
 

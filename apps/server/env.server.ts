@@ -23,7 +23,16 @@ const ServerEnvSchema = v.pipe(
     const cookieSecure = raw.AUTH_COOKIE_SECURE
       ? raw.AUTH_COOKIE_SECURE === 'true'
       : envShared.NODE_ENV === 'production';
-    const corsOrigins = (raw.CORS_ORIGINS ?? envShared.CLIENT_URL)
+    const defaultCorsOrigins =
+      envShared.NODE_ENV === 'production'
+        ? envShared.CLIENT_URL
+        : [
+            envShared.CLIENT_URL,
+            'http://localhost:3001',
+            'http://localhost:3002',
+            'http://localhost:3003',
+          ].join(',');
+    const corsOrigins = (raw.CORS_ORIGINS ?? defaultCorsOrigins)
       .split(',')
       .map((origin) => origin.trim())
       .filter(Boolean);
