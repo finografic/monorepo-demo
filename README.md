@@ -8,7 +8,7 @@ accessible UI, protected routes, streaming AI output, transport data visualisati
 production-minded API/auth boundaries.
 
 The static demo apps are designed for GitHub Pages, while authenticated API features run through a Node service such
-as Railway.
+as Render.
 
 ---
 

@@ -13,15 +13,15 @@ export async function seed() {
 
   const usersToCreate = [
     {
-      email: 'admin@example.com',
-      password: 'admin1234',
+      email: 'admin@test.com',
+      password: 'test1234',
       name: 'Admin User',
       role: 'admin' as const,
     },
     {
-      email: 'user@example.com',
-      password: 'user1234',
-      name: 'Demo User',
+      email: 'guest@test.com',
+      password: 'test1234',
+      name: 'Guest User',
       role: 'user' as const,
     },
   ];

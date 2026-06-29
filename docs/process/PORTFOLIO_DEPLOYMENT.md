@@ -7,7 +7,7 @@
 Use a mixed deployment:
 
 - GitHub Pages serves the static Vite apps.
-- Railway serves the Hono Node API.
+- Render serves the Hono Node API.
 - Server-side auth and rate limiting protect paid or limited API paths.
 
 Static Pages apps:
@@ -38,13 +38,13 @@ Set these repository variables when live API features should work from Pages:
 
 | Variable                  | Value                                                                          |
 | ------------------------- | ------------------------------------------------------------------------------ |
-| `DEMO_API_BASE_URL`       | Hosted Hono API origin, for example `https://monorepo-demo-api.up.railway.app` |
+| `DEMO_API_BASE_URL`       | Hosted Hono API origin, for example `https://monorepo-demo-api.onrender.com`   |
 | `DEMO_XSCAN_API_BASE_URL` | Optional hosted xscan API origin, if xscan is deployed separately              |
 
 The root login app and all demo auth guards use `DEMO_API_BASE_URL` for Auth.js session checks. If xscan is served by
 the same Hono service, leave `DEMO_XSCAN_API_BASE_URL` unset so the workflow falls back to `DEMO_API_BASE_URL`.
 
-## Railway API
+## Render API
 
 Deploy `apps/server` as the Node service. Required runtime variables:
 
@@ -52,11 +52,12 @@ Deploy `apps/server` as the Node service. Required runtime variables:
 | -------------------------------------------- | ---------------------------------------------------------------------------------- |
 | `NODE_ENV`                                   | `production`                                                                       |
 | `AUTH_SECRET`                                | Strong random string, at least 16 characters                                       |
-| `AUTH_URL`                                   | Public API origin, for example `https://monorepo-demo-api.up.railway.app/api/auth` |
+| `AUTH_URL`                                   | Public API origin, for example `https://monorepo-demo-api.onrender.com/api/auth`   |
 | `CORS_ORIGINS`                               | Comma-separated browser origins allowed to send credentials                        |
-| `AUTH_COOKIE_SAME_SITE`                      | `none` for GitHub Pages to Railway auth cookies                                    |
+| `AUTH_COOKIE_SAME_SITE`                      | `none` for GitHub Pages to Render auth cookies                                     |
 | `AUTH_COOKIE_SECURE`                         | `true` for HTTPS deployments                                                       |
-| `DB_PATH`                                    | Persistent SQLite path, if using Railway volume storage                            |
+| `DB_NAME`                                    | `monorepo-demo.sqlite.db`                                                          |
+| `DB_PATH`                                    | Optional persistent SQLite path, if using a Render disk                            |
 | `OPENAI_API_KEY` or compatible provider vars | Only if AI Pipeline live mode is enabled                                           |
 
 Recommended `CORS_ORIGINS` for the published Pages site:
@@ -73,7 +74,7 @@ https://finografic.github.io,http://localhost:3000,http://localhost:3001,http://
 
 ## Cross-Origin Auth
 
-GitHub Pages and Railway are different sites. Credentialed requests require all of these:
+GitHub Pages and Render are different sites. Credentialed requests require all of these:
 
 - Server CORS must allow the exact Pages origin.
 - Server CORS must set `Access-Control-Allow-Credentials: true`.

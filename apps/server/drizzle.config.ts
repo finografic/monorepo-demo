@@ -6,7 +6,7 @@ export default defineConfig({
   out: '../../data/migrations',
   dialect: 'sqlite',
   dbCredentials: {
-    url: '../../data/development.sqlite.db',
+    url: '../../data/monorepo-demo.sqlite.db',
   },
   verbose: true,
   strict: true,

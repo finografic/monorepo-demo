@@ -151,7 +151,7 @@ export function LoginPage(): React.JSX.Element {
                 </Alert>
               ) : null}
 
-              <Button type="submit" disabled={isLoading} className="w-full">
+              <Button type="submit" disabled={isLoading} className="min-h-11 w-full px-5 text-sm font-semibold">
                 {isLoading
                   ? t('ui.common.loading', 'Loading...')
                   : mode === 'signin'
@@ -164,9 +164,9 @@ export function LoginPage(): React.JSX.Element {
               <Alert className="mt-4 p-3 text-sm border-emerald-200 bg-emerald-200 text-emerald-800">
                 <AlertTitle>Demo account</AlertTitle>
                 <AlertDescription className="text-emerald-700">
-                  <span className="font-mono">user@example.com</span>
+                  <span className="font-mono">guest@test.com</span>
                   <br />
-                  <span className="font-mono">user1234</span>
+                  <span className="font-mono">test1234</span>
                 </AlertDescription>
               </Alert>
             ) : null}

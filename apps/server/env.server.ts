@@ -5,7 +5,7 @@ import * as v from 'valibot';
 
 const ServerEnvSchema = v.pipe(
   v.object({
-    DB_NAME: v.optional(v.string(), 'development.sqlite.db'),
+    DB_NAME: v.optional(v.string(), 'monorepo-demo.sqlite.db'),
     AUTH_SECRET: v.pipe(v.string(), v.minLength(16)),
     AUTH_URL: v.optional(v.string()),
     AUTH_COOKIE_PREFIX: v.optional(v.string(), 'monorepo-demo'),
