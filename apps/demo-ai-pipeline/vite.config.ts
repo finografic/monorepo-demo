@@ -6,8 +6,11 @@ import { defineConfig, loadEnv } from 'vite';
 export default defineConfig(({ mode }) => {
   const rootEnv = loadEnv(mode, resolve(__dirname, '../..'), '');
   const apiPort = rootEnv['API_PORT'] ?? '4000';
+  const basePath = process.env['VITE_BASE_PATH'] ?? rootEnv['VITE_BASE_PATH'] ?? '/';
 
   return {
+    base: basePath,
+
     plugins: [react(), tailwindcss()],
 
     resolve: {

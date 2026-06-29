@@ -7,6 +7,12 @@ interface XscanTerminalProps {
   repoId: string;
 }
 
+const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL ?? '').replace(/\/$/, '');
+
+function apiUrl(path: string): string {
+  return `${API_BASE_URL}${path}`;
+}
+
 export function XscanTerminal({ repoId }: XscanTerminalProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const terminalRef = useRef<Terminal | null>(null);
@@ -63,7 +69,7 @@ export function XscanTerminal({ repoId }: XscanTerminalProps) {
 
     void (async () => {
       try {
-        const res = await fetch(`/api/scan?repoId=${encodeURIComponent(repoId)}`, {
+        const res = await fetch(apiUrl(`/api/scan?repoId=${encodeURIComponent(repoId)}`), {
           signal: controller.signal,
         });
         if (!res.ok || !res.body) {

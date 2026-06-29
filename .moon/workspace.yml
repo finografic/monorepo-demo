@@ -11,7 +11,6 @@ projects:
   demo-ai-pipeline: 'apps/demo-ai-pipeline'
   demo-datavis: 'apps/demo-datavis'
   demo-xscan: 'apps/demo-xscan'
-  demo-ecosystem: 'apps/demo-ecosystem'
 
 # Configures the version control system (VCS). Also known as
 # source code management (SCM).

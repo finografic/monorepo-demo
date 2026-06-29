@@ -28,6 +28,7 @@
     "dev:db:reset": "run-s db:reset",
     "start": "moon run client:start server:start",
     "build": "moon run :build",
+    "build:pages": "moon run demo-ai-pipeline:build-pages demo-datavis:build-pages demo-xscan:build-pages",
     "test": "moon run :test",
     "·········· LINTING": "···················································",
     "lint": "moon run :lint",

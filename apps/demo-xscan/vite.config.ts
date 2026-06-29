@@ -6,6 +6,8 @@ import { defineConfig } from 'vite';
 import { scanApiPlugin } from './server/scan-api-plugin.js';
 
 export default defineConfig({
+  base: process.env['VITE_BASE_PATH'] ?? '/',
+
   plugins: [react(), tailwindcss(), scanApiPlugin()],
 
   resolve: {

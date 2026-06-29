@@ -41,3 +41,32 @@ Browser (xterm.js)  ← SSE ←  Vite middleware /api/scan
                               ↓
                     spawn vendored xscan CLI
 ```
+
+## GitHub Pages Setup
+
+This app is deployed as a static Vite build under the shared repository Pages site:
+
+```text
+https://<owner>.github.io/<repo>/demo-xscan/
+```
+
+GitHub setup:
+
+1. Go to repository **Settings -> Pages**.
+2. Set **Source** to **GitHub Actions**.
+3. Run **Deploy Demo Pages** from the Actions tab, or push to `master`.
+4. Optional: set repository variable `DEMO_XSCAN_API_BASE_URL` to the hosted scan API origin.
+
+Local Pages-style build:
+
+```bash
+VITE_BASE_PATH=/monorepo-demo/demo-xscan/ \
+VITE_API_BASE_URL=https://your-xscan-api.example.com \
+corepack pnpm --filter @workspace/demo-xscan build:pages
+```
+
+Notes:
+
+- `VITE_BASE_PATH` lets Vite emit asset URLs for the GitHub Pages subdirectory.
+- `VITE_API_BASE_URL` is optional for local dev, where Vite middleware serves `/api/scan`.
+- On GitHub Pages, live scans require a separately hosted Node service that exposes `/api/scan`.

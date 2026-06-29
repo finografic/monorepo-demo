@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "build": "tsc --project tsconfig.json && vite build",
+    "build:pages": "pnpm build",
     "clean": "pnpm --package=@finografic/project-scripts dlx purge-builds --detach",
     "dev": "vite",
     "lint": "oxlint -c oxlint.config.ts",

@@ -22,8 +22,8 @@ Plan keeps `turbo.json` during migration. Moon's `moon ci` is used in GitHub Act
 
 - `client`: 3000
 - `demo-ai-pipeline`: 3001
-- `demo-ecosystem`: 3002 (placeholder)
-- `demo-datavis`: 3003 (placeholder)
+- `demo-datavis`: 3002
+- `demo-xscan`: 3003
 - `server`: 4000
 
 All demos proxy `/api` → 4000. Confirm no conflicts with other local services.
@@ -65,6 +65,6 @@ Run `moon init` carefully. Moon will prompt about existing task runner — choos
 ## Post-Demo Opportunities
 
 - Add BPMN visualisation (nice-to-have from JD) as a prompt result type using `bpmn-js` or Mermaid's BPMN support
-- Add knowledge graph tab to `demo-ecosystem` that specifically surfaces `@finografic` package relationships — directly hits the "knowledge graphs, RAG/GenAI" nice-to-have
+- Keep the AI Service Finder knowledge graph/RAG framing visible in `demo-ai-pipeline` — directly hits the "knowledge graphs, RAG/GenAI" nice-to-have
 - Socket.dev integration badge in README (supply-chain security tool from JD nice-to-have list)
 - Lighthouse CI check in GitHub Actions for accessibility regression detection

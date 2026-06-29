@@ -11,3 +11,35 @@ tasks:
 
   build:
     command: 'pnpm build'
+    outputs:
+      - 'dist'
+    deps:
+      - '~:typecheck'
+
+  build-pages:
+    command: 'pnpm build:pages'
+    outputs:
+      - 'dist'
+    deps:
+      - '~:typecheck'
+
+  typecheck:
+    command: 'pnpm typecheck'
+
+  lint:
+    command: 'pnpm lint'
+
+  lint-fix:
+    command: 'pnpm lint:fix'
+    options:
+      cache: false
+
+  test:
+    command: 'pnpm test'
+    outputs:
+      - 'coverage'
+
+  clean:
+    command: 'pnpm clean'
+    options:
+      cache: false

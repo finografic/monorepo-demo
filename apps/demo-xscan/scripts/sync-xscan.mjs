@@ -15,8 +15,22 @@ const defaultSourceRepo = resolve(demoRoot, '../../../@finografic-deps-xscan');
 const sourceRepo = process.env.XSCAN_REPO ?? defaultSourceRepo;
 const sourceDist = join(sourceRepo, 'dist');
 const targetDist = join(vendorRoot, 'dist');
+const vendorPackagePath = join(vendorRoot, 'package.json');
 
 if (!existsSync(sourceDist)) {
+  if (existsSync(targetDist) && existsSync(vendorPackagePath)) {
+    console.warn(`[sync-xscan] Source dist not found: ${sourceDist}`);
+    console.warn('[sync-xscan] Using committed vendor/xscan/dist instead.');
+    console.log('[sync-xscan] Installing runtime dependencies in vendor/xscan…');
+    execSync('pnpm install --prod --ignore-workspace', {
+      cwd: vendorRoot,
+      env: { ...process.env, CI: 'true' },
+      stdio: 'inherit',
+    });
+    console.log('[sync-xscan] Done');
+    process.exit(0);
+  }
+
   console.error(`[sync-xscan] Source dist not found: ${sourceDist}`);
   console.error('[sync-xscan] Build deps-xscan first: cd @finografic-deps-xscan && pnpm build');
   process.exit(1);
@@ -42,6 +56,7 @@ console.log('[sync-xscan] Installing runtime dependencies in vendor/xscan…');
 
 execSync('pnpm install --prod --ignore-workspace', {
   cwd: vendorRoot,
+  env: { ...process.env, CI: 'true' },
   stdio: 'inherit',
 });
 

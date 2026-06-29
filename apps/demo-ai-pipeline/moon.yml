@@ -16,6 +16,13 @@ tasks:
     deps:
       - '~:typecheck'
 
+  build-pages:
+    command: 'pnpm build:pages'
+    outputs:
+      - 'dist'
+    deps:
+      - '~:typecheck'
+
   typecheck:
     command: 'pnpm typecheck'
 

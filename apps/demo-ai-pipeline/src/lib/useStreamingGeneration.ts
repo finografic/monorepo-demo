@@ -6,6 +6,12 @@ interface CachedGeneration {
   metrics: MetricsData | null;
 }
 
+const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL ?? '').replace(/\/$/, '');
+
+function apiUrl(path: string): string {
+  return `${API_BASE_URL}${path}`;
+}
+
 export interface UseStreamingGenerationReturn {
   status: GenerationStatus;
   buffer: string;
@@ -108,13 +114,13 @@ export function useStreamingGeneration(): UseStreamingGenerationReturn {
         try {
           const response =
             mode === 'live'
-              ? await fetch('/api/stream/live', {
+              ? await fetch(apiUrl('/api/stream/live'), {
                   method: 'POST',
                   signal: controller.signal,
                   headers: { 'Accept': 'text/event-stream', 'Content-Type': 'application/json' },
                   body: JSON.stringify({ promptId, systemPrompt, modelId }),
                 })
-              : await fetch(`/api/stream/fixture/${promptId}`, {
+              : await fetch(apiUrl(`/api/stream/fixture/${promptId}`), {
                   signal: controller.signal,
                   headers: { Accept: 'text/event-stream' },
                 });

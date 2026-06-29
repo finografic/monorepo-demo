@@ -31,12 +31,12 @@ Replace Turbo with Moon as the task runner. Add Proto for deterministic Node/pnp
 Scaffold the target monorepo shape. No code yet — just directories, stubs, and workspace wiring.
 
 - [x] Create `apps/demo-ai-pipeline/` with stub `package.json` (`@workspace/demo-ai-pipeline`)
-- [x] Create `apps/demo-ecosystem/` with stub `package.json` (`@workspace/demo-ecosystem`) — placeholder only
+- [x] Create `apps/demo-ecosystem/` with stub `package.json` (`@workspace/demo-ecosystem`) — placeholder only; later removed before publishing
 - [x] Create `apps/demo-datavis/` with stub `package.json` (`@workspace/demo-datavis`) — placeholder only
 - [x] Create `packages/shared/` with stub `package.json` (`@workspace/shared`) and `src/index.ts`
 - [x] Update `pnpm-workspace.yaml` — confirm `apps/*` and `packages/*` globs cover new paths (they already do)
 - [x] Run `pnpm install` — verify workspace links resolve
-- [x] Add `moon.yml` stubs for `demo-ai-pipeline`, `demo-ecosystem`, `demo-datavis`, `shared`
+- [x] Add `moon.yml` stubs for `demo-ai-pipeline`, `demo-ecosystem`, `demo-datavis`, `shared`; `demo-ecosystem` later removed
 - [x] Update `.moon/workspace.yml` — register all new projects
 - [x] Verify `moon query projects` lists all workspaces
 
@@ -234,7 +234,7 @@ Wire the existing `client` app into a portfolio landing page that navigates to t
 
 - [x] Update home page to include a "Demos" section with cards linking to each demo
 - [x] Demo card for `demo-ai-pipeline`: title, description, capability tags, link
-- [x] Placeholder cards for `demo-ecosystem` and `demo-datavis` (with "Coming soon" state)
+- [x] Placeholder cards for `demo-ecosystem` and `demo-datavis` (with "Coming soon" state); `demo-ecosystem` later removed
 - [x] Navigation header: logo/name, links to demos, GitHub link
 - [x] Update `moon.yml` for `client` — `dev` task starts both client and `demo-ai-pipeline` in parallel (or note to run separately)
 
@@ -268,8 +268,8 @@ At this point the demo is:
 
 ## Deferred (Post-Plan)
 
-- `apps/demo-ecosystem` — force-graph visualisation of @finografic npm packages
 - `apps/demo-datavis` — QLD transport data dashboard (D3 / Recharts)
+- `apps/demo-xscan` — browser terminal wrapper for xscan dependency/security scans
 - Deployment (Railway / Fly.io) for live demo hosting
 - Live LLM mode toggle in UI (requires deployed server with `ANTHROPIC_API_KEY`)
 - Ollama local provider integration

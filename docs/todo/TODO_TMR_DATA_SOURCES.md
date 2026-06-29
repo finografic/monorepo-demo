@@ -183,15 +183,6 @@ Possible views:
   - stale-data warnings
   - human review for transactional advice
 
-### `demo-ecosystem`
-
-- Less directly relevant.
-- Could optionally include a "data pipeline" node showing:
-  - CKAN source
-  - data ingest script
-  - normalized JSON
-  - React visualisation app
-
 ---
 
 ## Practical Mock-Data Strategy
