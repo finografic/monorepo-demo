@@ -65,7 +65,7 @@ export function DemoLayout({
             ) : null}
           </div>
 
-          <div className="flex w-2/3 items-center justify-end">
+          <div className="flex w-1/2 items-center justify-end">
             <NavigationMenu viewport={false} className="max-w-none flex-none justify-end">
               <NavigationMenuList className="justify-end gap-4">
                 {NAV_ITEMS.map((item) => (

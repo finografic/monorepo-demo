@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import type React from 'react';
+import { apiBaseUrl } from '../lib/api-base-url';
 
 interface HealthResponse {
   status: string;
@@ -11,8 +12,14 @@ export function DashboardPage(): React.JSX.Element {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    fetch('/api/health')
-      .then((res) => res.json())
+    fetch(`${apiBaseUrl()}/api/health`)
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error(`Health check failed: ${res.status} ${res.statusText}`);
+        }
+
+        return res.json();
+      })
       .then((data: HealthResponse) => setHealth(data))
       .catch((err: Error) => setError(err.message));
   }, []);
