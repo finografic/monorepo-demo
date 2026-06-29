@@ -48,6 +48,21 @@ the same Hono service, leave `DEMO_XSCAN_API_BASE_URL` unset so the workflow fal
 
 Deploy `apps/server` as the Node service. Required runtime variables:
 
+Build command:
+
+```sh
+corepack enable && pnpm install --frozen-lockfile && pnpm --filter @workspace/server build
+```
+
+Start command:
+
+```sh
+pnpm --filter @workspace/server start:render
+```
+
+The Render start command runs a non-destructive SQLite bootstrap before starting the API. It creates or updates the
+schema and seeds missing demo data without dropping existing runtime data.
+
 | Variable                                     | Notes                                                                            |
 | -------------------------------------------- | -------------------------------------------------------------------------------- |
 | `NODE_ENV`                                   | `production`                                                                     |
