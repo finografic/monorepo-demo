@@ -24,7 +24,7 @@ const chartData = TRAFFIC_CENSUS_DATA.map((row) => ({
 
 export function TrafficCensus() {
   return (
-    <div role="img" aria-labelledby={CHART_ID} className="w-full">
+    <div className="w-full">
       <h3 id={CHART_ID} className="sr-only">
         Horizontal bar chart: top 10 QLD state-declared roads by annual average daily traffic (AADT). M1
         Pacific Motorway at Coomera is highest at 84,200 vehicles per day.
@@ -35,7 +35,8 @@ export function TrafficCensus() {
           layout="vertical"
           data={chartData}
           margin={{ top: 8, right: 64, left: 8, bottom: 8 }}
-          aria-hidden="true"
+          tabIndex={0}
+          aria-labelledby={CHART_ID}
         >
           <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" horizontal={false} />
           <XAxis
@@ -52,9 +53,12 @@ export function TrafficCensus() {
           />
           <Tooltip
             contentStyle={TOOLTIP_STYLE}
-            formatter={(value: number, _name: string, props: { payload?: { heavyVehiclePct?: number } }) =>
-              `${(value * 1000).toLocaleString()} vehicles/day (${props.payload?.heavyVehiclePct ?? 0}% heavy)`
-            }
+            formatter={(value, _name, item) => {
+              const aadtK = typeof value === 'number' ? value : Number(value ?? 0);
+              const heavyVehiclePct =
+                (item.payload as { heavyVehiclePct?: number } | undefined)?.heavyVehiclePct ?? 0;
+              return `${(aadtK * 1000).toLocaleString()} vehicles/day (${heavyVehiclePct}% heavy)`;
+            }}
           />
           <Bar dataKey="aadtK" radius={BAR_RADIUS} isAnimationActive={false}>
             {chartData.map((row, i) => (

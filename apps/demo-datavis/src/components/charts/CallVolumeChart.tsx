@@ -160,7 +160,7 @@ export function CallVolumeChart() {
       </h3>
 
       <div ref={containerRef} className="w-full">
-        <svg ref={svgRef} className="block" />
+        <svg ref={svgRef} className="block" tabIndex={0} />
       </div>
 
       <table className="sr-only">

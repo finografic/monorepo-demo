@@ -13,7 +13,7 @@ const LEGEND_STYLE = { fontSize: 13, paddingBottom: 8 };
 
 export function WaitTimesChart() {
   return (
-    <div role="img" aria-labelledby={CHART_ID} className="w-full">
+    <div className="w-full">
       <h3 id={CHART_ID} className="sr-only">
         Grouped bar chart: average wait and serve times in minutes for 8 QLD transport service centres
       </h3>
@@ -22,7 +22,8 @@ export function WaitTimesChart() {
         <BarChart
           data={WAIT_TIMES_DATA}
           margin={{ top: 8, right: 24, left: 0, bottom: 80 }}
-          aria-hidden="true"
+          tabIndex={0}
+          aria-labelledby={CHART_ID}
         >
           <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
           <XAxis
@@ -43,7 +44,13 @@ export function WaitTimesChart() {
               style: { fontSize: 11, fill: 'var(--muted-foreground)' },
             }}
           />
-          <Tooltip contentStyle={TOOLTIP_STYLE} formatter={(value: number) => `${value.toFixed(1)} min`} />
+          <Tooltip
+            contentStyle={TOOLTIP_STYLE}
+            formatter={(value) => {
+              const minutes = typeof value === 'number' ? value : Number(value ?? 0);
+              return `${minutes.toFixed(1)} min`;
+            }}
+          />
           <Legend verticalAlign="top" wrapperStyle={LEGEND_STYLE} />
           <Bar
             dataKey="avgWaitMin"

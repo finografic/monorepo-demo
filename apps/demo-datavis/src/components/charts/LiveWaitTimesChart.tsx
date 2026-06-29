@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { CartesianGrid, ResponsiveContainer, Scatter, ScatterChart, Tooltip, XAxis, YAxis } from 'recharts';
-import type { TooltipProps } from 'recharts';
+import type { TooltipContentProps } from 'recharts';
 
 const RESOURCE_ID = '421312d3-dcc7-4d20-aa01-46acea49c347';
 const DATASTORE_URL = `https://www.data.qld.gov.au/api/3/action/datastore_search?resource_id=${RESOURCE_ID}&sort=_id+desc&limit=300`;
@@ -49,7 +49,7 @@ function shortName(raw: string): string {
   return raw.replace(' CSC', '').replace(' QGAP', '').replace(' Service Centre', '');
 }
 
-function ScatterTooltip({ active, payload }: TooltipProps<number, string>) {
+function ScatterTooltip({ active, payload }: TooltipContentProps) {
   if (!active || !payload?.length) return null;
   const d = payload[0]?.payload as CscRow | undefined;
   if (!d) return null;
@@ -128,7 +128,12 @@ export function LiveWaitTimesChart() {
   }, []);
 
   return (
-    <div role="region" aria-labelledby={CHART_ID} className="w-full">
+    <div
+      role="region"
+      aria-labelledby={CHART_ID}
+      className="w-full rounded-sm outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+      tabIndex={0}
+    >
       <div className="flex items-center gap-2 mb-4">
         <h3 id={CHART_ID} className="sr-only">
           Live scatter plot: QLD transport service centres plotted by average wait time (x-axis) versus number
@@ -199,7 +204,7 @@ export function LiveWaitTimesChart() {
                     style: { fontSize: 11, fill: 'var(--muted-foreground)' },
                   }}
                 />
-                <Tooltip content={<ScatterTooltip />} />
+                <Tooltip content={ScatterTooltip} />
                 <Scatter data={rows} shape={<ScatterDot />} isAnimationActive={false} />
               </ScatterChart>
             </ResponsiveContainer>

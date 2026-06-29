@@ -45,7 +45,12 @@ export function TrafficHeatmap() {
   }
 
   return (
-    <div role="img" aria-labelledby={CHART_ID} className="w-full relative">
+    <div
+      role="img"
+      aria-labelledby={CHART_ID}
+      className="w-full relative rounded-sm outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+      tabIndex={0}
+    >
       <h3 id={CHART_ID} className="sr-only">
         Heatmap: average traffic volumes by day of week (rows) and hour of day (columns). Darker blue
         indicates higher traffic volume. Peak periods are weekday mornings 7–9am and afternoons 4–6pm.

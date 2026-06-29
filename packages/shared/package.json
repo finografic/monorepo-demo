@@ -4,7 +4,8 @@
   "private": true,
   "type": "module",
   "exports": {
-    ".": "./src/index.ts"
+    ".": "./src/index.ts",
+    "./components/OptionCard": "./src/components/OptionCard/OptionCard.tsx"
   },
   "scripts": {
     "lint": "oxlint -c ../../oxlint.config.ts",
@@ -12,7 +13,7 @@
     "typecheck": "tsc --noEmit"
   },
   "peerDependencies": {
-    "react": "^19.0.0"
+    "react": "^19.2.0"
   },
   "devDependencies": {
     "@types/react": "^19.2.2",

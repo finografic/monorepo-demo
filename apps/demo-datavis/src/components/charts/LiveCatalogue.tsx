@@ -70,7 +70,12 @@ export function LiveCatalogue() {
   }, []);
 
   return (
-    <div role="region" aria-labelledby={CHART_ID} className="w-full">
+    <div
+      role="region"
+      aria-labelledby={CHART_ID}
+      className="w-full rounded-sm outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+      tabIndex={0}
+    >
       <div className="flex items-center gap-2 mb-4">
         <h3 id={CHART_ID} className="sr-only">
           Live dataset catalogue from Queensland Open Data CKAN API

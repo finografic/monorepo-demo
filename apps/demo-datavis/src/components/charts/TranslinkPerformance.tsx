@@ -28,7 +28,7 @@ const COMPLAINTS_DOMAIN: [number, number] = [80, 200];
 
 export function TranslinkPerformance() {
   return (
-    <div role="img" aria-labelledby={CHART_ID} className="w-full">
+    <div className="w-full">
       <h3 id={CHART_ID} className="sr-only">
         Dual-line chart showing Translink customer satisfaction percentage (left axis, rising from 84% to 89%)
         and monthly complaint count (right axis, falling from 178 to 114) over Jan–Dec 2025
@@ -38,7 +38,8 @@ export function TranslinkPerformance() {
         <LineChart
           data={TRANSLINK_DATA}
           margin={{ top: 8, right: 56, left: 0, bottom: 8 }}
-          aria-hidden="true"
+          tabIndex={0}
+          aria-labelledby={CHART_ID}
         >
           <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
           <XAxis dataKey="month" tick={{ fontSize: 12, fill: 'var(--muted-foreground)' }} />
@@ -58,7 +59,10 @@ export function TranslinkPerformance() {
           />
           <Tooltip
             contentStyle={TOOLTIP_STYLE}
-            formatter={(value: number, name: string) => (name === 'Satisfaction' ? `${value}%` : value)}
+            formatter={(value, name) => {
+              if (value == null) return '';
+              return name === 'Satisfaction' ? `${String(value)}%` : value;
+            }}
           />
           <Legend verticalAlign="top" wrapperStyle={LEGEND_STYLE} />
           <Line
