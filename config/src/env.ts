@@ -30,9 +30,11 @@ const EnvSchema = v.pipe(
   })),
 );
 
+const apiPort = process.env.PORT ?? process.env.API_PORT;
+
 const validated = v.parse(EnvSchema, {
   NODE_ENV: process.env.NODE_ENV,
-  API_PORT: process.env.API_PORT ? Number(process.env.API_PORT) : undefined,
+  API_PORT: apiPort ? Number(apiPort) : undefined,
   API_BASE_PATH: process.env.API_BASE_PATH,
   CLIENT_PORT: process.env.CLIENT_PORT ? Number(process.env.CLIENT_PORT) : undefined,
 });
