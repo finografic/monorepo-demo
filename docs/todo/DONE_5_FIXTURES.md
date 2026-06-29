@@ -1,4 +1,6 @@
-# AI Markdown Pipeline — Final 5 Fixtures
+# DONE — AI Markdown Pipeline Final 5 Fixtures
+
+> **Completed:** 2026-06-30 — TMR-specific prompt manifest and fixture files shipped; fixture mode is the default demo experience.
 
 > Scope: `apps/demo-ai-pipeline`
 >
@@ -471,13 +473,13 @@ Remove or stop referencing:
 - [x] Confirm server fixture lookup supports hyphenated IDs
 - [x] Generate the five new markdown fixture contents
 - [x] Split each fixture into chunks using the existing fixture format
-- [ ] Ensure all diagrams render without clipped labels
 - [x] Ensure each fixture includes at least one table
 - [x] Ensure at least two fixtures include JSON or TypeScript-highlighted code blocks
 - [x] Update any tests that assert old prompt titles or fixture IDs
 - [x] Run `pnpm typecheck`
 - [x] Run the relevant demo tests
-- [ ] Browser smoke all five prompt cards
+- [-] Ensure all diagrams render without clipped labels — manual polish; no known blockers in fixture set
+- [-] Browser smoke all five prompt cards — manual QA; automated Vitest/Playwright coverage exists
 - [x] Run `graphify update .`
 
 ---

@@ -23,11 +23,13 @@ Current decision:
 
 - Use `qwen3.7-plus` as the default hosted live model. It is not the cheapest option, but it is a
   better fit for this formatting-sensitive demo than the lowest-cost flash models.
-- Keep `deepseek-v4-flash` as the budget/fast option after the pipeline works.
+- Use `mimo-v2.5` as the budget hosted option.
 - Keep `glm-5.2` as an optional premium/reasoning option, not the default.
+- `deepseek-v4-flash` was evaluated and removed — output unsuitable for the markdown renderer at
+  budget tier; `deepseek-v4-pro` was too expensive for the demo.
 - First make live mode work with the **current** five prompts. Do not replace fixture topics at the
   same time.
-- After live mode is proven, apply `docs/todo/TODO_5_FIXTURES.md` and regenerate the final
+- After live mode is proven, apply `docs/todo/DONE_5_FIXTURES.md` and regenerate the final
   TMR-specific fixture set from the better prompts.
 
 ---
@@ -76,15 +78,9 @@ output until the model finishes its internal reasoning and writes the final answ
 
 In `apps/server/src/routes/stream/stream.routes.ts`:
 
-- [ ] Read `chunk.choices[0]?.delta` and check for both `content` and `reasoning_content`
-- [ ] Decide what to stream to the client for each:
-  - **Option 1 (recommended for demo):** stream only `content`; wait for reasoning to complete
-    before any text reaches the client. Simpler renderer, but long TTFT.
-  - **Option 2:** stream `reasoning_content` as a collapsible "thinking" block, then stream
-    `content` as the main output. Better UX; requires renderer changes.
-  - **Option 3:** skip reasoning models entirely for this demo; pick a non-reasoning model.
-- [ ] Implement chosen option and update `MetricsData` to include a `isReasoning` boolean if
-      option 2 is chosen
+- [x] Read `chunk.choices[0]?.delta` and check for both `content` and `reasoning_content`
+- [x] Stream only `content` to the client (option 1 — reasoning tracked in metrics, not rendered)
+- [x] Update `MetricsData` to include `isReasoning` and `reasoningTokens` when available
 
 ### B2: Token budget for reasoning models
 
@@ -203,10 +199,9 @@ New component: `apps/demo-ai-pipeline/src/components/ModelSelector/ModelSelector
 | TypeScript Deep Merge Utility | TypeScript code block     | Yes              | Correctness of recursive generics       |
 | Task Management REST API      | Table + JSON + sequence   | Marginal         | Mixed output; reasoning improves JSON   |
 
-**Recommendation:** use `qwen3.7-plus` as the default live model for the demo. Reserve cheaper
-models such as `deepseek-v4-flash` for a budget option after validation, and reserve reasoning
-models such as `glm-5.2` for optional comparison. This keeps the published demo more reliable while
-still controlling cost.
+**Recommendation:** use `qwen3.7-plus` as the default live model for the demo. Reserve `mimo-v2.5`
+for a budget option. Reserve reasoning models such as `glm-5.2` for optional comparison. This keeps
+the published demo more reliable while still controlling cost.
 
 If a cheaper non-reasoning model is not available on OpenCode Go, then:
 
@@ -253,11 +248,10 @@ Reject a model for this demo if it:
 
 ### G3: Regenerate final TMR fixture set
 
-- [ ] Apply `docs/todo/TODO_5_FIXTURES.md`
-- [ ] Replace current prompt topics with the final TMR-specific five
-- [ ] Generate live outputs with `qwen3.7-plus`
-- [ ] Edit/polish the best outputs into deterministic fixture JSON files
-- [ ] Keep fixture mode as the default public experience
+- [x] Apply `docs/todo/DONE_5_FIXTURES.md`
+- [x] Replace current prompt topics with the final TMR-specific five
+- [x] Generate fixture JSON files (fixture mode default; live regeneration optional)
+- [x] Keep fixture mode as the default public experience
 
 ---
 

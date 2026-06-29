@@ -1,4 +1,6 @@
-# Portfolio Demos — Full Execution Plan
+# DONE — Portfolio Demos Full Execution Plan
+
+> **Completed:** 2026-06-30 — AI pipeline, datavis, and xscan demos shipped; portfolio shell and GitHub Pages deploy wired.
 
 Target: convert this monorepo into a portfolio site with linked demos, built to directly address the TMR Frontend Developer role description.
 
@@ -266,10 +268,11 @@ At this point the demo is:
 
 ---
 
-## Deferred (Post-Plan)
+## Post-Plan — Also Completed
 
-- `apps/demo-datavis` — QLD transport data dashboard (D3 / Recharts)
-- `apps/demo-xscan` — browser terminal wrapper for xscan dependency/security scans
-- Deployment (Railway / Fly.io) for live demo hosting
-- Live LLM mode toggle in UI (requires deployed server with `ANTHROPIC_API_KEY`)
-- Ollama local provider integration
+- [x] `apps/demo-datavis` — QLD transport data dashboard (Recharts + D3 + live CKAN views)
+- [x] `apps/demo-xscan` — browser terminal wrapper for xscan dependency/security scans
+- [x] GitHub Pages deployment for client landing + all three demos (`.github/workflows/deploy-demo-pages.yml`)
+- [x] Live LLM mode toggle in AI pipeline UI (OpenCode Go via server-side provider)
+- [x] Shared `DemoLayout`, `DemoAuthGuard`, and portfolio cross-nav in `@workspace/shared`
+- [-] Ollama local provider integration — deferred

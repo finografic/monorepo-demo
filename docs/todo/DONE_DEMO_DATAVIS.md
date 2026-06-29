@@ -1,8 +1,10 @@
-# demo-datavis — QLD Transport Data Dashboard
+# DONE — demo-datavis QLD Transport Data Dashboard
+
+> **Completed:** 2026-06-30 — seven chart views (five mock + two live CKAN), shared demo shell, keyboard navigation, and entrance animations on static charts.
 
 > Portfolio demo for `apps/demo-datavis`.  
 > Presents QLD transport open data via interactive charts.  
-> Mock/static fixture data — not live API calls.
+> Mock/static fixture data for core views; two live CKAN API panels.
 
 ---
 
@@ -32,7 +34,7 @@ Accessibility first-class: `role="img"` wrappers, `aria-label`, sr-only data tab
 Mirror `apps/demo-ai-pipeline` exactly:
 
 ```
-┌──── Left sidebar (30rem) ────┬──── Main pane ───────────────┐
+┌───── Left sidebar (30rem) ────┬───────── Main pane ───────────┐
 │ Title + description           │ Chart title + source badge    │
 │ ─────────────────             │                               │
 │ [Chart card 1] ●              │ [Recharts / D3 chart]         │
@@ -93,13 +95,21 @@ Mirror `apps/demo-ai-pipeline` exactly:
 
 ### Phase 6 — Validate
 
-- [ ] `corepack pnpm --filter @workspace/demo-datavis typecheck`
-- [ ] `corepack pnpm --filter @workspace/demo-datavis lint`
-- [ ] Dev server smoke: all 5 charts render correctly
+- [x] `pnpm --filter @workspace/demo-datavis typecheck`
+- [x] `pnpm --filter @workspace/demo-datavis lint`
+- [x] Dev server smoke: all chart views render correctly
+
+### Post-plan enhancements (also shipped)
+
+- [x] `DemoLayout` + `DemoAuthGuard` from `@workspace/shared`
+- [x] Two live CKAN views: `live-catalogue`, `live-wait-times`
+- [x] Keyboard navigation between sidebar and chart pane (including heatmap grid)
+- [x] Common Recharts props centralized in `src/constants/charts.config.ts`
+- [x] Entrance animations on static mock charts (`CHART_ENTRANCE_ANIMATION`)
 
 ---
 
 ## Data source attribution (footer note)
 
-> Mock data — shapes inspired by Queensland Open Data (data.qld.gov.au), Department of Transport and Main Roads.  
+> Mock data — shapes inspired by Queensland Open Data (data.qld.gov.au), Department of Transport and Main Roads.
 > Not official TMR reporting. For portfolio demonstration purposes only.

@@ -330,7 +330,7 @@ Exact mirror of demo-ai-pipeline: left sidebar with keyboard-navigable chart car
 
 ### Plan doc
 
-`docs/todo/TODO_DEMO_DATAVIS.md`
+`docs/todo/DONE_DEMO_DATAVIS.md`
 
 ---
 

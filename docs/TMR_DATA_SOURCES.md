@@ -1,7 +1,8 @@
 # TMR / Queensland Data Sources — Demo Collection
 
-> Scope: future portfolio demo data, especially `apps/demo-datavis`, `apps/demo-ai-pipeline`, and
-> possible portfolio case-study content.
+> **Status:** Reference doc (2026-06-30). Primary `demo-datavis` mock datasets and live CKAN views are implemented; see [DONE — demo-datavis](/docs/todo/DONE_DEMO_DATAVIS.md).
+
+> Scope: portfolio demo data for `apps/demo-datavis`, `apps/demo-ai-pipeline`, and possible portfolio case-study content.
 >
 > Note: this is a **demo-first mock-data** source list. Accuracy, freshness, and complete production
 > suitability are not required. These sources are mainly inspiration/provenance for believable mock
@@ -150,38 +151,22 @@
 
 ## Likely Demo Mapping
 
-### `demo-datavis`
+### `demo-datavis` — implemented
 
-- Customer service centre wait times
-- Registration call centre enquiries
-- Non-generic call centre enquiries
-- Translink monthly performance data
-- Queensland traffic data averaged by hour/day
-- Traffic census for state-declared road network
-- Road crash locations
-- QLDTraffic GeoJSON-style incidents
+| Chart                              | Source inspiration                           | Status            |
+| ---------------------------------- | -------------------------------------------- | ----------------- |
+| Service centre wait times          | Customer service centre wait times           | Mock fixture      |
+| Registration call centre enquiries | Registration call centre enquiries daily     | Mock fixture      |
+| Traffic hour × day heatmap         | Queensland traffic data averaged by hour/day | Mock fixture (D3) |
+| Translink monthly performance      | Translink monthly performance data           | Mock fixture      |
+| Traffic census road network        | Traffic census state-declared road network   | Mock fixture      |
+| Live QLD Open Data catalogue       | CKAN `package_search` API                    | Live view         |
+| Live wait time vs customer volume  | CKAN DataStore wait-times API                | Live view         |
 
-Possible views:
+### `demo-ai-pipeline` — implemented
 
-- service demand over time
-- wait-time KPI cards
-- traffic heatmap by day/hour
-- crash or incident map
-- transport mode performance comparison
-
-### `demo-ai-pipeline`
-
-- AI Service Finder can reference:
-  - Transport customer service centres
-  - Q-Ride providers
-  - BoatSafe training organisations
-  - registration/call-centre enquiry themes
-
-- Fixture text can mention:
-  - source context from Queensland Open Data
-  - confidence/review flags
-  - stale-data warnings
-  - human review for transactional advice
+- AI Service Finder references transport customer service centres and registration/call-centre themes via `service-finder` parameter fixtures.
+- Fixture text includes source context, confidence/review flags, and stale-data disclaimers.
 
 ---
 
@@ -213,9 +198,9 @@ Possible views:
 
 ## Follow-Up Tasks
 
-- [ ] Choose one primary dataset family for `demo-datavis`
-- [ ] Decide whether `demo-datavis` is map-first, chart-first, or dashboard-first
-- [ ] Create a small `data/sources.json` manifest with source-inspired names, URLs, formats, and intended use
-- [ ] Write a data-prep script only if the chosen source is too large or awkward to consume directly
-- [ ] Prefer committed mock snapshots over live API calls for the first publishable version
-- [ ] Keep any live/API integration behind a feature flag or server route
+- [x] Choose one primary dataset family for `demo-datavis` — transport operations KPIs
+- [x] Decide whether `demo-datavis` is map-first, chart-first, or dashboard-first — chart-first dashboard
+- [-] Create a small `data/sources.json` manifest — source URLs live in `charts.ts` per chart instead
+- [-] Write a data-prep script — not needed; mock fixtures committed directly
+- [x] Prefer committed mock snapshots over live API calls for the first publishable version
+- [x] Keep live/API integration behind explicit live chart views only (`live-catalogue`, `live-wait-times`)
