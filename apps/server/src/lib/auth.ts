@@ -75,6 +75,24 @@ export function getAuthConfig(): AuthConfig {
           secure: env.COOKIES.SECURE,
         },
       },
+      csrfToken: {
+        name: `${env.COOKIES.COOKIE_PREFIX}.csrf-token`,
+        options: {
+          httpOnly: true,
+          sameSite: env.COOKIES.SAME_SITE,
+          path: '/',
+          secure: env.COOKIES.SECURE,
+        },
+      },
+      callbackUrl: {
+        name: `${env.COOKIES.COOKIE_PREFIX}.callback-url`,
+        options: {
+          httpOnly: true,
+          sameSite: env.COOKIES.SAME_SITE,
+          path: '/',
+          secure: env.COOKIES.SECURE,
+        },
+      },
     },
     trustHost: true,
   };

@@ -62,6 +62,7 @@ data/uploads/
 .cache/
 .llm-cache/
 .tmp/
+*.log
 configs/cron-history.json
 pids
 

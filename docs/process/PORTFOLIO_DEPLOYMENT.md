@@ -57,7 +57,7 @@ corepack enable && pnpm install --frozen-lockfile && pnpm --filter @workspace/se
 Start command:
 
 ```sh
-pnpm --filter @workspace/server start:render
+pnpm --filter @workspace/server render:start
 ```
 
 The Render start command runs a non-interactive SQLite bootstrap before starting the API. It creates or updates the
