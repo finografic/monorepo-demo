@@ -16,7 +16,7 @@ export function ModelSelector({
   const selectedModel = models.find((model) => model.id === selectedModelId);
 
   return (
-    <div className="space-y-1.5">
+    <div className={disabled ? 'opacity-60 space-y-1.5' : 'space-y-1.5'}>
       <label htmlFor="live-model" className="text-xs font-medium tracking-wider text-primary">
         Live LLM model
       </label>
@@ -34,7 +34,7 @@ export function ModelSelector({
         ))}
       </select>
       {selectedModel ? (
-        <p className="text-xs leading-5 text-muted-foreground/75">
+        <p className="text-xs leading-5 font-medium text-muted-foreground/75 pt-2">
           {selectedModel.description}
           {selectedModel.isReasoning ? ' Reasoning model: may take longer to begin streaming.' : ''}
         </p>

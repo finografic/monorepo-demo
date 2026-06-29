@@ -28,6 +28,8 @@ export function StreamingControls({
 }: StreamingControlsProps) {
   const isStreaming = status === 'streaming';
   const hasContent = status !== 'idle';
+  const secondaryActionClass =
+    'rounded-md border-2 border-amber-500 px-4 py-3 text-base font-semibold text-amber-500 transition-colors hover:bg-amber-200 hover:border-amber-600 hover:text-amber-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:border-muted-foreground disabled:bg-transparent disabled:text-muted-foreground disabled:opacity-30';
 
   const modeLabels: Record<StreamMode, string> = {
     fixture: 'Fixture',
@@ -35,12 +37,12 @@ export function StreamingControls({
   };
 
   return (
-    <div className="pt-2 space-y-4">
+    <div className="space-y-3">
       {/* Mode toggle */}
       <div>
-        <p className="mb-1.5 text-xs font-semibold tracking-wide text-primary">Prompt Source</p>
+        <p className="mb-1 text-xs font-semibold tracking-wide text-primary">Prompt Source</p>
         <div className="flex overflow-hidden rounded-md border border-border text-sm font-medium">
-          {(['fixture', 'live'] as StreamMode[]).map((m) => (
+          {(['live', 'fixture'] as StreamMode[]).map((m) => (
             <button
               key={m}
               type="button"
@@ -66,10 +68,8 @@ export function StreamingControls({
         onModelChange={onModelChange}
       />
 
-      <hr />
-
       {/* Action buttons */}
-      <div className="flex gap-2">
+      <div className="flex gap-2 pt-2">
         <button
           type="button"
           onClick={onStart}
@@ -85,7 +85,7 @@ export function StreamingControls({
           onClick={onStop}
           disabled={!isStreaming}
           aria-label="Stop generation"
-          className="rounded-md border border-border px-4 py-3 text-base text-foreground font-semibold transition-colors hover:bg-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-40"
+          className={secondaryActionClass}
         >
           Stop
         </button>
@@ -95,7 +95,7 @@ export function StreamingControls({
           onClick={onClear}
           disabled={!hasContent}
           aria-label="Clear output"
-          className="rounded-md border border-border px-4 py-3 text-base text-foreground font-semibold transition-colors hover:bg-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-40"
+          className={secondaryActionClass}
         >
           Clear
         </button>

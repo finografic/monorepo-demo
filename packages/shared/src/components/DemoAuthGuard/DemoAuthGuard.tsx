@@ -83,8 +83,14 @@ export function DemoAuthGuard({ children }: DemoAuthGuardProps) {
 
   if (!isAllowed) {
     return (
-      <div className="flex min-h-dvh items-center justify-center bg-background px-4 text-sm font-medium text-muted-foreground">
-        Checking your session...
+      <div
+        className="flex min-h-dvh flex-col items-center justify-center gap-2 bg-background px-4 text-center"
+        role="status"
+        aria-live="polite"
+      >
+        <p className="text-sm font-semibold text-muted-foreground">
+          Verifying auth session...
+        </p>
       </div>
     );
   }

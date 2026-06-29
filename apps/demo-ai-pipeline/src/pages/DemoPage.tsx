@@ -38,7 +38,7 @@ const SOURCE_REFERENCES: Record<string, SourceReference> = {
 export function DemoPage() {
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [showRaw, setShowRaw] = useState(false);
-  const [mode, setMode] = useState<StreamMode>('fixture');
+  const [mode, setMode] = useState<StreamMode>('live');
   const [selectedModelId, setSelectedModelId] = useState(DEFAULT_LIVE_MODEL_ID);
   const [parameterValues, setParameterValues] = useState<Record<string, string>>({});
   const { status, buffer, metrics, start, stop, clear, restore } = useStreamingGeneration();
@@ -84,6 +84,7 @@ export function DemoPage() {
         ]
       : undefined;
   const isWaitingForFirstPaint = status === 'streaming' && buffer.length === 0;
+  const generationStatusLabel = mode === 'fixture' ? 'Calling mock fixtures...' : 'Calling LLM model...';
 
   useEffect(() => {
     if (cacheKey && status !== 'streaming') restore(cacheKey);
@@ -146,7 +147,7 @@ export function DemoPage() {
               onStop={stop}
               onClear={handleClear}
             />
-            <p className="mt-2 text-center text-xs text-muted-foreground/70">
+            <p className="mt-3 text-center text-xs font-medium text-primary text-muted-foreground/70">
               {mode === 'fixture'
                 ? 'Fixture mode — pre-recorded responses, no API cost'
                 : 'Live mode — calls the configured OpenAI-compatible server provider'}
@@ -166,7 +167,7 @@ export function DemoPage() {
     >
       <div className="flex-1 overflow-y-auto px-8 py-6" aria-live="polite" aria-label="Generated content">
         {isWaitingForFirstPaint ? (
-          <GeneratingPlaceholder />
+          <GeneratingPlaceholder label={generationStatusLabel} />
         ) : buffer.length ? (
           <PartialMarkdownGuard buffer={buffer} showRaw={showRaw} />
         ) : (
@@ -174,11 +175,11 @@ export function DemoPage() {
         )}
       </div>
 
-      <div className="flex min-h-24 flex-wrap items-center gap-5 border-t border-border bg-background px-8 py-4">
-        <SourceToggle showRaw={showRaw} onToggle={() => setShowRaw((v) => !v)} />
-        <div className="flex-1">
+      <div className="flex min-h-24 flex-wrap items-center justify-between gap-5 border-t border-border bg-background px-8 py-4">
+        <div className="min-w-0 flex-1" aria-live="polite">
           <MetricsBar status={status} metrics={metrics} />
         </div>
+        <SourceToggle showRaw={showRaw} onToggle={() => setShowRaw((v) => !v)} />
         {sourceReference ? <SourceAttribution source={sourceReference} /> : null}
       </div>
     </DemoLayout>
@@ -205,11 +206,15 @@ function SourceAttribution({ source }: { source: SourceReference }) {
   );
 }
 
-function GeneratingPlaceholder() {
+function GeneratingPlaceholder({ label }: { label: string }) {
   return (
-    <div className="flex min-h-full items-center justify-center" role="status" aria-live="polite">
+    <div
+      className="flex min-h-full flex-col items-center justify-center gap-4"
+      role="status"
+      aria-live="polite"
+    >
       <span className="h-14 w-14 animate-spin rounded-full border-4 border-primary/20 border-t-primary/70" />
-      <span className="sr-only">Generating response</span>
+      <span className="text-sm font-semibold text-muted-foreground">{label}</span>
     </div>
   );
 }

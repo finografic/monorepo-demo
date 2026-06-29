@@ -1,5 +1,6 @@
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
+import { paths } from '@workspace/config/paths';
 import { DEFAULT_LIVE_MODEL_ID, findLiveModel, isLiveModelId } from '@workspace/shared';
 import type { MetricsData, PromptFixture, StreamChunk } from '@workspace/shared';
 import { stream } from 'hono/streaming';
@@ -10,7 +11,7 @@ import { getAiProvider } from 'lib/ai-provider';
 import { createRouter } from 'lib/create-app';
 import { requireAuth } from 'lib/require-auth';
 
-const FIXTURES_DIR = resolve(import.meta.dirname, '../../../../demo-ai-pipeline/src/fixtures');
+const FIXTURES_DIR = resolve(paths.root, 'apps/demo-ai-pipeline/src/fixtures');
 
 function loadFixture(promptId: string): PromptFixture | null {
   try {

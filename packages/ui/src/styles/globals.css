@@ -137,4 +137,8 @@
     @apply bg-background text-foreground text-base;
     line-height: 1.556;
   }
+
+  body > div[id^="dmermaid__"] {
+    display: none;
+  }
 }

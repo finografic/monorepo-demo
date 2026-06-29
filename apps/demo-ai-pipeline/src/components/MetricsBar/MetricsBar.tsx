@@ -1,4 +1,4 @@
-import type { GenerationStatus, LlmProviderId, MetricsData } from '@workspace/shared';
+import type { GenerationStatus, MetricsData } from '@workspace/shared';
 
 interface MetricsBarProps {
   status: GenerationStatus;
@@ -23,44 +23,49 @@ export function MetricsBar({ status, metrics }: MetricsBarProps) {
     );
   }
 
+  const hasExtendedMetadata = Boolean(metrics.estimatedCostUsd || metrics.reasoningTokens);
+
+  if (hasExtendedMetadata) {
+    return (
+      <div
+        aria-live="polite"
+        aria-label="Generation metrics"
+        className="flex flex-wrap items-center gap-x-5 gap-y-2 text-sm text-muted-foreground"
+      >
+        <Stat label="Model" value={metrics.model} />
+        {metrics.reasoningTokens ? <Stat label="Reasoning" value={String(metrics.reasoningTokens)} /> : null}
+        <Stat label="Total time" value={`${metrics.totalTime} ms`} />
+        <Stat label="Tokens" value={String(metrics.tokens)} />
+        {metrics.estimatedCostUsd ? (
+          <Stat label="Estimated cost" value={`$${metrics.estimatedCostUsd.toFixed(6)}`} />
+        ) : null}
+      </div>
+    );
+  }
+
   return (
     <div
       aria-live="polite"
       aria-label="Generation metrics"
       className="flex flex-wrap items-center gap-x-5 gap-y-2 text-sm text-muted-foreground"
     >
+      <Stat label="Model" value={metrics.mode === 'fixture' ? 'Mock fixture' : metrics.model} />
       <Stat label="Tokens" value={String(metrics.tokens)} />
       <Stat label="First token" value={`${metrics.timeToFirstToken} ms`} />
       <Stat label="Total time" value={`${metrics.totalTime} ms`} />
-      <Stat label="Model" value={metrics.model} />
       {metrics.estimatedCostUsd ? (
         <Stat label="Est. cost" value={`$${metrics.estimatedCostUsd.toFixed(6)}`} />
       ) : null}
       {metrics.reasoningTokens ? <Stat label="Reasoning" value={String(metrics.reasoningTokens)} /> : null}
-      <ProviderBadge provider={metrics.provider} />
     </div>
-  );
-}
-
-const PROVIDER_LABELS: Record<LlmProviderId, string> = {
-  'fixture': 'fixture',
-  'lmstudio': 'LM Studio',
-  'opencode-go': 'OpenCode Go',
-};
-
-function ProviderBadge({ provider }: { provider: LlmProviderId }) {
-  return (
-    <span className="rounded bg-muted px-2 py-1 text-xs uppercase tracking-wider text-muted-foreground/70">
-      {PROVIDER_LABELS[provider]}
-    </span>
   );
 }
 
 function Stat({ label, value }: { label: string; value: string }) {
   return (
     <span>
-      <span className="text-muted-foreground/60">{label}:</span>{' '}
-      <span className="font-medium text-foreground/80">{value}</span>
+      <span className="text-muted-foreground/80">{label}:</span>{' '}
+      <span className="font-medium text-primary">{value}</span>
     </span>
   );
 }
