@@ -2,16 +2,21 @@ import { useEffect, useRef, useState } from 'react';
 import { CartesianGrid, ResponsiveContainer, Scatter, ScatterChart, Tooltip, XAxis, YAxis } from 'recharts';
 import type { TooltipContentProps } from 'recharts';
 
+import {
+  CHART_AXIS_TICK_PROPS_SM,
+  CHART_GRID_DASH,
+  CHART_GRID_STROKE,
+  TOOLTIP_STYLE,
+  chartXAxisLabelBottom,
+  chartYAxisLabelLeft,
+} from 'constants/charts.config';
+
 const RESOURCE_ID = '421312d3-dcc7-4d20-aa01-46acea49c347';
 const DATASTORE_URL = `https://www.data.qld.gov.au/api/3/action/datastore_search?resource_id=${RESOURCE_ID}&sort=_id+desc&limit=300`;
 
 const CHART_ID = 'live-wait-times-title';
-const TOOLTIP_STYLE = {
-  backgroundColor: 'var(--card)',
-  border: '1px solid var(--border)',
-  borderRadius: '6px',
-  fontSize: 13,
-};
+const X_LABEL = chartXAxisLabelBottom('Avg wait time (minutes)');
+const Y_LABEL = chartYAxisLabelLeft('Customers served', 12);
 
 interface RawRecord {
   _id: number;
@@ -176,33 +181,22 @@ export function LiveWaitTimesChart() {
           <div role="img" aria-label="Scatter plot of live service centre wait time vs customer volume">
             <ResponsiveContainer width="100%" height={380}>
               <ScatterChart margin={{ top: 8, right: 32, bottom: 40, left: 16 }} aria-hidden="true">
-                <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
+                <CartesianGrid strokeDasharray={CHART_GRID_DASH} stroke={CHART_GRID_STROKE} />
                 <XAxis
                   type="number"
                   dataKey="waitMin"
                   name="Avg wait"
-                  tick={{ fontSize: 11, fill: 'var(--muted-foreground)' }}
+                  tick={CHART_AXIS_TICK_PROPS_SM}
                   tickFormatter={(v: number) => `${v.toFixed(0)}m`}
-                  label={{
-                    value: 'Avg wait time (minutes)',
-                    position: 'insideBottom' as const,
-                    offset: -12,
-                    style: { fontSize: 11, fill: 'var(--muted-foreground)' },
-                  }}
+                  label={X_LABEL}
                 />
                 <YAxis
                   type="number"
                   dataKey="customers"
                   name="Customers"
-                  tick={{ fontSize: 11, fill: 'var(--muted-foreground)' }}
+                  tick={CHART_AXIS_TICK_PROPS_SM}
                   tickFormatter={(v: number) => v.toLocaleString()}
-                  label={{
-                    value: 'Customers served',
-                    angle: -90,
-                    position: 'insideLeft' as const,
-                    offset: 12,
-                    style: { fontSize: 11, fill: 'var(--muted-foreground)' },
-                  }}
+                  label={Y_LABEL}
                 />
                 <Tooltip content={ScatterTooltip} />
                 <Scatter data={rows} shape={<ScatterDot />} isAnimationActive={false} />

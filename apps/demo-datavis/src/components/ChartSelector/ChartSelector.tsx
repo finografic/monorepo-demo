@@ -1,11 +1,16 @@
 import { OptionCard, resolveBadgeClass } from '@workspace/shared';
-import { useCallback, useRef } from 'react';
+import { forwardRef, useCallback, useImperativeHandle, useRef } from 'react';
 import type { ChartMeta } from 'data/types';
+
+export interface ChartSelectorHandle {
+  focusSelected: () => void;
+}
 
 interface ChartSelectorProps {
   charts: ChartMeta[];
   selectedId: string | null;
   onSelect: (id: string) => void;
+  onFocusChart?: () => void;
 }
 
 const chartTagColors: Record<string, string> = {
@@ -40,25 +45,61 @@ const LIVE_BADGE = (
   </span>
 );
 
-export function ChartSelector({ charts, selectedId, onSelect }: ChartSelectorProps) {
+function focusChartAfterPaint(onFocusChart?: () => void) {
+  if (!onFocusChart) return;
+  requestAnimationFrame(() => {
+    requestAnimationFrame(onFocusChart);
+  });
+}
+
+export const ChartSelector = forwardRef<ChartSelectorHandle, ChartSelectorProps>(function ChartSelector(
+  { charts, selectedId, onSelect, onFocusChart },
+  ref,
+) {
   const listRef = useRef<HTMLUListElement>(null);
+
+  const focusSelected = useCallback(() => {
+    const items = listRef.current?.querySelectorAll<HTMLLIElement>('[role="option"]');
+    if (!items?.length) return;
+    const selectedIndex = charts.findIndex((chart) => chart.id === selectedId);
+    const index = selectedIndex >= 0 ? selectedIndex : 0;
+    items[index]?.focus();
+  }, [charts, selectedId]);
+
+  useImperativeHandle(ref, () => ({ focusSelected }), [focusSelected]);
 
   const handleKeyDown = useCallback(
     (e: React.KeyboardEvent<HTMLLIElement>, index: number) => {
       const items = listRef.current?.querySelectorAll<HTMLLIElement>('[role="option"]');
       if (!items) return;
+
       if (e.key === 'ArrowDown') {
         e.preventDefault();
         items[Math.min(index + 1, items.length - 1)]?.focus();
-      } else if (e.key === 'ArrowUp') {
+        return;
+      }
+
+      if (e.key === 'ArrowUp') {
         e.preventDefault();
         items[Math.max(index - 1, 0)]?.focus();
-      } else if (e.key === 'Enter' || e.key === ' ') {
+        return;
+      }
+
+      if (e.key === 'ArrowRight') {
+        e.preventDefault();
+        const { id } = charts[index]!;
+        if (selectedId !== id) onSelect(id);
+        focusChartAfterPaint(onFocusChart);
+        return;
+      }
+
+      if (e.key === 'Enter' || e.key === ' ') {
         e.preventDefault();
         onSelect(charts[index]!.id);
+        focusChartAfterPaint(onFocusChart);
       }
     },
-    [charts, onSelect],
+    [charts, onFocusChart, onSelect, selectedId],
   );
 
   return (
@@ -88,4 +129,4 @@ export function ChartSelector({ charts, selectedId, onSelect }: ChartSelectorPro
       </ul>
     </nav>
   );
-}
+});

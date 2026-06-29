@@ -1,15 +1,18 @@
 import { WAIT_TIMES_DATA } from 'data/wait-times';
 import { Bar, BarChart, CartesianGrid, Legend, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
 
+import {
+  CHART_AXIS_TICK_PROPS_MD,
+  CHART_GRID_DASH,
+  CHART_GRID_STROKE,
+  LEGEND_STYLE,
+  TOOLTIP_STYLE,
+  chartYAxisLabelLeft,
+} from 'constants/charts.config';
+
 const CHART_ID = 'wait-times-chart-title';
 const BAR_RADIUS: [number, number, number, number] = [3, 3, 0, 0];
-const TOOLTIP_STYLE = {
-  backgroundColor: 'var(--card)',
-  border: '1px solid var(--border)',
-  borderRadius: '6px',
-  fontSize: 13,
-};
-const LEGEND_STYLE = { fontSize: 13, paddingBottom: 8 };
+const Y_LABEL = chartYAxisLabelLeft('Minutes', 12);
 
 export function WaitTimesChart() {
   return (
@@ -25,25 +28,16 @@ export function WaitTimesChart() {
           tabIndex={0}
           aria-labelledby={CHART_ID}
         >
-          <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
+          <CartesianGrid strokeDasharray={CHART_GRID_DASH} stroke={CHART_GRID_STROKE} />
           <XAxis
             dataKey="centre"
-            tick={{ fontSize: 12, fill: 'var(--muted-foreground)' }}
+            tick={CHART_AXIS_TICK_PROPS_MD}
             angle={-35}
             textAnchor="end"
             interval={0}
             height={80}
           />
-          <YAxis
-            tick={{ fontSize: 12, fill: 'var(--muted-foreground)' }}
-            label={{
-              value: 'Minutes',
-              angle: -90,
-              position: 'insideLeft',
-              offset: 12,
-              style: { fontSize: 11, fill: 'var(--muted-foreground)' },
-            }}
-          />
+          <YAxis tick={CHART_AXIS_TICK_PROPS_MD} label={Y_LABEL} />
           <Tooltip
             contentStyle={TOOLTIP_STYLE}
             formatter={(value) => {

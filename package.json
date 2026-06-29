@@ -23,7 +23,7 @@
   "scripts": {
     "---------- DEV_AND_BUILD": "---------------------------------------------",
     "dev": "moon run client:dev server:dev",
-    "dev:all": "pnpm kill:dev && moon run client:dev server:dev demo-ai-pipeline:dev",
+    "dev:all": "pnpm kill:dev && moon run client:dev server:dev demo-ai-pipeline:dev demo-datavis:dev",
     "dev:reset": "run-s reset",
     "dev:db:reset": "run-s db:reset",
     "start": "moon run client:start server:start",

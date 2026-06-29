@@ -5,10 +5,16 @@ import { TrafficCensus } from 'components/charts/TrafficCensus';
 import { TrafficHeatmap } from 'components/charts/TrafficHeatmap';
 import { TranslinkPerformance } from 'components/charts/TranslinkPerformance';
 import { WaitTimesChart } from 'components/charts/WaitTimesChart';
+import { forwardRef, useCallback, useImperativeHandle, useRef } from 'react';
 import type { ChartMeta } from 'data/types';
+
+export interface ChartPaneHandle {
+  focusChart: () => void;
+}
 
 interface ChartPaneProps {
   chart: ChartMeta;
+  onReturnToSidebar?: () => void;
 }
 
 function ChartComponent({ id }: { id: string }) {
@@ -32,23 +38,59 @@ function ChartComponent({ id }: { id: string }) {
   }
 }
 
-export function ChartPane({ chart }: ChartPaneProps) {
+function findChartFocusTarget(root: HTMLElement): HTMLElement | null {
+  return (
+    root.querySelector<HTMLElement>('[role="grid"][tabindex="0"]') ??
+    root.querySelector<HTMLElement>('[role="region"][tabindex="0"]') ??
+    root.querySelector<HTMLElement>('.recharts-wrapper [tabindex="0"]') ??
+    root.querySelector<HTMLElement>('[tabindex="0"]')
+  );
+}
+
+export const ChartPane = forwardRef<ChartPaneHandle, ChartPaneProps>(function ChartPane(
+  { chart, onReturnToSidebar },
+  ref,
+) {
+  const chartAreaRef = useRef<HTMLDivElement>(null);
+
+  const focusChart = useCallback(() => {
+    const root = chartAreaRef.current;
+    if (!root) return;
+    findChartFocusTarget(root)?.focus();
+  }, []);
+
+  useImperativeHandle(ref, () => ({ focusChart }), [focusChart]);
+
+  const handleChartKeyDown = useCallback(
+    (e: React.KeyboardEvent<HTMLDivElement>) => {
+      if (e.key === 'Escape' || e.key === 'ArrowLeft') {
+        e.preventDefault();
+        onReturnToSidebar?.();
+      }
+    },
+    [onReturnToSidebar],
+  );
+
   return (
     <div className="flex h-full flex-col">
-      {/* Chart header */}
       <div className="border-b border-border px-8 py-5">
         <h2 className="text-2xl font-semibold text-foreground">{chart.title}</h2>
         <p className="mt-1 text-sm text-muted-foreground">{chart.description}</p>
       </div>
 
-      {/* Chart area */}
       <div className="flex-1 min-h-0 overflow-y-auto overflow-x-hidden px-8 py-6 flex flex-col">
-        <div className="my-auto w-full [@media(min-height:800px)]:pb-[25vh]">
+        <div
+          ref={chartAreaRef}
+          className="my-auto w-full [@media(min-height:800px)]:pb-[25vh]"
+          onKeyDown={handleChartKeyDown}
+        >
           <ChartComponent id={chart.id} />
+          <p className="mt-6 text-center text-xs font-medium text-primary">
+            WCAG 2.1 AA · Accessible data charts · Keyboard navigable · → chart · ← or Esc sidebar
+          </p>
         </div>
       </div>
 
-      {/* Footer — data attribution */}
       <div className="min-h-16 flex flex-wrap items-center gap-x-4 gap-y-1.5 border-t border-border bg-background px-8 py-3">
         <p className="text-xs text-muted-foreground">
           <span className="font-medium">Source:</span>{' '}
@@ -76,4 +118,4 @@ export function ChartPane({ chart }: ChartPaneProps) {
       </div>
     </div>
   );
-}
+});

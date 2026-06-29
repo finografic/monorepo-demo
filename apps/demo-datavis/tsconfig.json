@@ -11,6 +11,7 @@
       "ui/*": ["../../packages/ui/src/components/*"],
       "utils": ["../../packages/ui/src/lib/utils"],
       "components/*": ["./src/components/*"],
+      "constants/*": ["./src/constants/*"],
       "pages/*": ["./src/pages/*"],
       "data/*": ["./src/data/*"]
     }

@@ -1,26 +1,55 @@
 import { TRAFFIC_CENSUS_DATA } from 'data/traffic-census';
-import { Bar, BarChart, CartesianGrid, Cell, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
+import {
+  Bar,
+  BarChart,
+  CartesianGrid,
+  Rectangle,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis,
+} from 'recharts';
+import type { BarShapeProps } from 'recharts';
+
+import {
+  CHART_AXIS_TICK_PROPS_SM,
+  CHART_GRID_DASH,
+  CHART_GRID_STROKE,
+  TOOLTIP_STYLE,
+  chartXAxisLabelBottomRight,
+} from 'constants/charts.config';
 
 const CHART_ID = 'traffic-census-chart-title';
 const BAR_RADIUS: [number, number, number, number] = [0, 3, 3, 0];
-const TOOLTIP_STYLE = {
-  backgroundColor: 'var(--card)',
-  border: '1px solid var(--border)',
-  borderRadius: '6px',
-  fontSize: 13,
-};
-const X_LABEL = {
-  value: 'AADT (thousands)',
-  position: 'insideBottomRight' as const,
-  offset: -8,
-  style: { fontSize: 11, fill: 'var(--muted-foreground)' },
-};
+const X_LABEL = chartXAxisLabelBottomRight('AADT (thousands)');
 
-const chartData = TRAFFIC_CENSUS_DATA.map((row) => ({
+interface CensusChartRow {
+  road: string;
+  location: string;
+  aadt: number;
+  heavyVehiclePct: number;
+  label: string;
+  aadtK: number;
+  barFill: string;
+}
+
+function censusBarFill(index: number): string {
+  return `oklch(${0.237 + index * 0.028} ${0.161 - index * 0.01} 254.944)`;
+}
+
+const chartData: CensusChartRow[] = TRAFFIC_CENSUS_DATA.map((row, index) => ({
   ...row,
   label: `${row.road} (${row.location})`,
   aadtK: Math.round(row.aadt / 100) / 10,
+  barFill: censusBarFill(index),
 }));
+
+function CensusBarShape(props: BarShapeProps) {
+  const { x, y, width, height, payload } = props;
+  const fill = (payload as CensusChartRow | undefined)?.barFill ?? 'var(--primary)';
+
+  return <Rectangle x={x} y={y} width={width} height={height} radius={BAR_RADIUS} fill={fill} />;
+}
 
 export function TrafficCensus() {
   return (
@@ -38,19 +67,14 @@ export function TrafficCensus() {
           tabIndex={0}
           aria-labelledby={CHART_ID}
         >
-          <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" horizontal={false} />
+          <CartesianGrid strokeDasharray={CHART_GRID_DASH} stroke={CHART_GRID_STROKE} horizontal={false} />
           <XAxis
             type="number"
-            tick={{ fontSize: 11, fill: 'var(--muted-foreground)' }}
+            tick={CHART_AXIS_TICK_PROPS_SM}
             tickFormatter={(v: number) => `${v}k`}
             label={X_LABEL}
           />
-          <YAxis
-            type="category"
-            dataKey="label"
-            width={180}
-            tick={{ fontSize: 11, fill: 'var(--muted-foreground)' }}
-          />
+          <YAxis type="category" dataKey="label" width={180} tick={CHART_AXIS_TICK_PROPS_SM} />
           <Tooltip
             contentStyle={TOOLTIP_STYLE}
             formatter={(value, _name, item) => {
@@ -60,14 +84,7 @@ export function TrafficCensus() {
               return `${(aadtK * 1000).toLocaleString()} vehicles/day (${heavyVehiclePct}% heavy)`;
             }}
           />
-          <Bar dataKey="aadtK" radius={BAR_RADIUS} isAnimationActive={false}>
-            {chartData.map((row, i) => (
-              <Cell
-                key={`${row.road}-${row.location}`}
-                fill={`oklch(${0.237 + i * 0.028} ${0.161 - i * 0.01} 254.944)`}
-              />
-            ))}
-          </Bar>
+          <Bar dataKey="aadtK" radius={BAR_RADIUS} isAnimationActive={false} shape={CensusBarShape} />
         </BarChart>
       </ResponsiveContainer>
 

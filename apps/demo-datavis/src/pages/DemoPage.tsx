@@ -1,16 +1,27 @@
 import { ChartPane } from 'components/ChartPane/ChartPane';
 import { ChartSelector } from 'components/ChartSelector/ChartSelector';
 import { CHARTS } from 'data/charts';
-import { useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
+import type { ChartPaneHandle } from 'components/ChartPane/ChartPane';
+import type { ChartSelectorHandle } from 'components/ChartSelector/ChartSelector';
 
 export function DemoPage() {
   const [selectedId, setSelectedId] = useState<string | null>(null);
+  const selectorRef = useRef<ChartSelectorHandle>(null);
+  const chartPaneRef = useRef<ChartPaneHandle>(null);
 
   const selectedChart = CHARTS.find((c) => c.id === selectedId) ?? null;
 
+  const handleFocusChart = useCallback(() => {
+    chartPaneRef.current?.focusChart();
+  }, []);
+
+  const handleReturnToSidebar = useCallback(() => {
+    selectorRef.current?.focusSelected();
+  }, []);
+
   return (
     <div className="flex flex-col h-screen overflow-hidden bg-background">
-      {/* Full-width blue header */}
       <header className="flex-none bg-primary px-6 py-4">
         <h1 className="text-base font-semibold text-primary-foreground">Transport Data Dashboard</h1>
         <p className="mt-0.5 text-sm text-primary-foreground/75">
@@ -18,27 +29,28 @@ export function DemoPage() {
         </p>
       </header>
 
-      {/* Content row below header */}
       <div className="flex flex-1 overflow-hidden">
-        {/* Left panel — chart selection */}
         <aside
           className="flex-none w-[30rem] lg:w-[32rem] border-r border-border flex flex-col overflow-hidden"
           aria-label="Chart navigation"
         >
           <div className="flex-1 overflow-y-auto px-4 py-5">
-            <ChartSelector charts={CHARTS} selectedId={selectedId} onSelect={setSelectedId} />
-          </div>
-
-          <div className="border-t border-border px-5 py-3">
-            <p className="text-xs text-muted-foreground/60 text-center">
-              WCAG 2.1 AA · Accessible data tables · Keyboard navigable
-            </p>
+            <ChartSelector
+              ref={selectorRef}
+              charts={CHARTS}
+              selectedId={selectedId}
+              onSelect={setSelectedId}
+              onFocusChart={handleFocusChart}
+            />
           </div>
         </aside>
 
-        {/* Right panel — chart output */}
         <main className="flex-1 flex flex-col overflow-hidden">
-          {selectedChart ? <ChartPane chart={selectedChart} /> : <StandbyPlaceholder />}
+          {selectedChart ? (
+            <ChartPane ref={chartPaneRef} chart={selectedChart} onReturnToSidebar={handleReturnToSidebar} />
+          ) : (
+            <StandbyPlaceholder />
+          )}
         </main>
       </div>
     </div>

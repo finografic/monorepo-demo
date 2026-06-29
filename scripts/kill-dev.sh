@@ -3,7 +3,7 @@
 
 set -euo pipefail
 
-PORTS=(3000 3001 4040)
+PORTS=(3000 3001 3002 4040)
 
 echo "  Stopping dev processes..."
 

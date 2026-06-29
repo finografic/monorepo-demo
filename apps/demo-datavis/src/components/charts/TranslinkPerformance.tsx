@@ -1,28 +1,19 @@
 import { TRANSLINK_DATA } from 'data/translink-performance';
 import { CartesianGrid, Legend, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
 
+import {
+  CHART_AXIS_TICK_PROPS_MD,
+  CHART_GRID_DASH,
+  CHART_GRID_STROKE,
+  LEGEND_STYLE,
+  TOOLTIP_STYLE,
+  chartYAxisLabelLeft,
+  chartYAxisLabelRight,
+} from 'constants/charts.config';
+
 const CHART_ID = 'translink-chart-title';
-const TOOLTIP_STYLE = {
-  backgroundColor: 'var(--card)',
-  border: '1px solid var(--border)',
-  borderRadius: '6px',
-  fontSize: 13,
-};
-const LEGEND_STYLE = { fontSize: 13, paddingBottom: 8 };
-const SATISFACTION_LABEL = {
-  value: 'Satisfaction %',
-  angle: -90,
-  position: 'insideLeft' as const,
-  offset: 14,
-  style: { fontSize: 11, fill: 'var(--muted-foreground)' },
-};
-const COMPLAINTS_LABEL = {
-  value: 'Complaints',
-  angle: 90,
-  position: 'insideRight' as const,
-  offset: 8,
-  style: { fontSize: 11, fill: 'var(--muted-foreground)' },
-};
+const SATISFACTION_LABEL = chartYAxisLabelLeft('Satisfaction %', 14);
+const COMPLAINTS_LABEL = chartYAxisLabelRight('Complaints', 8);
 const SATISFACTION_DOMAIN: [number, number] = [80, 92];
 const COMPLAINTS_DOMAIN: [number, number] = [80, 200];
 
@@ -41,12 +32,12 @@ export function TranslinkPerformance() {
           tabIndex={0}
           aria-labelledby={CHART_ID}
         >
-          <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
-          <XAxis dataKey="month" tick={{ fontSize: 12, fill: 'var(--muted-foreground)' }} />
+          <CartesianGrid strokeDasharray={CHART_GRID_DASH} stroke={CHART_GRID_STROKE} />
+          <XAxis dataKey="month" tick={CHART_AXIS_TICK_PROPS_MD} />
           <YAxis
             yAxisId="satisfaction"
             domain={SATISFACTION_DOMAIN}
-            tick={{ fontSize: 12, fill: 'var(--muted-foreground)' }}
+            tick={CHART_AXIS_TICK_PROPS_MD}
             tickFormatter={(v: number) => `${v}%`}
             label={SATISFACTION_LABEL}
           />
@@ -54,7 +45,7 @@ export function TranslinkPerformance() {
             yAxisId="complaints"
             orientation="right"
             domain={COMPLAINTS_DOMAIN}
-            tick={{ fontSize: 12, fill: 'var(--muted-foreground)' }}
+            tick={CHART_AXIS_TICK_PROPS_MD}
             label={COMPLAINTS_LABEL}
           />
           <Tooltip
