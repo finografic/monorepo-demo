@@ -151,7 +151,11 @@ export function LoginPage(): React.JSX.Element {
                 </Alert>
               ) : null}
 
-              <Button type="submit" disabled={isLoading} className="min-h-11 w-full px-5 text-sm font-semibold">
+              <Button
+                type="submit"
+                disabled={isLoading}
+                className="min-h-11 w-full px-5 text-sm font-semibold"
+              >
                 {isLoading
                   ? t('ui.common.loading', 'Loading...')
                   : mode === 'signin'
