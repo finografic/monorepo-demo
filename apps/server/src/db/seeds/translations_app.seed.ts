@@ -6,7 +6,7 @@ const data: Array<{ key: string; translations: Record<string, string> }> = [
   {
     key: 'app.subtitle',
     translations: {
-      'en-GB': 'Full-stack demo & portfolio piece',
+      'en-GB': 'Full-stack demo & portfolio pieces',
       'es-ES': 'Demo full-stack y pieza de portafolio',
     },
   },

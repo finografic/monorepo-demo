@@ -1,4 +1,5 @@
-import { OptionCard, resolveBadgeClass } from '@workspace/shared';
+import { resolveBadgeClass } from '@workspace/shared';
+import { OptionCard } from '@workspace/shared/components';
 import { forwardRef, useCallback, useImperativeHandle, useRef } from 'react';
 import type { ChartMeta } from 'data/types';
 
@@ -38,7 +39,7 @@ const chartTagColors: Record<string, string> = {
 
 const LIVE_IDS = new Set(['live-catalogue', 'live-wait-times']);
 
-const LIVE_BADGE = (
+const LiveBadge = (
   <span className="inline-flex shrink-0 items-center gap-1 rounded-full bg-emerald-500/15 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-emerald-700 dark:text-emerald-400">
     <span className="size-1.5 rounded-full bg-emerald-500 animate-pulse" aria-hidden="true" />
     Live
@@ -121,7 +122,7 @@ export const ChartSelector = forwardRef<ChartSelectorHandle, ChartSelectorProps>
               className: resolveBadgeClass(chartTagColors[tag] ?? 'blue'),
             }))}
             selected={chart.id === selectedId}
-            headerAction={LIVE_IDS.has(chart.id) ? LIVE_BADGE : undefined}
+            headerAction={LIVE_IDS.has(chart.id) ? LiveBadge : undefined}
             onSelect={() => onSelect(chart.id)}
             onKeyDown={(e) => handleKeyDown(e, index)}
           />

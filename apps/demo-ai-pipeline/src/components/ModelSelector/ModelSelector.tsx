@@ -17,11 +17,8 @@ export function ModelSelector({
 
   return (
     <div className="space-y-1.5">
-      <label
-        htmlFor="live-model"
-        className="text-xs font-medium uppercase tracking-wider text-muted-foreground"
-      >
-        Live model
+      <label htmlFor="live-model" className="text-xs font-medium tracking-wider text-primary">
+        Live LLM model
       </label>
       <select
         id="live-model"

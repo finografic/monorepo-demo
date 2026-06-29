@@ -1,5 +1,6 @@
-import { DEFAULT_LIVE_MODEL_ID, LIVE_MODEL_OPTIONS } from '@workspace/shared';
 import type { StreamMode } from '@workspace/shared';
+import { DEFAULT_LIVE_MODEL_ID, LIVE_MODEL_OPTIONS } from '@workspace/shared';
+import { DemoLayout, StandbyPlaceholder } from '@workspace/shared/components';
 import { MetricsBar } from 'components/MetricsBar/MetricsBar';
 import { PartialMarkdownGuard } from 'components/PartialMarkdownGuard/PartialMarkdownGuard';
 import { PromptSelector } from 'components/PromptSelector/PromptSelector';
@@ -9,7 +10,6 @@ import { PROMPTS } from 'prompts/index';
 import { useEffect, useMemo, useState } from 'react';
 
 import { useStreamingGeneration } from 'lib/useStreamingGeneration';
-import qldLogoUrl from '../qld.svg';
 
 interface SourceReference {
   label: string;
@@ -79,7 +79,9 @@ export function DemoPage() {
       : selectedPrompt?.id;
   const sourceReference =
     selectedPrompt?.id === 'service-finder'
-      ? SOURCE_REFERENCES[selectedParameterOptions.find((option) => option?.fixturePromptId)?.fixturePromptId ?? '']
+      ? SOURCE_REFERENCES[
+          selectedParameterOptions.find((option) => option?.fixturePromptId)?.fixturePromptId ?? ''
+        ]
       : undefined;
   const isWaitingForFirstPaint = status === 'streaming' && buffer.length === 0;
 
@@ -113,75 +115,73 @@ export function DemoPage() {
   }
 
   return (
-    <div className="flex flex-col md:flex-row h-screen overflow-hidden bg-background">
-      {/* Left panel — prompt selection */}
-      <aside className="flex-none overflow-hidden border-b border-border md:w-[30rem] md:border-b-0 md:border-r lg:w-[32rem] flex flex-col">
-        <div className="border-b border-border px-5 py-5">
-          <h1 className="text-base font-semibold text-foreground">AI Markdown Pipeline</h1>
-          <p className="mt-1 text-sm text-muted-foreground">
-            Streaming markdown · Mermaid diagrams · Syntax highlighting
-          </p>
-        </div>
-
-        <div className="flex-1 overflow-y-auto px-4 py-5">
-          <PromptSelector
-            prompts={PROMPTS}
-            selectedId={selectedId}
-            parameterValues={parameterValues}
-            disabled={status === 'streaming'}
-            onSelect={handleSelect}
-            onParameterChange={handleParameterChange}
-          />
-        </div>
-
-        <div className="min-h-24 border-t border-border px-4 py-4">
-          <StreamingControls
-            status={status}
-            hasSelection={!!selectedId}
-            mode={mode}
-            liveModels={LIVE_MODEL_OPTIONS}
-            selectedModelId={selectedModelId}
-            onModeChange={handleModeChange}
-            onModelChange={setSelectedModelId}
-            onStart={handleStart}
-            onStop={stop}
-            onClear={handleClear}
-          />
-          <p className="mt-2 text-center text-xs text-muted-foreground/70">
-            {mode === 'fixture'
-              ? 'Fixture mode — pre-recorded responses, no API cost'
-              : 'Live mode — calls the configured OpenAI-compatible server provider'}
-          </p>
-        </div>
-      </aside>
-
-      {/* Right panel — output */}
-      <main className="flex-1 flex flex-col overflow-hidden">
-        {/* Scrollable output area */}
-        <div
-          className="flex-1 overflow-y-auto px-8 py-6"
-          aria-live="polite"
-          aria-label="Generated content"
-        >
-          {isWaitingForFirstPaint ? (
-            <GeneratingPlaceholder />
-          ) : buffer.length ? (
-            <PartialMarkdownGuard buffer={buffer} showRaw={showRaw} />
-          ) : (
-            <StandbyPlaceholder />
-          )}
-        </div>
-
-        {/* Bottom bar — toggle + metrics */}
-        <div className="flex min-h-24 flex-wrap items-center gap-5 border-t border-border bg-background px-8 py-4">
-          <SourceToggle showRaw={showRaw} onToggle={() => setShowRaw((v) => !v)} />
-          <div className="flex-1">
-            <MetricsBar status={status} metrics={metrics} />
+    <DemoLayout
+      header={{
+        title: 'AI Markdown Pipeline',
+        subtitle: 'Streaming markdown · Mermaid diagrams · Syntax highlighting',
+      }}
+      sidebar={
+        <>
+          <div className="flex-1 overflow-y-auto px-4 py-5">
+            <PromptSelector
+              prompts={PROMPTS}
+              selectedId={selectedId}
+              parameterValues={parameterValues}
+              disabled={status === 'streaming'}
+              onSelect={handleSelect}
+              onParameterChange={handleParameterChange}
+            />
           </div>
-          {sourceReference ? <SourceAttribution source={sourceReference} /> : null}
+
+          <div className="min-h-24 border-t border-border px-4 py-4">
+            <StreamingControls
+              status={status}
+              hasSelection={!!selectedId}
+              mode={mode}
+              liveModels={LIVE_MODEL_OPTIONS}
+              selectedModelId={selectedModelId}
+              onModeChange={handleModeChange}
+              onModelChange={setSelectedModelId}
+              onStart={handleStart}
+              onStop={stop}
+              onClear={handleClear}
+            />
+            <p className="mt-2 text-center text-xs text-muted-foreground/70">
+              {mode === 'fixture'
+                ? 'Fixture mode — pre-recorded responses, no API cost'
+                : 'Live mode — calls the configured OpenAI-compatible server provider'}
+            </p>
+          </div>
+        </>
+      }
+      sidebarLabel="Prompt selection"
+      footer={
+        <p className="text-sm text-primary-foreground">
+          Fixture mode · Live OpenAI-compatible API
+          <span className="mt-0.5 mx-4 text-primary-foreground/60">
+            Streaming · Mermaid · Syntax highlighting
+          </span>
+        </p>
+      }
+    >
+      <div className="flex-1 overflow-y-auto px-8 py-6" aria-live="polite" aria-label="Generated content">
+        {isWaitingForFirstPaint ? (
+          <GeneratingPlaceholder />
+        ) : buffer.length ? (
+          <PartialMarkdownGuard buffer={buffer} showRaw={showRaw} />
+        ) : (
+          <StandbyPlaceholder label="Select a prompt and click Generate to begin." />
+        )}
+      </div>
+
+      <div className="flex min-h-24 flex-wrap items-center gap-5 border-t border-border bg-background px-8 py-4">
+        <SourceToggle showRaw={showRaw} onToggle={() => setShowRaw((v) => !v)} />
+        <div className="flex-1">
+          <MetricsBar status={status} metrics={metrics} />
         </div>
-      </main>
-    </div>
+        {sourceReference ? <SourceAttribution source={sourceReference} /> : null}
+      </div>
+    </DemoLayout>
   );
 }
 
@@ -201,17 +201,6 @@ function SourceAttribution({ source }: { source: SourceReference }) {
         ·
       </span>
       <span className="text-muted-foreground/70">{source.note}</span>
-    </div>
-  );
-}
-
-function StandbyPlaceholder() {
-  return (
-    <div className="flex min-h-full items-center justify-center">
-      <div className="flex flex-col items-center gap-5 text-center">
-        <img src={qldLogoUrl} alt="Queensland Government" className="w-72 max-w-[70vw]" />
-        <p className="text-base font-medium text-primary">Select a prompt and click Generate to begin.</p>
-      </div>
     </div>
   );
 }

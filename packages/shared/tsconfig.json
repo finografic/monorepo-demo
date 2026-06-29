@@ -2,7 +2,11 @@
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
     "noEmit": true,
-    "jsx": "react-jsx"
+    "jsx": "react-jsx",
+    "paths": {
+      "@workspace/ui/*": ["../../packages/ui/src/*"],
+      "utils": ["../../packages/ui/src/lib/utils"]
+    }
   },
   "include": ["src"],
   "exclude": ["node_modules", "dist"]

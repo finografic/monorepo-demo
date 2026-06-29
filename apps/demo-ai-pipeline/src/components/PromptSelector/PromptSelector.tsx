@@ -1,5 +1,6 @@
 import type { Prompt } from '@workspace/shared';
-import { OptionCard, resolveBadgeClass } from '@workspace/shared';
+import { resolveBadgeClass } from '@workspace/shared';
+import { OptionCard } from '@workspace/shared/components/OptionCard';
 import { useRef } from 'react';
 
 interface PromptSelectorProps {

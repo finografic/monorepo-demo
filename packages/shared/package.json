@@ -5,12 +5,16 @@
   "type": "module",
   "exports": {
     ".": "./src/index.ts",
-    "./components/OptionCard": "./src/components/OptionCard/OptionCard.tsx"
+    "./components/*": "./src/components/*",
+    "./assets/*": "./src/assets/*"
   },
   "scripts": {
     "lint": "oxlint -c ../../oxlint.config.ts",
     "lint:fix": "oxlint -c ../../oxlint.config.ts --fix",
     "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@workspace/ui": "workspace:*"
   },
   "peerDependencies": {
     "react": "^19.2.0"

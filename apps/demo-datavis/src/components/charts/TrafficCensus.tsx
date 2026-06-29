@@ -13,6 +13,7 @@ import type { BarShapeProps } from 'recharts';
 
 import {
   CHART_AXIS_TICK_PROPS_SM,
+  CHART_ENTRANCE_ANIMATION,
   CHART_GRID_DASH,
   CHART_GRID_STROKE,
   TOOLTIP_STYLE,
@@ -84,7 +85,7 @@ export function TrafficCensus() {
               return `${(aadtK * 1000).toLocaleString()} vehicles/day (${heavyVehiclePct}% heavy)`;
             }}
           />
-          <Bar dataKey="aadtK" radius={BAR_RADIUS} isAnimationActive={false} shape={CensusBarShape} />
+          <Bar dataKey="aadtK" radius={BAR_RADIUS} shape={CensusBarShape} {...CHART_ENTRANCE_ANIMATION} />
         </BarChart>
       </ResponsiveContainer>
 

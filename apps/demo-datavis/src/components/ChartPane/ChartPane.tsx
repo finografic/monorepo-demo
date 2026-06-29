@@ -80,14 +80,12 @@ export const ChartPane = forwardRef<ChartPaneHandle, ChartPaneProps>(function Ch
 
       <div className="flex-1 min-h-0 overflow-y-auto overflow-x-hidden px-8 py-6 flex flex-col">
         <div
+          key={chart.id}
           ref={chartAreaRef}
           className="my-auto w-full [@media(min-height:800px)]:pb-[25vh]"
           onKeyDown={handleChartKeyDown}
         >
           <ChartComponent id={chart.id} />
-          <p className="mt-6 text-center text-xs font-medium text-primary">
-            WCAG 2.1 AA · Accessible data charts · Keyboard navigable · → chart · ← or Esc sidebar
-          </p>
         </div>
       </div>
 

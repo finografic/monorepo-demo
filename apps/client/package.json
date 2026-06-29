@@ -8,6 +8,7 @@
     "·········· CLEAN": "·····················································",
     "·········· LINTING": "···················································",
     "build": "tsc --project tsconfig.json && vite build",
+    "build:pages": "pnpm build",
     "clean": "pnpm --package=@finografic/project-scripts dlx purge-builds --detach",
     "dev": "vite",
     "lint": "oxlint -c oxlint.config.ts",
@@ -17,6 +18,7 @@
   },
   "dependencies": {
     "@tanstack/react-query": "^5.101.1",
+    "@workspace/shared": "workspace:*",
     "@workspace/ui": "workspace:*",
     "hono": "^4.12.27",
     "i18next": "^26.3.0",

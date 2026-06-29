@@ -11,7 +11,7 @@ export default defineConfig({
       'pages': resolve(__dirname, 'src/pages'),
       'prompts': resolve(__dirname, 'src/prompts'),
       'fixtures': resolve(__dirname, 'src/fixtures'),
-      '@workspace/shared': resolve(__dirname, '../../packages/shared/src/index.ts'),
+      '@workspace/shared': resolve(__dirname, '../../packages/shared/src'),
     },
   },
 });

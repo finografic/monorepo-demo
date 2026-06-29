@@ -118,6 +118,7 @@ export function useStreamingGeneration(): UseStreamingGenerationReturn {
                   method: 'POST',
                   signal: controller.signal,
                   headers: { 'Accept': 'text/event-stream', 'Content-Type': 'application/json' },
+                  credentials: 'include',
                   body: JSON.stringify({ promptId, systemPrompt, modelId }),
                 })
               : await fetch(apiUrl(`/api/stream/fixture/${promptId}`), {

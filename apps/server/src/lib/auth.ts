@@ -70,9 +70,9 @@ export function getAuthConfig(): AuthConfig {
         name: env.COOKIES.TOKEN_COOKIE,
         options: {
           httpOnly: true,
-          sameSite: 'lax' as const,
+          sameSite: env.COOKIES.SAME_SITE,
           path: '/',
-          secure: false,
+          secure: env.COOKIES.SECURE,
         },
       },
     },

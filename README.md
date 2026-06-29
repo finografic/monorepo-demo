@@ -136,6 +136,11 @@ The client dev server starts on `http://localhost:3000`.
 The API server starts on `http://localhost:4000`.
 The Scalar API explorer is available at `http://localhost:4000/api/reference`.
 
+## Deployment
+
+The portfolio deployment target is GitHub Pages for static Vite apps plus a hosted Node API for auth, live LLM
+streaming, and scan execution. See [Portfolio Deployment](/docs/process/PORTFOLIO_DEPLOYMENT.md).
+
 ---
 
 ## Scripts

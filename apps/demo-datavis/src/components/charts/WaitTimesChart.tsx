@@ -3,6 +3,7 @@ import { Bar, BarChart, CartesianGrid, Legend, ResponsiveContainer, Tooltip, XAx
 
 import {
   CHART_AXIS_TICK_PROPS_MD,
+  CHART_ENTRANCE_ANIMATION,
   CHART_GRID_DASH,
   CHART_GRID_STROKE,
   LEGEND_STYLE,
@@ -51,14 +52,15 @@ export function WaitTimesChart() {
             name="Avg wait"
             fill="var(--primary)"
             radius={BAR_RADIUS}
-            isAnimationActive={false}
+            {...CHART_ENTRANCE_ANIMATION}
           />
           <Bar
             dataKey="avgServeMin"
             name="Avg serve"
             fill="oklch(0.65 0.12 254)"
             radius={BAR_RADIUS}
-            isAnimationActive={false}
+            {...CHART_ENTRANCE_ANIMATION}
+            animationBegin={150}
           />
         </BarChart>
       </ResponsiveContainer>

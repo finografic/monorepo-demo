@@ -5,6 +5,10 @@
     "jsx": "react-jsx",
     "types": ["vite/client"],
     "paths": {
+      "@workspace/shared": ["../../packages/shared/src/index.ts"],
+      "@workspace/shared/components": ["../../packages/shared/src/components/index.ts"],
+      "@workspace/shared/components/*": ["../../packages/shared/src/components/*"],
+      "@workspace/shared/assets/*": ["../../packages/shared/src/assets/*"],
       "@workspace/ui/globals.css": ["../../packages/ui/src/styles/globals.css"],
       "@workspace/ui/*": ["../../packages/ui/src/*"],
       "hooks/*": ["../../packages/ui/src/hooks/*"],

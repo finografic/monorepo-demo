@@ -8,6 +8,7 @@ import * as v from 'valibot';
 
 import { getAiProvider } from 'lib/ai-provider';
 import { createRouter } from 'lib/create-app';
+import { requireAuth } from 'lib/require-auth';
 
 const FIXTURES_DIR = resolve(import.meta.dirname, '../../../../demo-ai-pipeline/src/fixtures');
 
@@ -112,7 +113,7 @@ const streamRouter = createRouter()
       await s.write(`data: ${donePayload}\n\n`);
     });
   })
-  .post('/live', rateLimit({ limit: 10, windowMs: 60 * 60 * 1000 }), async (c) => {
+  .post('/live', requireAuth(), rateLimit({ limit: 10, windowMs: 60 * 60 * 1000 }), async (c) => {
     const body = v.safeParse(LiveBodySchema, await c.req.json());
     if (!body.success) {
       return c.json({ error: 'BAD_REQUEST', message: 'promptId and systemPrompt are required' }, 400);

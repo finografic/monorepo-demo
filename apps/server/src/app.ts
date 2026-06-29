@@ -1,4 +1,5 @@
 import { initAuthConfig } from '@hono/auth-js';
+import { env } from 'env.server';
 import { cors } from 'hono/cors';
 
 import { getAuthConfig } from './lib/auth';
@@ -18,7 +19,7 @@ const app = createApp();
 app.use(
   '/*',
   cors({
-    origin: (origin) => origin,
+    origin: (origin) => (env.CORS_ORIGINS.includes(origin) ? origin : null),
     allowMethods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
     credentials: true,
   }),

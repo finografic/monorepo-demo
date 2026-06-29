@@ -11,34 +11,39 @@ import { DashboardPage } from './pages/DashboardPage';
 import { LandingPage } from './pages/LandingPage';
 import { LoginPage } from './pages/LoginPage';
 
-export const router = createBrowserRouter([
+export const router = createBrowserRouter(
+  [
+    {
+      element: <Layout />,
+      children: [
+        { index: true, element: <LandingPage /> },
+        { path: 'login', element: <LoginPage /> },
+        {
+          path: 'dashboard',
+          element: (
+            <ProtectedRoute>
+              <DashboardPage />
+            </ProtectedRoute>
+          ),
+        },
+      ],
+    },
+    {
+      path: 'admin',
+      element: (
+        <ProtectedRoute requiredRole="admin">
+          <AdminLayout />
+        </ProtectedRoute>
+      ),
+      children: [
+        { index: true, element: <AdminDashboardPage /> },
+        { path: 'users', element: <AdminUsersPage /> },
+        { path: 'translations', element: <AdminTranslationsPage /> },
+        { path: 'settings', element: <AdminSettingsPage /> },
+      ],
+    },
+  ],
   {
-    element: <Layout />,
-    children: [
-      { index: true, element: <LandingPage /> },
-      { path: 'login', element: <LoginPage /> },
-      {
-        path: 'dashboard',
-        element: (
-          <ProtectedRoute>
-            <DashboardPage />
-          </ProtectedRoute>
-        ),
-      },
-    ],
+    basename: import.meta.env.BASE_URL,
   },
-  {
-    path: 'admin',
-    element: (
-      <ProtectedRoute requiredRole="admin">
-        <AdminLayout />
-      </ProtectedRoute>
-    ),
-    children: [
-      { index: true, element: <AdminDashboardPage /> },
-      { path: 'users', element: <AdminUsersPage /> },
-      { path: 'translations', element: <AdminTranslationsPage /> },
-      { path: 'settings', element: <AdminSettingsPage /> },
-    ],
-  },
-]);
+);

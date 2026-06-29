@@ -6,8 +6,11 @@ import { defineConfig, loadEnv } from 'vite';
 export default defineConfig(({ mode }) => {
   const rootEnv = loadEnv(mode, resolve(__dirname, '../..'), '');
   const apiPort = rootEnv['API_PORT'] ?? '4000';
+  const basePath = process.env['VITE_BASE_PATH'] ?? rootEnv['VITE_BASE_PATH'] ?? '/';
 
   return {
+    base: basePath,
+
     plugins: [react(), tailwindcss()],
 
     resolve: {
@@ -17,6 +20,7 @@ export default defineConfig(({ mode }) => {
         'lib': resolve('src/lib'),
         'providers': resolve('src/providers'),
         'queries': resolve('src/queries'),
+        '@workspace/shared': resolve('../../packages/shared/src'),
         '@workspace/ui/globals.css': resolve('../../packages/ui/src/styles/globals.css'),
         '@workspace/ui': resolve('../../packages/ui/src'),
         '@workspace/ui/components': resolve('../../packages/ui/src/components'),

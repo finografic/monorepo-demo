@@ -1,4 +1,5 @@
-import { OptionCard, resolveBadgeClass } from '@workspace/shared';
+import { resolveBadgeClass } from '@workspace/shared';
+import { OptionCard } from '@workspace/shared/components';
 import { useCallback, useRef } from 'react';
 import type { RepoMeta } from 'data/types';
 

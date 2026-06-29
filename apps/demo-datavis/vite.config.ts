@@ -12,6 +12,7 @@ export default defineConfig({
     dedupe: ['react', 'react-dom'],
     alias: {
       'components': resolve('src/components'),
+      'constants': resolve('src/constants'),
       'pages': resolve('src/pages'),
       'data': resolve('src/data'),
       '@workspace/shared': resolve('../../packages/shared/src'),

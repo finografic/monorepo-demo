@@ -1,3 +1,4 @@
+import { DemoLayout } from '@workspace/shared/components';
 import { RepoSelector } from 'components/RepoSelector/RepoSelector';
 import { ScanPane } from 'components/ScanPane/ScanPane';
 import { REPOS } from 'data/repos';
@@ -9,35 +10,26 @@ export function DemoPage() {
   const selectedRepo = REPOS.find((r) => r.id === selectedId) ?? null;
 
   return (
-    <div className="flex h-screen flex-col overflow-hidden bg-background">
-      <header className="flex-none bg-primary px-6 py-4">
-        <h1 className="text-base font-semibold text-primary-foreground">Dependency Scanner Demo</h1>
-        <p className="mt-0.5 text-sm text-primary-foreground/75">
-          xscan · GitHub lockfiles · Live terminal output
+    <DemoLayout
+      header={{
+        title: 'Dependency Scanner Demo',
+        subtitle: 'xscan · GitHub lockfiles · Live terminal output',
+      }}
+      sidebar={
+        <div className="flex-1 overflow-y-auto px-4 py-5">
+          <RepoSelector repos={REPOS} selectedId={selectedId} onSelect={setSelectedId} />
+        </div>
+      }
+      sidebarLabel="Repository navigation"
+      footer={
+        <p className="text-sm text-primary-foreground">
+          Vendored xscan dist · Server-side scan
+          <span className="mt-0.5 mx-4 text-primary-foreground/60">NPM_TOKEN for Dependabot</span>
         </p>
-      </header>
-
-      <div className="flex flex-1 overflow-hidden">
-        <aside
-          className="flex w-[30rem] flex-none flex-col overflow-hidden border-r border-border lg:w-[32rem]"
-          aria-label="Repository navigation"
-        >
-          <div className="flex-1 overflow-y-auto px-4 py-5">
-            <RepoSelector repos={REPOS} selectedId={selectedId} onSelect={setSelectedId} />
-          </div>
-
-          <div className="border-t border-border px-5 py-3">
-            <p className="text-center text-xs text-muted-foreground/60">
-              Vendored xscan dist · Server-side scan · NPM_TOKEN for Dependabot
-            </p>
-          </div>
-        </aside>
-
-        <main className="flex flex-1 flex-col overflow-hidden">
-          {selectedRepo ? <ScanPane repo={selectedRepo} /> : <StandbyPlaceholder />}
-        </main>
-      </div>
-    </div>
+      }
+    >
+      {selectedRepo ? <ScanPane repo={selectedRepo} /> : <StandbyPlaceholder />}
+    </DemoLayout>
   );
 }
 

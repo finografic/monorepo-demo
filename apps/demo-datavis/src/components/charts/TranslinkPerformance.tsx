@@ -3,6 +3,7 @@ import { CartesianGrid, Legend, Line, LineChart, ResponsiveContainer, Tooltip, X
 
 import {
   CHART_AXIS_TICK_PROPS_MD,
+  CHART_ENTRANCE_ANIMATION,
   CHART_GRID_DASH,
   CHART_GRID_STROKE,
   LEGEND_STYLE,
@@ -64,7 +65,7 @@ export function TranslinkPerformance() {
             stroke="var(--primary)"
             strokeWidth={2.5}
             dot={{ r: 4, fill: 'var(--primary)', strokeWidth: 0 }}
-            isAnimationActive={false}
+            {...CHART_ENTRANCE_ANIMATION}
           />
           <Line
             yAxisId="complaints"
@@ -75,7 +76,8 @@ export function TranslinkPerformance() {
             strokeWidth={2}
             strokeDasharray="5 3"
             dot={{ r: 3, fill: 'oklch(0.6 0.15 30)', strokeWidth: 0 }}
-            isAnimationActive={false}
+            {...CHART_ENTRANCE_ANIMATION}
+            animationBegin={200}
           />
         </LineChart>
       </ResponsiveContainer>

@@ -32,6 +32,13 @@ export const LEGEND_STYLE: CSSProperties = {
 export const CHART_GRID_STROKE = 'var(--border)';
 export const CHART_GRID_DASH = '3 3';
 
+/** Entrance animation for static mock charts; live charts should use `isAnimationActive={false}`. */
+export const CHART_ENTRANCE_ANIMATION = {
+  isAnimationActive: 'auto' as const,
+  animationDuration: 800,
+  animationEasing: 'ease-out' as const,
+};
+
 type ChartAxisLabelPosition = 'insideLeft' | 'insideRight' | 'insideBottom' | 'insideBottomRight';
 
 interface ChartAxisLabelOptions {

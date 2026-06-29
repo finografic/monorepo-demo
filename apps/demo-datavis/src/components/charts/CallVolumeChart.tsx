@@ -3,6 +3,7 @@ import { Area, AreaChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YA
 
 import {
   CHART_AXIS_TICK_PROPS_SM,
+  CHART_ENTRANCE_ANIMATION,
   CHART_GRID_DASH,
   CHART_GRID_STROKE,
   TOOLTIP_STYLE,
@@ -75,7 +76,7 @@ export function CallVolumeChart() {
             strokeWidth={2.5}
             fill="url(#call-volume-gradient)"
             dot={{ r: 3.5, fill: 'var(--primary)', strokeWidth: 0 }}
-            isAnimationActive={false}
+            {...CHART_ENTRANCE_ANIMATION}
           />
         </AreaChart>
       </ResponsiveContainer>
