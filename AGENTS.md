@@ -71,12 +71,12 @@ Shared across Claude Code, Cursor, and GitHub Copilot.
 ## Learned User Preferences
 
 - Do not create git commits unless the user explicitly asks.
-- When changing typography, prepend new body fonts to the stack and keep existing fallbacks unless the user asks to remove a family entirely.
-- Prefer global typography/theme token changes (html root font-size, CSS variables in `globals.css`) over per-component text size tweaks.
+- Treat pasted handoff or context blocks as orientation only; do not start work unless the user asks for a specific action.
+- For typography changes, prefer global tokens (`html` root font-size, CSS variables in `globals.css`) over per-component tweaks; prepend new body fonts to the stack and keep existing fallbacks unless asked to remove a family.
+- In `demo-datavis`, centralize common Recharts props in `src/constants/charts.config.ts`; keep chart-specific constants (domains, IDs, label text) in each chart file.
 - npm dependency upgrades use pnpm + syncpack (Moon/Proto pin Node/pnpm/moon only); `deps:update` chains `pnpm syncpack:fix` after `--latest --recursive`; syncpack v14+ uses `fix` not `fix-mismatches`.
 - For `@finografic/design-system`, ship prebuilt `dist/` from CI in the npm tarball; do not commit `dist/` or use postinstall build scripts.
-- In this workspace, do not remove unused imports on save (`source.organizeImports: never`); sort only via `source.sortImports: explicit`. Keep `source.fixAll.oxc: explicit` for oxlint fixes without organize-imports cleanup.
-- Prefer adding missing imports on save (`source.addMissingImports: explicit`) and TypeScript auto-import suggestions while typing.
+- In this workspace, use `source.addMissingImports: explicit` and `source.sortImports: explicit`; do not remove unused imports on save (`source.organizeImports: never`); keep `source.fixAll.oxc: explicit` for oxlint without organize-imports cleanup.
 - Use `:` as the segment separator in npm script names everywhere (e.g. `db:migrations:seed`, not `db.migrations.seed` or space-separated variants).
 - Prefer the published `@finografic/project-scripts` from the registry; use `file:`/`link:` only when explicitly testing local project-scripts changes.
 - `pnpm link` writes persistent `link:` specifiers in `package.json` and `pnpm-workspace.yaml` overrides — global unlink does not restore registry ranges.
@@ -93,7 +93,7 @@ Shared across Claude Code, Cursor, and GitHub Copilot.
 - Each app has a local `oxlint.config.ts` importing presets from `@finografic/oxc-config/oxlint`.
 - Root `package.json` does NOT set `"type": "module"` — each sub-package declares its own.
 - `packages/ui` contains owned shadcn components and Tailwind 4 globals (`@workspace/ui/*`); shadcn theme `baseColor: neutral`, `style: radix-vega`; semantic text tokens in `globals.css` (`--foreground`, `--muted-foreground`); `body` uses `text-foreground`, most paragraph copy `text-muted-foreground`; root scale via `html { font-size: 112.5%; }`.
-- `packages/core` was intentionally skipped in Phase 03; `packages/shared` (`@workspace/shared`) holds demo/shared DTOs and UI; portfolio demos live under `apps/demo-*` (`demo-ai-pipeline`, `demo-datavis`, `demo-xscan`).
+- `packages/core` was intentionally skipped in Phase 03; `@workspace/shared` main barrel is types/models only (server-safe); JSX components (`DemoLayout`, `StandbyPlaceholder`, `OptionCard`) export via `@workspace/shared/components`; assets via `@workspace/shared/assets/*`; demo apps alias `@workspace/shared` → `packages/shared/src` (directory, required for asset subpaths). Portfolio demos: `demo-ai-pipeline` :3001, `demo-datavis` :3002, `demo-xscan` :3003 (`demo-xscan` keeps its own monitor-icon `StandbyPlaceholder`, not QLD branding).
 - `.github/workflows/deploy-demo-pages.yml` publishes static demo apps to GitHub Pages under `/demo-ai-pipeline/`, `/demo-datavis/`, and `/demo-xscan/`; API-backed demo features still require a hosted Node service.
 - Root `db:reset` chains drop → migrate → `db:setup` via the `@finografic/project-scripts` `db-setup` CLI (`NODE_OPTIONS='--import tsx' db-setup -y`); do not duplicate a local db-setup script.
 - `config/db-setup.config.ts` seeds: `user`, `supported_languages`, `translations_ui`, `translations_app`, `translations_admin`; `viewConfigs` is empty (no SQL views). Seed files use underscore names matching schema exports.
