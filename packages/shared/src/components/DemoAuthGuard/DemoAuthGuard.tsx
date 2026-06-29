@@ -88,9 +88,7 @@ export function DemoAuthGuard({ children }: DemoAuthGuardProps) {
         role="status"
         aria-live="polite"
       >
-        <p className="text-sm font-semibold text-muted-foreground">
-          Verifying auth session...
-        </p>
+        <p className="text-sm font-semibold text-muted-foreground">Verifying auth session...</p>
       </div>
     );
   }
