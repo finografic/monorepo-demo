@@ -60,8 +60,8 @@ Start command:
 pnpm --filter @workspace/server start:render
 ```
 
-The Render start command runs a non-destructive SQLite bootstrap before starting the API. It creates or updates the
-schema and seeds missing demo data without dropping existing runtime data.
+The Render start command runs a non-interactive SQLite bootstrap before starting the API. It creates or updates the
+schema, seeds missing demo data, and then starts the built Hono server.
 
 | Variable                                     | Notes                                                                            |
 | -------------------------------------------- | -------------------------------------------------------------------------------- |
