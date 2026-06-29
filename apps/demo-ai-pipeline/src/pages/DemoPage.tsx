@@ -214,7 +214,7 @@ function GeneratingPlaceholder({ label }: { label: string }) {
       aria-live="polite"
     >
       <span className="h-14 w-14 animate-spin rounded-full border-4 border-primary/20 border-t-primary/70" />
-      <span className="text-sm font-semibold text-muted-foreground">{label}</span>
+      <span className="text-sm font-semibold text-primary opacity-80">{label}</span>
     </div>
   );
 }
