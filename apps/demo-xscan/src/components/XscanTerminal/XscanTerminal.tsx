@@ -116,10 +116,10 @@ export function XscanTerminal({ repoId }: XscanTerminalProps) {
 
   return (
     <div
-      ref={containerRef}
-      className="h-full w-full overflow-hidden rounded-lg border border-border bg-slate-950 p-1"
-      aria-label="Scan terminal output"
-      role="log"
-    />
+      className="h-full w-full overflow-hidden rounded-lg border border-border pl-4 pr-2 py-6"
+      style={{ backgroundColor: '#0F172A' }}
+    >
+      <div ref={containerRef} className="h-full w-full" aria-label="Scan terminal output" role="log" />
+    </div>
   );
 }

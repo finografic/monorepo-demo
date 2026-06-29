@@ -1,10 +1,14 @@
 # @finografic/monorepo-demo
 
-> A selective-extraction, full-stack pnpm monorepo starter — pick what you need, delete the rest.
+> Portfolio monorepo demo with protected React/Vite apps for AI markdown streaming, Queensland TMR data
+> visualisation, and dependency scan tooling, backed by a Hono/Auth.js API.
 
-Built as a reference implementation and portfolio demo for a modern TypeScript monorepo with a production-quality
-toolchain. Everything is pre-wired: auth, routing, i18n, database, design tokens, OpenAPI docs, structured logging,
-and CI-ready linting — all in a single repository you can clone and carve up.
+This repo is a TypeScript-first portfolio project showing frontend engineering patterns across multiple small apps:
+accessible UI, protected routes, streaming AI output, transport data visualisation, terminal-style tooling, and
+production-minded API/auth boundaries.
+
+The static demo apps are designed for GitHub Pages, while authenticated API features run through a Node service such
+as Railway.
 
 ---
 
@@ -12,7 +16,7 @@ and CI-ready linting — all in a single repository you can clone and carve up.
 
 | Layer         | Technology                                                        |
 | :------------ | :---------------------------------------------------------------- |
-| Workspace     | pnpm workspaces + Turborepo                                       |
+| Workspace     | pnpm workspaces + Moon                                            |
 | Client        | Vite 8, React 19, React Router v7                                 |
 | Styling       | Tailwind 4 + shadcn components in `@workspace/ui`                 |
 | i18n          | i18next + i18next-http-backend + react-i18next                    |
@@ -22,7 +26,7 @@ and CI-ready linting — all in a single repository you can clone and carve up.
 | API docs      | hono-openapi + Scalar UI (`@scalar/hono-api-reference`)           |
 | Logging       | Pino (via `hono-pino`)                                            |
 | Env config    | Valibot-validated env, auto-resolved dotenv (`@workspace/config`) |
-| Build         | tsdown (server), Vite (client), tsc project references            |
+| Build         | tsdown (server), Vite apps, tsc project references                |
 | Lint & format | oxlint, oxfmt (Rust-based, fast)                                  |
 | Git hooks     | Husky + lint-staged + commitlint                                  |
 | Testing       | Vitest                                                            |
@@ -30,36 +34,70 @@ and CI-ready linting — all in a single repository you can clone and carve up.
 
 ---
 
+## Portfolio Demos
+
+### AI Markdown Pipeline
+
+LLM-powered markdown workspace generating Queensland TMR-informed content with live streaming, fixture replay,
+Mermaid diagrams, Shiki code highlighting, and RAG-style service guidance.
+
+Highlights:
+
+- Streaming Server-Sent Events UI
+- Raw markdown and rendered output modes
+- Mermaid diagrams, markdown tables, and syntax-highlighted code blocks
+- Fixture mode for static hosting and live mode for authenticated API use
+
+### Transport Data Dashboard
+
+Accessible Queensland TMR dashboard with interactive charts, keyboard-friendly views, source links, and live Open Data
+catalogue integration.
+
+Highlights:
+
+- Recharts and D3 visualisations
+- WCAG-minded chart navigation and keyboard support
+- Mock transport datasets plus live Queensland Open Data views
+- Source links and transport-domain framing for portfolio review
+
+### Dependency Scan Terminal
+
+Browser-based security scan console for running dependency checks against GitHub repositories, with terminal streaming
+and structured summaries.
+
+Highlights:
+
+- xterm.js terminal UI
+- Server-side scan execution bridge
+- Streaming scan output
+- Dependency security summaries for public GitHub repositories
+
 ## Apps
 
-### `apps/client` — Vite 8 + React 19
+### `apps/client` — Landing, Auth, and Shell
 
-React SPA served by Vite on port **3000** in development. All `/api` requests are proxied to the server.
+React SPA served by Vite on port **3000** in development. It hosts the portfolio landing page, Auth.js login flow,
+protected dashboard routes, and links to the three demo apps.
 
-**Routes:**
+Demo apps require a session in the UI and redirect unauthenticated visitors to `/login` with the attempted demo URL
+preserved. Static GitHub Pages assets are not private; API endpoints enforce the real protection server-side.
 
-| Path                  | Access | Description                  |
-| :-------------------- | :----- | :--------------------------- |
-| `/`                   | Public | Landing page                 |
-| `/login`              | Public | Auth.js sign-in form         |
-| `/dashboard`          | Auth   | Authenticated user dashboard |
-| `/admin`              | Admin  | Admin area root              |
-| `/admin/users`        | Admin  | User management              |
-| `/admin/translations` | Admin  | Translation CMS              |
-| `/admin/settings`     | Admin  | Admin settings               |
+### `apps/demo-ai-pipeline`
 
-Access control is enforced client-side by `ProtectedRoute`, which accepts an optional `requiredRole` prop. The
-server independently enforces the same roles on every API route.
+Vite app served on port **3001** locally and published under `/demo-ai-pipeline/` on GitHub Pages.
 
-**Notable features:**
+### `apps/demo-datavis`
 
-- Language switcher component — calls the server i18n endpoint and stores the preference
-- shadcn components sourced from `packages/ui` and consumed as `@workspace/ui/*`
-- Tailwind 4 tokens and generated shadcn theme from `@workspace/ui/globals.css`
+Vite app served on port **3002** locally and published under `/demo-datavis/` on GitHub Pages.
+
+### `apps/demo-xscan`
+
+Vite app served on port **3003** locally and published under `/demo-xscan/` on GitHub Pages. Local development uses a
+Vite middleware endpoint for `/api/scan`; hosted scan execution should run through a Node service.
 
 ### `apps/server` — Hono API
 
-Hono application served by `@hono/node-server` on port **4000** in development. Built with `tsdown` for production.
+Hono application served by `@hono/node-server`. Built with `tsdown` for production.
 
 **API routes (all under `/api`):**
 
@@ -71,6 +109,7 @@ Hono application served by `@hono/node-server` on port **4000** in development. 
 | `POST /api/auth/sign-out`  | End the current session                  |
 | `GET  /api/i18n/languages` | List supported languages                 |
 | `GET  /api/i18n/:lang`     | Fetch translation strings for a language |
+| `POST /api/stream/live`    | Authenticated AI Pipeline live stream    |
 | `GET  /api/users`          | List users (admin)                       |
 | `GET  /api/translations`   | List all translation keys (admin)        |
 | `GET  /api/doc`            | OpenAPI 3.1 JSON spec                    |
@@ -103,14 +142,21 @@ Centralised environment configuration shared by both apps.
 ```
 monorepo-demo/
 ├── apps/
-│   ├── client/          # Vite 7 + React 19 SPA
+│   ├── client/          # Landing page, login, and app shell
+│   ├── demo-ai-pipeline/
+│   ├── demo-datavis/
+│   ├── demo-xscan/
 │   └── server/          # Hono API server
+├── packages/
+│   ├── shared/          # Shared demo layout and models
+│   └── ui/              # shadcn/Tailwind components and globals
 ├── config/              # @workspace/config — env + paths
 ├── docs/
-│   └── todo/            # ROADMAP.md, NEXT_STEPS.md
+│   ├── process/
+│   └── todo/
 ├── .github/
-│   └── instructions/    # Shared AI-assistant coding rules
-├── turbo.json
+│   ├── instructions/
+│   └── workflows/
 ├── pnpm-workspace.yaml
 └── package.json
 ```
@@ -128,13 +174,22 @@ pnpm install
 # Copy and populate environment files
 cp apps/server/.env.example apps/server/.env
 
-# Start all apps in watch mode
+# Start the main client and API
 pnpm dev
+
+# Start the main client, API, and all demo apps
+pnpm dev:all
 ```
 
-The client dev server starts on `http://localhost:3000`.
-The API server starts on `http://localhost:4000`.
-The Scalar API explorer is available at `http://localhost:4000/api/reference`.
+Default local ports:
+
+| App                      | URL                                         |
+| ------------------------ | ------------------------------------------- |
+| Landing page             | `http://localhost:3000`                     |
+| AI Markdown Pipeline     | `http://localhost:3001`                     |
+| Transport Data Dashboard | `http://localhost:3002`                     |
+| Dependency Scan Terminal | `http://localhost:3003`                     |
+| API reference            | `http://localhost:<API_PORT>/api/reference` |
 
 ## Deployment
 
@@ -162,19 +217,6 @@ All root scripts delegate to Turborepo and run across all workspaces in dependen
 | `pnpm clean`         | Delete all build artefacts               |
 | `pnpm syncpack:lint` | Check for cross-workspace version drift  |
 | `pnpm syncpack:fix`  | Fix mismatched dependency versions       |
-
----
-
-## Selective Extraction
-
-This repo is designed to be carved up, not cloned wholesale. Each concern is isolated so you can:
-
-- **Keep the full stack** — clone and extend in place
-- **Extract just the server** — copy `apps/server` + `config`; the Valibot env layer and Hono patterns are self-contained
-- **Extract just the client** — copy `apps/client` + `packages/ui`; swap the shadcn theme tokens for your own brand
-- **Use the toolchain only** — lift `turbo.json`, the oxlint/oxfmt config, and the Husky setup into an existing repo
-
-Internal packages use the `@workspace/*` scope. External published dependencies use real npm scopes.
 
 ---
 

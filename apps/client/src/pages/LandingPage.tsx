@@ -2,6 +2,7 @@ import { BADGE_COLOR_CLASSES } from '@workspace/shared';
 import { Badge } from '@workspace/ui/components/badge';
 import { Button } from '@workspace/ui/components/button';
 import { Card, CardContent } from '@workspace/ui/components/card';
+import { Globe, Palette, ShieldCheck, Zap } from 'lucide-react';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
@@ -64,7 +65,7 @@ const DEMOS = [
 const FEATURES = [
   {
     key: 'auth',
-    icon: '🔐',
+    Icon: ShieldCheck,
     titleKey: 'app.features.auth.title',
     titleDefault: 'Auth.js + JWT',
     descKey: 'app.features.auth.desc',
@@ -73,7 +74,7 @@ const FEATURES = [
   },
   {
     key: 'i18n',
-    icon: '🌍',
+    Icon: Globe,
     titleKey: 'app.features.i18n.title',
     titleDefault: 'i18n — DB-backed',
     descKey: 'app.features.i18n.desc',
@@ -81,7 +82,7 @@ const FEATURES = [
   },
   {
     key: 'design',
-    icon: '🎨',
+    Icon: Palette,
     titleKey: 'app.features.design.title',
     titleDefault: 'Design System',
     descKey: 'app.features.design.desc',
@@ -89,7 +90,7 @@ const FEATURES = [
   },
   {
     key: 'stack',
-    icon: '⚡',
+    Icon: Zap,
     titleKey: 'app.features.stack.title',
     titleDefault: 'Modern Stack',
     descKey: 'app.features.stack.desc',
@@ -182,11 +183,8 @@ export function LandingPage(): React.JSX.Element {
           {FEATURES.map((feature) => (
             <Card key={feature.key} className="border-2">
               <CardContent className="flex items-center gap-4 px-5 py-3">
-                <div
-                  className="flex w-12 shrink-0 items-center justify-center text-4xl leading-none"
-                  aria-hidden="true"
-                >
-                  {feature.icon}
+                <div className="flex w-12 shrink-0 items-center justify-center" aria-hidden="true">
+                  <feature.Icon size={32} style={{ color: '#005EB8' }} />
                 </div>
                 <div>
                   <p className="font-semibold">{t(feature.titleKey, feature.titleDefault)}</p>
