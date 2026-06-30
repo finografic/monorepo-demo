@@ -33,6 +33,7 @@
   --color-accent-foreground: var(--accent-foreground);
   --color-accent: var(--accent);
   --color-muted-foreground: var(--muted-foreground);
+  --color-placeholder-foreground: var(--placeholder-foreground);
   --color-muted: var(--muted);
   --color-secondary-foreground: var(--secondary-foreground);
   --color-secondary: var(--secondary);
@@ -67,6 +68,7 @@
   --secondary-foreground: oklch(0.21 0.006 285.885);
   --muted: oklch(0.96 0.002 17.2);
   --muted-foreground: oklch(0.444 0.019 43.1);
+  --placeholder-foreground: color-mix(in oklch, var(--muted-foreground) 50%, transparent);
   --accent: oklch(0.96 0.002 17.2);
   --accent-foreground: oklch(0.214 0.009 43.1);
   --destructive: oklch(0.577 0.245 27.325);
@@ -140,5 +142,15 @@
 
   body > div[id^="dmermaid__"] {
     display: none;
+  }
+
+  input::placeholder,
+  textarea::placeholder {
+    color: var(--placeholder-foreground);
+    opacity: 1;
+  }
+
+  [data-placeholder] {
+    color: var(--placeholder-foreground);
   }
 }

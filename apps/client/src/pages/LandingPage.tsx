@@ -109,7 +109,7 @@ export function LandingPage(): React.JSX.Element {
   return (
     <div className="mx-auto max-w-6xl px-4 py-12">
       <section className="mb-16 text-center">
-        <Badge className="mb-4 px-3 py-1">{t('app.badge', 'Open-source starter')}</Badge>
+        <Badge className="mb-4 px-3 py-3">{t('app.badge', 'Open-source starter')}</Badge>
 
         <h1 className="text-4xl font-bold tracking-tight text-foreground">
           {t('app.title', 'monorepo-demo')}
@@ -126,7 +126,7 @@ export function LandingPage(): React.JSX.Element {
             </Button>
           ) : isAuthenticated ? (
             <Button asChild className="min-h-11 px-5 text-sm font-semibold">
-              <Link to="/dashboard">{t('ui.nav.dashboard', 'Go to Dashboard')}</Link>
+              <Link to="/dashboard">{t('ui.nav.dashboard', 'Check server health')}</Link>
             </Button>
           ) : (
             <>
@@ -151,7 +151,7 @@ export function LandingPage(): React.JSX.Element {
 
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {DEMOS.map((demo) => {
-            const isDisabled = demo.disabledInProduction === true && import.meta.env.PROD;
+            const isDisabled = demo.disabledInProduction && import.meta.env.PROD;
 
             return (
               <Card key={demo.id} className="flex flex-col transition-shadow border-2 hover:shadow-md">

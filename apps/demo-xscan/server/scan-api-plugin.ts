@@ -4,9 +4,33 @@ import type { Plugin, PreviewServer, ViteDevServer } from 'vite';
 import { findRepo } from './repos.js';
 import { streamGithubScan } from './run-scan.js';
 
+interface ScanTarget {
+  owner: string;
+  repo: string;
+  dependabot: boolean;
+}
+
 function writeSse(res: ServerResponse, event: string, data: string): void {
   res.write(`event: ${event}\n`);
   res.write(`data: ${JSON.stringify(data)}\n\n`);
+}
+
+function scanTargetFromGithubUrl(repoUrl: string): ScanTarget | null {
+  try {
+    const url = new URL(repoUrl);
+    if (!['github.com', 'www.github.com'].includes(url.hostname)) {
+      return null;
+    }
+
+    const [owner, repo] = url.pathname.split('/').filter(Boolean);
+    if (!owner || !repo) {
+      return null;
+    }
+
+    return { owner, repo, dependabot: true };
+  } catch {
+    return null;
+  }
 }
 
 function attachScanMiddleware(server: Pick<ViteDevServer | PreviewServer, 'middlewares'>): void {
@@ -18,16 +42,17 @@ function attachScanMiddleware(server: Pick<ViteDevServer | PreviewServer, 'middl
 
     const url = new URL(req.url ?? '/', 'http://localhost');
     const repoId = url.searchParams.get('repoId');
-    if (!repoId) {
+    const repoUrl = url.searchParams.get('repoUrl');
+    if (!repoId && !repoUrl) {
       res.statusCode = 400;
-      res.end('Missing repoId');
+      res.end('Missing repoId or repoUrl');
       return;
     }
 
-    const meta = findRepo(repoId);
-    if (!meta) {
-      res.statusCode = 404;
-      res.end(`Unknown repoId: ${repoId}`);
+    const target = repoUrl ? scanTargetFromGithubUrl(repoUrl) : repoId ? findRepo(repoId) : null;
+    if (!target) {
+      res.statusCode = repoUrl ? 400 : 404;
+      res.end(repoUrl ? `Invalid GitHub repository URL: ${repoUrl}` : `Unknown repoId: ${repoId}`);
       return;
     }
 
@@ -36,12 +61,12 @@ function attachScanMiddleware(server: Pick<ViteDevServer | PreviewServer, 'middl
     res.setHeader('Connection', 'keep-alive');
     res.flushHeaders?.();
 
-    writeSse(res, 'start', `${meta.owner}/${meta.repo}`);
+    writeSse(res, 'start', `${target.owner}/${target.repo}`);
 
     void streamGithubScan({
-      owner: meta.owner,
-      repo: meta.repo,
-      dependabot: meta.dependabot,
+      owner: target.owner,
+      repo: target.repo,
+      dependabot: target.dependabot,
       onChunk: (chunk) => writeSse(res, 'output', chunk),
       onError: (message) => writeSse(res, 'error', message),
       onDone: (exitCode) => {

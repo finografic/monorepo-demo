@@ -26,11 +26,10 @@ export function DashboardPage(): React.JSX.Element {
   }, []);
 
   return (
-    <div>
-      <h1>Server Health</h1>
+    <div className="mx-auto flex max-w-6xl flex-col gap-4 px-4 py-4">
       {error && <p style={{ color: 'red' }}>Error: {error}</p>}
       {health && (
-        <pre style={{ background: '#f5f5f5', padding: '1rem', borderRadius: '4px' }}>
+        <pre className="ml-2" style={{ background: '#f5f5f5', padding: '1rem', borderRadius: '4px' }}>
           {JSON.stringify(health, null, 2)}
         </pre>
       )}

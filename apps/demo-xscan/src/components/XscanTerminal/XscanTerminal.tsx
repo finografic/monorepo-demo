@@ -4,7 +4,9 @@ import '@xterm/xterm/css/xterm.css';
 import { useEffect, useRef } from 'react';
 
 interface XscanTerminalProps {
-  repoId: string;
+  repoId: string | null;
+  repoUrl: string | null;
+  standby: boolean;
 }
 
 const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL ?? '').replace(/\/$/, '');
@@ -13,7 +15,22 @@ function apiUrl(path: string): string {
   return `${API_BASE_URL}${path}`;
 }
 
-export function XscanTerminal({ repoId }: XscanTerminalProps) {
+function writeStandbyPrompt(terminal: Terminal): void {
+  terminal.write('\x1b[32m$\x1b[0m ');
+}
+
+function scanUrl(repoId: string | null, repoUrl: string | null): string {
+  const searchParams = new URLSearchParams();
+  if (repoUrl) {
+    searchParams.set('repoUrl', repoUrl);
+  } else if (repoId) {
+    searchParams.set('repoId', repoId);
+  }
+
+  return apiUrl(`/api/scan?${searchParams.toString()}`);
+}
+
+export function XscanTerminal({ repoId, repoUrl, standby }: XscanTerminalProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const terminalRef = useRef<Terminal | null>(null);
   const fitRef = useRef<FitAddon | null>(null);
@@ -62,6 +79,12 @@ export function XscanTerminal({ repoId }: XscanTerminalProps) {
 
     abortRef.current?.abort();
     terminal.reset();
+
+    if (standby) {
+      writeStandbyPrompt(terminal);
+      return;
+    }
+
     terminal.writeln('\x1b[2mConnecting to scan stream…\x1b[0m\r\n');
 
     const controller = new AbortController();
@@ -69,7 +92,7 @@ export function XscanTerminal({ repoId }: XscanTerminalProps) {
 
     void (async () => {
       try {
-        const res = await fetch(apiUrl(`/api/scan?repoId=${encodeURIComponent(repoId)}`), {
+        const res = await fetch(scanUrl(repoId, repoUrl), {
           signal: controller.signal,
         });
         if (!res.ok || !res.body) {
@@ -112,7 +135,7 @@ export function XscanTerminal({ repoId }: XscanTerminalProps) {
     })();
 
     return () => controller.abort();
-  }, [repoId]);
+  }, [repoId, repoUrl, standby]);
 
   return (
     <div

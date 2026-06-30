@@ -6,8 +6,19 @@ import { useState } from 'react';
 
 export function DemoPage() {
   const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [repoUrl, setRepoUrl] = useState<string | null>(null);
 
   const selectedRepo = REPOS.find((r) => r.id === selectedId) ?? null;
+
+  const handleRepoSelect = (repoId: string) => {
+    setRepoUrl(null);
+    setSelectedId(repoId);
+  };
+
+  const handleRepoUrlSubmit = (nextRepoUrl: string) => {
+    setSelectedId(null);
+    setRepoUrl(nextRepoUrl);
+  };
 
   return (
     <DemoLayout
@@ -17,7 +28,7 @@ export function DemoPage() {
       }}
       sidebar={
         <div className="flex-1 overflow-y-auto px-4 py-5">
-          <RepoSelector repos={REPOS} selectedId={selectedId} onSelect={setSelectedId} />
+          <RepoSelector repos={REPOS} selectedId={selectedId} onSelect={handleRepoSelect} />
         </div>
       }
       sidebarLabel="Repository navigation"
@@ -28,30 +39,7 @@ export function DemoPage() {
         </p>
       }
     >
-      {selectedRepo ? <ScanPane repo={selectedRepo} /> : <StandbyPlaceholder />}
+      <ScanPane repo={selectedRepo} repoUrl={repoUrl} onRepoUrlSubmit={handleRepoUrlSubmit} />
     </DemoLayout>
-  );
-}
-
-function StandbyPlaceholder() {
-  return (
-    <div className="flex flex-1 items-center justify-center">
-      <div className="flex max-w-xs flex-col items-center gap-4 px-6 text-center">
-        <div
-          className="flex size-16 items-center justify-center rounded-2xl bg-primary/10"
-          aria-hidden="true"
-        >
-          <svg viewBox="0 0 24 24" fill="none" className="size-8 text-primary" aria-hidden="true">
-            <rect x="3" y="4" width="18" height="14" rx="2" stroke="currentColor" strokeWidth="2" />
-            <path d="M7 20h10" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-            <path d="M8 9h8M8 12h5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-          </svg>
-        </div>
-        <p className="text-base font-semibold text-foreground">Select a repository to scan</p>
-        <p className="text-sm text-muted-foreground">
-          Choose one of three public GitHub repos in the sidebar to run xscan in the integrated terminal.
-        </p>
-      </div>
-    </div>
   );
 }

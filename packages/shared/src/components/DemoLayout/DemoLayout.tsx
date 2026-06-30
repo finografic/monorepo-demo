@@ -40,12 +40,18 @@ function appUrl(path: string, localUrl: string): string {
   return `${repoBaseUrl}${path}`;
 }
 
-const NAV_ITEMS = [
-  { label: 'Start', href: appUrl('', 'http://localhost:3000') },
-  { label: 'Demo 1', href: appUrl('demo-ai-pipeline/', 'http://localhost:3001') },
-  { label: 'Demo 2', href: appUrl('demo-datavis/', 'http://localhost:3002') },
-  { label: 'Demo 3', href: appUrl('demo-xscan/', 'http://localhost:3003') },
-] as const;
+const NAV_ITEMS = isLocalHost()
+  ? ([
+      { label: 'Home', href: appUrl('', 'http://localhost:3000') },
+      { label: 'Demo 1', href: appUrl('demo-ai-pipeline/', 'http://localhost:3001') },
+      { label: 'Demo 2', href: appUrl('demo-datavis/', 'http://localhost:3002') },
+      { label: 'Demo 3', href: appUrl('demo-xscan/', 'http://localhost:3003') },
+    ] as const)
+  : ([
+      { label: 'Home', href: appUrl('', 'http://localhost:3000') },
+      { label: 'Demo 1', href: appUrl('demo-ai-pipeline/', 'http://localhost:3001') },
+      { label: 'Demo 2', href: appUrl('demo-datavis/', 'http://localhost:3002') },
+    ] as const);
 
 export function DemoLayout({
   header,
