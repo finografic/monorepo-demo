@@ -85,7 +85,7 @@ Shared across Claude Code, Cursor, and GitHub Copilot.
 
 ## Learned Workspace Facts
 
-- This is a selective-extraction monorepo starter based on touch-monorepo (auth/server/db); use LLAAB and vite-monorepo for shadcn/Tailwind UI patterns; intentionally beyond bare-bones (auth, admin/CMS, Drizzle, i18n) and also a GitHub demo/portfolio piece.
+- This is a portfolio monorepo demo (`monorepo-demo`) selectively extracted from touch-monorepo (auth/server/db); use LLAAB and vite-monorepo for shadcn/Tailwind UI patterns; intentionally beyond bare-bones (auth, admin/CMS, Drizzle, i18n) and also a GitHub demo/portfolio piece.
 - `pnpm-workspace.yaml` declares: `config`, `packages/*`, `apps/*`.
 - Moon drives `build`, `dev`, `lint`, `typecheck`, `test`, and `clean` tasks (Turbo removed); Moon/Proto pin toolchain (Node, pnpm, moon)—npm deps are upgraded via pnpm + syncpack.
 - `apps/client`: Vite 8 + React 19 + React Router v7 + shadcn/Tailwind 4; dev on port 3000, proxies `/api` → server. `apps/server`: Hono + @hono/node-server; `tsdown` build, `tsx watch` dev, default port 4000.

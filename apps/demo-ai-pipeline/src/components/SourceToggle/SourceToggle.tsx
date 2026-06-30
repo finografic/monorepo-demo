@@ -16,7 +16,8 @@ export function SourceToggle({ showRaw, onToggle }: SourceToggleProps) {
         checked={showRaw}
         onCheckedChange={onToggle}
         aria-label={showRaw ? 'Switch to rendered view' : 'Switch to raw markdown view'}
-        className="h-6 w-11 shrink-0 data-[size=default]:h-6 data-[size=default]:w-11 data-unchecked:border-blue-200 data-unchecked:bg-blue-200 [&_[data-slot=switch-thumb]]:size-5 [&_[data-slot=switch-thumb]]:data-checked:translate-x-5"
+        className="
+        h-6 w-11 shrink-0 data-[size=default]:h-6 data-[size=default]:w-11 data-unchecked:border-white data-unchecked:border-2 data-unchecked:bg-white [&_[data-slot=switch-thumb]]:size-5 [&_[data-slot=switch-thumb]]:data-checked:bg-white [&_[data-slot=switch-thumb]]:bg-blue-500 [&_[data-slot=switch-thumb]]:data-checked:translate-x-5"
       />
       <Label htmlFor={TOGGLE_ID} className="cursor-pointer text-sm font-medium text-foreground">
         Raw markdown

@@ -168,7 +168,7 @@ export function DemoPage() {
         )}
       </div>
 
-      <div className="flex min-h-24 flex-wrap items-center justify-between gap-5 bg-blue-200 px-8 py-4">
+      <div className="flex min-h-20 flex-wrap items-center justify-between gap-5 bg-gray-300 px-8 py-4">
         <div className="min-w-0 flex-1" aria-live="polite">
           <MetricsBar status={status} metrics={metrics} />
         </div>

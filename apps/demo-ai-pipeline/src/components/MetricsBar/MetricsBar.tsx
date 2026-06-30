@@ -64,8 +64,8 @@ export function MetricsBar({ status, metrics }: MetricsBarProps) {
 function Stat({ label, value }: { label: string; value: string }) {
   return (
     <span>
-      <span className="text-muted-foreground/80">{label}:</span>{' '}
-      <span className="font-medium text-primary">{value}</span>
+      <span className="font-medium  text-foreground/90 mr-1">{label}:</span>{' '}
+      <span className="font-bold text-primary">{value}</span>
     </span>
   );
 }

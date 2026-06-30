@@ -3,7 +3,7 @@
 > **Status:** Starter phases 01–07 complete. Portfolio shell + three demos shipped on GitHub Pages.
 > 📅 2026-06-30
 
-This roadmap is the high-level sequencing plan for the monorepo starter and portfolio demos.
+This roadmap is the high-level sequencing plan for the monorepo-demo portfolio and its demo apps.
 
 ## How to use this file
 

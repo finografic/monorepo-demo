@@ -2,7 +2,7 @@ import { db } from '../index';
 import { translations_app } from '../schemas';
 
 const data: Array<{ key: string; translations: Record<string, string> }> = [
-  { key: 'app.title', translations: { 'en-GB': 'Monorepo Starter', 'es-ES': 'Iniciador de Monorepo' } },
+  { key: 'app.title', translations: { 'en-GB': 'monorepo-demo', 'es-ES': 'monorepo-demo' } },
   {
     key: 'app.subtitle',
     translations: {
@@ -13,8 +13,8 @@ const data: Array<{ key: string; translations: Record<string, string> }> = [
   {
     key: 'app.description',
     translations: {
-      'en-GB': 'A production-grade monorepo starter with Hono, React, Panda CSS, and Auth.js.',
-      'es-ES': 'Un monorepo listo para producción con Hono, React, Panda CSS y Auth.js.',
+      'en-GB': 'A portfolio monorepo demo with Hono, React, Tailwind, and Auth.js.',
+      'es-ES': 'Una demo de monorepo de portafolio con Hono, React, Tailwind y Auth.js.',
     },
   },
   { key: 'app.pages.home.title', translations: { 'en-GB': 'Welcome', 'es-ES': 'Bienvenido' } },
