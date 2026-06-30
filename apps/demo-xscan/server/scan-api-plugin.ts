@@ -5,11 +5,11 @@ import { fetchGithubRepoMeta } from './materialize-github.js';
 import { githubSlugFromUrl } from './github-url.js';
 import { findRepo } from './repos.js';
 import { streamGithubScan } from './run-scan.js';
+import { scanSourcesFromSearchParams } from '../shared/scan-sources.js';
 
 interface ScanTarget {
   owner: string;
   repo: string;
-  dependabot: boolean;
 }
 
 function writeSse(res: ServerResponse, event: string, data: string): void {
@@ -23,7 +23,7 @@ function scanTargetFromGithubUrl(repoUrl: string): ScanTarget | null {
     return null;
   }
 
-  return { owner: slug.owner, repo: slug.repo, dependabot: true };
+  return { owner: slug.owner, repo: slug.repo };
 }
 
 function attachScanMiddleware(server: Pick<ViteDevServer | PreviewServer, 'middlewares'>): void {
@@ -89,10 +89,12 @@ function attachScanMiddleware(server: Pick<ViteDevServer | PreviewServer, 'middl
 
     writeSse(res, 'start', `${target.owner}/${target.repo}`);
 
+    const sources = scanSourcesFromSearchParams(url.searchParams);
+
     void streamGithubScan({
       owner: target.owner,
       repo: target.repo,
-      dependabot: target.dependabot,
+      sources,
       onChunk: (chunk) => writeSse(res, 'output', chunk),
       onError: (message) => writeSse(res, 'error', message),
       onDone: (exitCode) => {

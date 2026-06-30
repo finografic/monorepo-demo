@@ -22,3 +22,12 @@ export const TOKEN_ENV_NAMES = ['NPM_TOKEN', 'GH_TOKEN', 'GITHUB_TOKEN'] as cons
 
 /** Vendored xscan build (sync via scripts/sync-xscan.mjs). */
 export const XSCAN_CLI = resolve(demoRoot, 'vendor/xscan/dist/index.mjs');
+
+/** Demo scans skip disk cache by default (safe for read-only hosted environments). */
+export function demoSkipsCache(): boolean {
+  const useCache = process.env.DEMO_XSCAN_USE_CACHE?.trim().toLowerCase();
+  if (useCache === '1' || useCache === 'true' || useCache === 'yes') {
+    return false;
+  }
+  return true;
+}

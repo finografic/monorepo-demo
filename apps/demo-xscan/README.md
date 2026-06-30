@@ -28,9 +28,13 @@ The demo does **not** install xscan as a workspace npm dependency or git submodu
 
 Browser terminal uses **[xterm.js](https://xtermjs.org/)** (`@xterm/xterm` + `@xterm/addon-fit`). Scan stdout/stderr is streamed from `/api/scan?repoId=…` as Server-Sent Events.
 
+The demo spawns xscan inside a **pseudo-TTY** (`node-pty`) so `@clack/prompts` task progress (e.g. `OSV.dev (71 / 1274 package versions)`) renders live, matching a normal terminal. If PTY allocation fails, the server sets `DEMO_XSCAN_FORCE_PROGRESS=1` so the vendored CLI still emits Clack progress over the pipe.
+
 ## GitHub token
 
 Set `NPM_TOKEN` (or `GH_TOKEN` / `GITHUB_TOKEN`) in the **environment where Vite runs** — not in the browser — for Dependabot alerts and higher GitHub rate limits.
+
+Demo scans pass **`--no-cache`** by default so hosted environments do not write to `~/.config/finografic/deps-xscan/cache`. For faster local iteration, set `DEMO_XSCAN_USE_CACHE=true`.
 
 ## Architecture
 

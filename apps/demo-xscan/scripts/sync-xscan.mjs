@@ -17,11 +17,35 @@ const sourceDist = join(sourceRepo, 'dist');
 const targetDist = join(vendorRoot, 'dist');
 const vendorPackagePath = join(vendorRoot, 'package.json');
 
+const SHOULD_USE_SPINNERS_NEEDLE = 'return (process.stdout.isTTY ?? false) && !verbose;';
+const SHOULD_USE_SPINNERS_PATCH =
+  'return ((process.stdout.isTTY ?? false) || process.env.DEMO_XSCAN_FORCE_PROGRESS === "1") && !verbose;';
+
+function patchDemoScanDist(distIndexPath) {
+  if (!existsSync(distIndexPath)) {
+    return;
+  }
+
+  const source = readFileSync(distIndexPath, 'utf8');
+  if (source.includes('DEMO_XSCAN_FORCE_PROGRESS')) {
+    return;
+  }
+
+  if (!source.includes(SHOULD_USE_SPINNERS_NEEDLE)) {
+    console.warn('[sync-xscan] shouldUseSpinners pattern not found — skip demo progress patch');
+    return;
+  }
+
+  writeFileSync(distIndexPath, source.replace(SHOULD_USE_SPINNERS_NEEDLE, SHOULD_USE_SPINNERS_PATCH), 'utf-8');
+  console.log('[sync-xscan] Patched dist for DEMO_XSCAN_FORCE_PROGRESS fallback');
+}
+
 if (!existsSync(sourceDist)) {
   if (existsSync(targetDist) && existsSync(vendorPackagePath)) {
     console.warn(`[sync-xscan] Source dist not found: ${sourceDist}`);
     console.warn('[sync-xscan] Using committed vendor/xscan/dist instead.');
     console.log('[sync-xscan] Installing runtime dependencies in vendor/xscan…');
+    patchDemoScanDist(join(targetDist, 'index.mjs'));
     execSync('pnpm install --prod --ignore-workspace', {
       cwd: vendorRoot,
       env: { ...process.env, CI: 'true' },
@@ -50,6 +74,8 @@ const vendorPkg = {
 };
 
 writeFileSync(join(vendorRoot, 'package.json'), `${JSON.stringify(vendorPkg, null, 2)}\n`, 'utf-8');
+
+patchDemoScanDist(join(targetDist, 'index.mjs'));
 
 console.log(`[sync-xscan] Copied dist → ${targetDist}`);
 console.log('[sync-xscan] Installing runtime dependencies in vendor/xscan…');

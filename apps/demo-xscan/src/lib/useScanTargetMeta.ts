@@ -5,6 +5,7 @@ import type { RepoMeta } from 'data/types';
 export interface ScanTargetMeta {
   name: string;
   description: string | null;
+  githubUrl: string;
 }
 
 const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL ?? '').replace(/\/$/, '');
@@ -35,8 +36,25 @@ function presetRepoForSlug(slug: string): RepoMeta | undefined {
   return REPOS.find((repo) => `${repo.owner}/${repo.repo}` === slug);
 }
 
+function githubUrlFromRepo(repo: RepoMeta): string {
+  return `https://github.com/${repo.owner}/${repo.repo}`;
+}
+
+function githubUrlFromSlug(slug: string): string {
+  return `https://github.com/${slug}`;
+}
+
+function githubUrlFromRepoUrl(repoUrl: string): string | null {
+  const slug = githubSlugFromUrl(repoUrl);
+  return slug ? githubUrlFromSlug(slug) : null;
+}
+
 function metaFromRepo(repo: RepoMeta): ScanTargetMeta {
-  return { name: repo.title, description: repo.description };
+  return {
+    name: repo.title,
+    description: repo.description,
+    githubUrl: githubUrlFromRepo(repo),
+  };
 }
 
 export function useScanTargetMeta(repo: RepoMeta | null, repoUrl: string | null): ScanTargetMeta | null {
@@ -61,7 +79,12 @@ export function useScanTargetMeta(repo: RepoMeta | null, repoUrl: string | null)
     }
 
     const controller = new AbortController();
-    setMeta(slug ? { name: slug, description: null } : { name: repoUrl, description: null });
+    const fallbackUrl = githubUrlFromRepoUrl(repoUrl) ?? repoUrl;
+    setMeta(
+      slug
+        ? { name: slug, description: null, githubUrl: githubUrlFromSlug(slug) }
+        : { name: repoUrl, description: null, githubUrl: fallbackUrl },
+    );
 
     void (async () => {
       try {
@@ -75,6 +98,7 @@ export function useScanTargetMeta(repo: RepoMeta | null, repoUrl: string | null)
           setMeta({
             name: data.fullName,
             description: data.description,
+            githubUrl: githubUrlFromSlug(data.fullName),
           });
         }
       } catch {

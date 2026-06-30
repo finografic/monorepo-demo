@@ -87,16 +87,24 @@ const scanHelp = {
 			description: "Show detailed progress"
 		},
 		{
-			flag: "--no-github",
-			description: "Disable GitHub Advisory Database checks (enabled by default)"
+			flag: "--skip-osv",
+			description: "Skip OSV.dev vulnerability queries (enabled by default)"
 		},
 		{
-			flag: "--dependabot",
-			description: "Fetch Dependabot alerts for the repository (requires token)"
+			flag: "--skip-node-posts",
+			description: "Skip Node.js runtime security post scraping (enabled by default)"
 		},
 		{
-			flag: "--github-repo <owner/repo>",
-			description: "GitHub repository for Dependabot alerts"
+			flag: "--skip-github",
+			description: "Skip GitHub Advisory Database queries (enabled by default)"
+		},
+		{
+			flag: "--skip-dependabot",
+			description: "Skip Dependabot alert fetching (enabled by default)"
+		},
+		{
+			flag: "--remote-repo <owner/repo>",
+			description: "Remote repository for Dependabot alerts (auto-detected from git origin)"
 		},
 		{
 			flag: "--github-alert-states <states>",
@@ -114,15 +122,23 @@ const scanHelp = {
 	examples: [
 		{
 			command: "xscan scan",
-			description: "Scan the current project with default settings"
+			description: "Scan the current project with all sources enabled"
 		},
 		{
 			command: "xscan scan --project ./my-app --format terminal",
 			description: "Terminal-only report"
 		},
 		{
-			command: "xscan scan --dependabot --project ./my-app",
-			description: "Include Dependabot alerts (reads NPM_TOKEN or GITHUB_TOKEN from .env)"
+			command: "xscan scan --skip-github --project ./my-app",
+			description: "Skip slow GitHub Advisory Database queries"
+		},
+		{
+			command: "xscan scan --skip-dependabot --project ./my-app",
+			description: "Skip Dependabot alerts when no token is available"
+		},
+		{
+			command: "xscan scan --project /tmp/checkout --remote-repo owner/repo",
+			description: "Scan a materialized checkout and pin the remote repo for Dependabot"
 		},
 		{
 			command: "xscan scan --no-cache --node-posts 10 --verbose",
@@ -133,7 +149,7 @@ const scanHelp = {
 		"Parse the lockfile and resolve the full dependency tree",
 		"Scrape recent Node.js security blog posts for runtime CVEs",
 		"Query OSV.dev and GitHub Advisory Database for each resolved package version",
-		"Optionally fetch Dependabot alerts when --dependabot is set",
+		"Fetch Dependabot alerts when a GitHub repo and token are available",
 		"Correlate and deduplicate findings, then emit a report"
 	]
 };
@@ -573,7 +589,12 @@ async function queryGithubAdvisoryBatch(packages, cacheOpts = {}, token, options
 	const unique = dedupePackages(packages);
 	const results = [];
 	if (options.verbose) console.log(`[github-advisory] Querying ${unique.length} package versions`);
-	for (const { name, version } of unique) results.push(await queryGithubAdvisorySingle(name, version, cacheOpts, token, options));
+	options.onProgress?.(0, unique.length);
+	for (let i = 0; i < unique.length; i++) {
+		const { name, version } = unique[i];
+		results.push(await queryGithubAdvisorySingle(name, version, cacheOpts, token, options));
+		options.onProgress?.(i + 1, unique.length);
+	}
 	return results;
 }
 async function queryGithubAdvisorySingle(name, version, cacheOpts = {}, token, options = {}) {
@@ -1064,13 +1085,22 @@ async function queryOsvSingle(name, version, cacheOpts = {}, options = {}) {
 }
 async function queryOsvBatch(packages, cacheOpts = {}, options = {}) {
 	const fetch = (await import("node-fetch")).default;
+	const total = packages.length;
 	const results = [];
 	const uncached = [];
+	let completed = 0;
+	const tick = () => {
+		completed += 1;
+		options.onProgress?.(completed, total);
+	};
+	options.onProgress?.(0, total);
 	for (let i = 0; i < packages.length; i++) {
 		const { name, version } = packages[i];
 		const cached = getCached(`${CACHE_KEY_PREFIX}-${name}@${version}`, cacheOpts);
-		if (cached) results[i] = cached;
-		else uncached.push({
+		if (cached) {
+			results[i] = cached;
+			tick();
+		} else uncached.push({
 			name,
 			version,
 			index: i
@@ -1099,7 +1129,10 @@ async function queryOsvBatch(packages, cacheOpts = {}, options = {}) {
 			});
 			if (!res.ok) {
 				if (options.verbose) console.warn(`[osv] Batch query failed (${res.status}), falling back to individual queries`);
-				for (const item of chunk) results[item.index] = await queryOsvSingle(item.name, item.version, cacheOpts, options);
+				for (const item of chunk) {
+					results[item.index] = await queryOsvSingle(item.name, item.version, cacheOpts, options);
+					tick();
+				}
 				continue;
 			}
 			const batchResults = (await res.json()).results || [];
@@ -1112,15 +1145,19 @@ async function queryOsvBatch(packages, cacheOpts = {}, options = {}) {
 				};
 				results[index] = result;
 				setCache(`${CACHE_KEY_PREFIX}-${name}@${version}`, result, cacheOpts);
+				tick();
 			}
 		} catch (err) {
 			const message = err instanceof Error ? err.message : String(err);
 			if (options.verbose) console.warn(`[osv] Batch error: ${message}`);
-			for (const item of chunk) results[item.index] = {
-				packageName: item.name,
-				packageVersion: item.version,
-				vulnerabilities: []
-			};
+			for (const item of chunk) {
+				results[item.index] = {
+					packageName: item.name,
+					packageVersion: item.version,
+					vulnerabilities: []
+				};
+				tick();
+			}
 		}
 	}
 	return results;
@@ -1264,7 +1301,8 @@ function buildActionSummary(result) {
 	return {
 		foundLines: buildFoundLines(result),
 		actionSteps: buildActionSteps(result),
-		recommendation: buildRecommendation(result)
+		recommendation: buildRecommendation(result),
+		exposureNote: buildExposureNote(result)
 	};
 }
 function buildFoundLines(result) {
@@ -1309,6 +1347,18 @@ function resolveFindingScope(finding) {
 	}
 	return finding.dependencyKind === "prod" ? "runtime" : "development";
 }
+function hasRuntimeExposure(result) {
+	if (result.nodeVersionFindings.length > 0) return true;
+	return result.dependencyFindings.some((f) => resolveFindingScope(f) === "runtime");
+}
+function isDevToolchainOnly(result) {
+	if (result.dependencyFindings.length === 0) return false;
+	return result.dependencyFindings.every((f) => resolveFindingScope(f) === "development");
+}
+function buildExposureNote(result) {
+	if (!isDevToolchainOnly(result) || hasRuntimeExposure(result)) return;
+	return "No production runtime exposure — development / transitive toolchain only.";
+}
 function buildActionSteps(result) {
 	const steps = [];
 	let step = 1;
@@ -1322,6 +1372,12 @@ function buildActionSteps(result) {
 	if (parentRoots.length > 0) {
 		const label = parentRoots.join(" ");
 		steps.push(`${step}. Update the dev toolchain that pulls in transitive findings — High items usually arrive through commitlint, Vitest/Vite, or tsx.\n   pnpm update ${label}`);
+		step++;
+	}
+	const transitiveFixes = collectTransitivePackageUpdates(result.dependencyFindings, parentRoots);
+	for (const finding of transitiveFixes) {
+		const cmd = updateCommand(finding);
+		steps.push(`${step}. Update ${finding.packageName} (${finding.severity.toLowerCase()} transitive, development) — does not affect production runtime consumers.\n   ${cmd}`);
 		step++;
 	}
 	if (result.nodeVersionFindings.length > 0) {
@@ -1338,9 +1394,10 @@ function buildRecommendation(result) {
 	const directProd = result.dependencyFindings.some((f) => f.dependencyKind === "prod");
 	const highTransitive = result.dependencyFindings.some((f) => f.severity === "High" && f.dependencyKind !== "prod");
 	const nodeIssues = result.nodeVersionFindings.length > 0;
+	if (isDevToolchainOnly(result) && !directProd && !nodeIssues) return "No production runtime exposure from these findings. They are limited to development or transitive toolchain dependencies. Apply the updates above when you next refresh dev dependencies—recommended before release, not a production deploy blocker.";
 	if (directProd && highTransitive) return "Update direct runtime dependencies first, then refresh dev tooling that pulls in vulnerable transitive packages. Most findings are dev-toolchain exposure rather than runtime exposure, but High transitive findings should still be resolved before release.";
 	if (directProd) return "Prioritize direct runtime dependency updates — these affect consumers of your package. Rerun xscan after upgrading to confirm the lockfile resolved the advisories.";
-	if (highTransitive) return "These findings are mostly in development tooling. Update the parent dependencies listed above, then rerun xscan to verify the lockfile picked up patched transitive versions.";
+	if (highTransitive) return "These findings are in development tooling or transitive dependencies. Follow the update steps above, then rerun xscan to verify the lockfile picked up patched versions.";
 	if (nodeIssues) return "Upgrade your Node.js runtime to a patched version, then rerun xscan. Engine advisories affect every dependency scan until the runtime itself is updated.";
 	return "Review the findings above, apply the suggested updates, and rerun xscan --no-cache to confirm the dependency tree is clean.";
 }
@@ -1368,6 +1425,15 @@ function collectParentUpdateTargets(findings) {
 	}
 	return [...roots].toSorted();
 }
+/** Direct package bumps when no parent root is available (e.g. path is only the vulnerable package). */
+function collectTransitivePackageUpdates(findings, parentRoots) {
+	const parentSet = new Set(parentRoots);
+	return uniqueByPackage(findings.filter((f) => f.dependencyKind !== "prod" && (SEVERITY_RANK[f.severity] ?? 0) >= SEVERITY_RANK.High).filter((f) => {
+		const root = f.dependencyPaths[0]?.[0];
+		if (root && root !== f.packageName && parentSet.has(root)) return false;
+		return true;
+	})).toSorted(bySeverityDesc);
+}
 function uniqueByPackage(findings) {
 	const byPackage = /* @__PURE__ */ new Map();
 	for (const finding of findings) {
@@ -1393,6 +1459,22 @@ const HR_SEPARATOR = "─".repeat(100);
 const TITLE_BORDER_OPEN = "╔══════════════════════════════════════════════════════╗";
 const TITLE_BORDER_CLOSE = "╚══════════════════════════════════════════════════════╝";
 //#endregion
+//#region src/lib/tui.utils.ts
+/** Double-line title box matching the Security Report header style. */
+function printTitleBanner(label) {
+	const inner = label.startsWith("  ") ? label : `  ${label}`;
+	const padding = Math.max(0, 54 - inner.length);
+	console.log();
+	console.log(pc.bold(pc.white(TITLE_BORDER_OPEN)));
+	console.log(pc.bold(pc.white("║")) + pc.bold(pc.cyan(inner)) + pc.bold(pc.white(`${" ".repeat(padding)}║`)));
+	console.log(pc.bold(pc.white(TITLE_BORDER_CLOSE)));
+	console.log();
+}
+const FETCHING_SOURCES_BANNER = "xscan — fetching vulnerability sources";
+function skippedSourceLabel(label) {
+	return pc.dim(`${label} (skipped)`);
+}
+//#endregion
 //#region src/lib/report.utils.ts
 function generateReport(result, format = "both", jsonOutputPath) {
 	const actionSummary = buildActionSummary(result);
@@ -1411,10 +1493,7 @@ function generateReport(result, format = "both", jsonOutputPath) {
 function printTerminalReport(result, actionSummary, savedJsonPath) {
 	const { summary, nodeVersionFindings, dependencyFindings } = result;
 	console.log();
-	console.log(pc.bold(pc.white(TITLE_BORDER_OPEN)));
-	console.log(pc.bold(pc.white("║")) + pc.bold(pc.cyan("  deps-xscan — Security Report")) + pc.bold(pc.white(`                        ║`)));
-	console.log(pc.bold(pc.white(TITLE_BORDER_CLOSE)));
-	console.log();
+	printTitleBanner("deps-xscan — Security Report");
 	console.log(pc.dim(`  Scanned at:     ${result.scannedAt}`));
 	console.log(pc.dim(`  Node version:   ${result.projectNodeVersion || "not detected"}`));
 	console.log(pc.dim(`  Total deps:     ${result.totalDeps}`));
@@ -1436,7 +1515,7 @@ function printTerminalReport(result, actionSummary, savedJsonPath) {
 	}
 	if (dependencyFindings.length > 0) {
 		console.log();
-		console.log(pc.bold(pc.red("  🔍 Dependency Vulnerabilities")));
+		console.log(pc.bold(pc.red("  🔍  Dependency Vulnerabilities")));
 		const grouped = groupBySeverity(dependencyFindings);
 		for (const [severity, findings] of grouped) {
 			if (findings.length === 0) continue;
@@ -1492,6 +1571,7 @@ function printActionSummary(actionSummary) {
 	console.log(pc.dim(HR_SEPARATOR));
 	console.log();
 	console.log(pc.bold(pc.green("SUMMARY & ACTIONS:")));
+	if (actionSummary.exposureNote) console.log(pc.dim(`  ${actionSummary.exposureNote}`));
 	console.log();
 	printFoundLines(actionSummary.foundLines);
 	console.log();
@@ -1586,7 +1666,11 @@ function log(msg, verbose) {
 	}
 }
 function shouldUseSpinners(verbose) {
-	return (process.stdout.isTTY ?? false) && !verbose;
+	const forceProgress = process.env.DEMO_XSCAN_FORCE_PROGRESS === "1";
+	return ((process.stdout.isTTY ?? false) || forceProgress) && !verbose;
+}
+function usesTerminalOutput(format) {
+	return format === "terminal" || format === "both";
 }
 function sourceErrorMessage(error) {
 	return error instanceof Error ? error.message : String(error);
@@ -1618,102 +1702,75 @@ async function runScanPipeline(options) {
 		log("  Could not detect Node.js version", options.verbose);
 	}
 	const useSpinners = shouldUseSpinners(options.verbose);
-	log(`Stage 2: Scraping last ${options.nodePosts} Node.js security posts...`, options.verbose);
-	let posts = [];
-	try {
-		if (useSpinners) await tasks([{
-			title: `Node.js security posts (${options.nodePosts} posts)`,
-			task: async () => {
-				posts = await scrapeNodeSecurityPosts(options.nodePosts, cacheOpts);
-				const totalCves = posts.reduce((sum, p) => sum + p.vulnerabilities.length, 0);
-				return `Node.js security posts: ${posts.length} posts, ${totalCves} CVEs`;
-			}
-		}]);
-		else posts = await scrapeNodeSecurityPosts(options.nodePosts, cacheOpts, { verbose: options.verbose });
-		log(`  Extracted ${posts.reduce((sum, p) => sum + p.vulnerabilities.length, 0)} CVEs from ${posts.length} posts`, options.verbose);
-	} catch (err) {
-		const message = err instanceof Error ? err.message : String(err);
-		console.warn(`Warning: Could not fetch Node.js security posts: ${message}`);
-		console.warn("Continuing with OSV.dev data only...");
-		posts = [];
-	}
-	log(`Stage 3: Querying OSV.dev and GitHub for ${lockResult.deps.length} packages...`, options.verbose);
 	const packages = lockResult.deps.map((d) => ({
 		name: d.name,
 		version: d.version
 	}));
 	const githubToken = resolveGithubToken(options.githubTokenEnv);
+	let posts = [];
 	let osvResults = packages.map((p) => ({
 		packageName: p.name,
 		packageVersion: p.version,
 		vulnerabilities: []
 	}));
 	let githubAdvisoryResults = [];
+	let dependabotAlerts = [];
 	let osvError;
 	let githubAdvisoryError;
-	if (useSpinners) await tasks([{
-		title: `OSV.dev (${packages.length} package versions)`,
-		task: async () => {
-			try {
-				osvResults = await queryOsvBatch(packages, cacheOpts);
-				return `OSV.dev: ${countOsvVulnerabilities(osvResults)} vulnerabilities`;
-			} catch (err) {
-				osvError = err;
-				return "OSV.dev unavailable; continuing without OSV data";
+	if (useSpinners && usesTerminalOutput(options.format)) {
+		printTitleBanner(FETCHING_SOURCES_BANNER);
+		await tasks(buildSourceTasks(options, cacheOpts, packages, githubToken, {
+			posts: (value) => {
+				posts = value;
+			},
+			osvResults: (value) => {
+				osvResults = value;
+			},
+			githubAdvisoryResults: (value) => {
+				githubAdvisoryResults = value;
+			},
+			dependabotAlerts: (value) => {
+				dependabotAlerts = value;
+			},
+			osvError: (value) => {
+				osvError = value;
+			},
+			githubAdvisoryError: (value) => {
+				githubAdvisoryError = value;
 			}
+		}));
+	} else await runSourcesWithoutSpinners(options, cacheOpts, packages, githubToken, {
+		posts: (value) => {
+			posts = value;
+		},
+		osvResults: (value) => {
+			osvResults = value;
+		},
+		githubAdvisoryResults: (value) => {
+			githubAdvisoryResults = value;
+		},
+		dependabotAlerts: (value) => {
+			dependabotAlerts = value;
+		},
+		osvError: (value) => {
+			osvError = value;
+		},
+		githubAdvisoryError: (value) => {
+			githubAdvisoryError = value;
 		}
-	}, {
-		title: `GitHub Advisory Database (${packages.length} package versions)`,
-		enabled: options.githubEnabled,
-		task: async () => {
-			try {
-				githubAdvisoryResults = await queryGithubAdvisoryBatch(packages, cacheOpts, githubToken);
-				return `GitHub Advisory Database: ${countGithubVulnerabilities(githubAdvisoryResults)} vulnerabilities`;
-			} catch (err) {
-				githubAdvisoryError = err;
-				return "GitHub Advisory Database unavailable; continuing without GitHub advisory data";
-			}
-		}
-	}]);
-	else {
-		const [osvSettled, githubAdvisorySettled] = await Promise.allSettled([queryOsvBatch(packages, cacheOpts, { verbose: options.verbose }), options.githubEnabled ? queryGithubAdvisoryBatch(packages, cacheOpts, githubToken, { verbose: options.verbose }) : Promise.resolve([])]);
-		if (osvSettled.status === "fulfilled") osvResults = osvSettled.value;
-		else osvError = osvSettled.reason;
-		if (options.githubEnabled) if (githubAdvisorySettled.status === "fulfilled") githubAdvisoryResults = githubAdvisorySettled.value;
-		else githubAdvisoryError = githubAdvisorySettled.reason;
-	}
-	if (osvError) {
+	});
+	if (!options.osvEnabled) log("  OSV.dev: skipped (--skip-osv)", options.verbose);
+	else if (osvError) {
 		console.warn(`Warning: OSV.dev query failed: ${sourceErrorMessage(osvError)}`);
 		console.warn("Continuing without OSV.dev data...");
 	} else log(`  OSV.dev: ${countOsvVulnerabilities(osvResults)} vulnerabilities`, options.verbose);
-	if (!options.githubEnabled) log("  GitHub Advisory Database: skipped (--no-github)", options.verbose);
+	if (!options.githubEnabled) log("  GitHub Advisory Database: skipped (--skip-github)", options.verbose);
 	else if (githubAdvisoryError) {
 		console.warn(`Warning: GitHub Advisory Database query failed: ${sourceErrorMessage(githubAdvisoryError)}`);
 		console.warn("Continuing without GitHub advisory data...");
 	} else log(`  GitHub Advisory Database: ${countGithubVulnerabilities(githubAdvisoryResults)} vulnerabilities`, options.verbose);
-	let dependabotAlerts = [];
-	if (options.dependabot) {
-		log("Stage 4: Fetching Dependabot alerts...", options.verbose);
-		const repository = options.githubRepo || detectGithubRepo(options.project);
-		if (!repository) {
-			console.warn("Warning: Could not detect GitHub repository for Dependabot alerts.");
-			console.warn("  Use --github-repo owner/repo or run from a git clone with a GitHub origin remote.");
-		} else if (!githubToken) {
-			console.warn(`Warning: ${githubTokenEnvLabel(options.githubTokenEnv)} not set — Dependabot alerts require a GitHub token.`);
-			console.warn("  Add a token to the project .env (e.g. NPM_TOKEN), export it in your shell, or set GITHUB_TOKEN_FILE.");
-		} else {
-			log(`  Repository: ${repository}`, options.verbose);
-			if (useSpinners) await tasks([{
-				title: `Dependabot alerts (${repository})`,
-				task: async () => {
-					dependabotAlerts = await fetchDependabotAlerts(repository, cacheOpts, githubToken, options.githubAlertStates);
-					return `Dependabot alerts: ${dependabotAlerts.length} alerts`;
-				}
-			}]);
-			else dependabotAlerts = await fetchDependabotAlerts(repository, cacheOpts, githubToken, options.githubAlertStates, { verbose: options.verbose });
-			log(`  Dependabot: ${dependabotAlerts.length} open alerts`, options.verbose);
-		}
-	}
+	if (!options.dependabot) log("  Dependabot alerts: skipped (--skip-dependabot)", options.verbose);
+	else log(`  Dependabot: ${dependabotAlerts.length} open alerts`, options.verbose);
 	log("Stage 5: Correlating findings...", options.verbose);
 	const result = correlate(lockResult.deps, nodeVersion, posts, osvResults, githubAdvisoryResults, dependabotAlerts);
 	log("Stage 6: Generating report...", options.verbose);
@@ -1721,6 +1778,125 @@ async function runScanPipeline(options) {
 	log(`Done in ${((Date.now() - startTime) / 1e3).toFixed(1)}s`, options.verbose);
 	if (result.summary.critical > 0 || result.summary.high > 0) return 1;
 	return 0;
+}
+function buildSourceTasks(options, cacheOpts, packages, githubToken, sink) {
+	const repository = options.remoteRepo || detectGithubRepo(options.project);
+	return [
+		{
+			title: `Node.js security posts (${options.nodePosts} posts)`,
+			task: async () => {
+				if (!options.nodePostsEnabled) return skippedSourceLabel("Node.js security posts");
+				try {
+					const posts = await scrapeNodeSecurityPosts(options.nodePosts, cacheOpts);
+					sink.posts(posts);
+					const totalCves = posts.reduce((sum, p) => sum + p.vulnerabilities.length, 0);
+					return `Node.js security posts: ${posts.length} posts, ${totalCves} CVEs`;
+				} catch (err) {
+					const message = err instanceof Error ? err.message : String(err);
+					console.warn(`Warning: Could not fetch Node.js security posts: ${message}`);
+					console.warn("Continuing without Node.js security post data...");
+					sink.posts([]);
+					return "Node.js security posts unavailable; continuing without Node.js post data";
+				}
+			}
+		},
+		{
+			title: `OSV.dev (${packages.length} package versions)`,
+			task: async (message) => {
+				if (!options.osvEnabled) return skippedSourceLabel("OSV.dev");
+				try {
+					const osvResults = await queryOsvBatch(packages, cacheOpts, { onProgress: (completed, total) => {
+						message(`OSV.dev (${completed} / ${total} package versions)`);
+					} });
+					sink.osvResults(osvResults);
+					return `OSV.dev: ${countOsvVulnerabilities(osvResults)} vulnerabilities`;
+				} catch (err) {
+					sink.osvError(err);
+					return "OSV.dev unavailable; continuing without OSV data";
+				}
+			}
+		},
+		{
+			title: `GitHub Advisory Database (${packages.length} package versions)`,
+			task: async (message) => {
+				if (!options.githubEnabled) return skippedSourceLabel("GitHub Advisory Database");
+				try {
+					const githubAdvisoryResults = await queryGithubAdvisoryBatch(packages, cacheOpts, githubToken, { onProgress: (completed, total) => {
+						message(`GitHub Advisory Database (${completed} / ${total} package versions)`);
+					} });
+					sink.githubAdvisoryResults(githubAdvisoryResults);
+					return `GitHub Advisory Database: ${countGithubVulnerabilities(githubAdvisoryResults)} vulnerabilities`;
+				} catch (err) {
+					sink.githubAdvisoryError(err);
+					return "GitHub Advisory Database unavailable; continuing without GitHub advisory data";
+				}
+			}
+		},
+		{
+			title: repository ? `Dependabot alerts (${repository})` : "Dependabot alerts",
+			task: async () => {
+				if (!options.dependabot) return skippedSourceLabel("Dependabot alerts");
+				if (!repository) {
+					console.warn("Warning: Could not detect GitHub repository for Dependabot alerts.");
+					console.warn("  Use --remote-repo owner/repo or run from a git clone with a GitHub origin remote.");
+					return skippedSourceLabel("Dependabot alerts");
+				}
+				if (!githubToken) {
+					console.warn(`Warning: ${githubTokenEnvLabel(options.githubTokenEnv)} not set — Dependabot alerts require a GitHub token.`);
+					console.warn("  Add a token to the project .env (e.g. NPM_TOKEN), export it in your shell, or set GITHUB_TOKEN_FILE.");
+					return skippedSourceLabel("Dependabot alerts");
+				}
+				const dependabotAlerts = await fetchDependabotAlerts(repository, cacheOpts, githubToken, options.githubAlertStates);
+				sink.dependabotAlerts(dependabotAlerts);
+				return `Dependabot alerts: ${dependabotAlerts.length} alerts`;
+			}
+		}
+	];
+}
+async function runSourcesWithoutSpinners(options, cacheOpts, packages, githubToken, sink) {
+	if (!options.nodePostsEnabled) log("Stage 2: Node.js security posts skipped (--skip-node-posts)", options.verbose);
+	else {
+		log(`Stage 2: Scraping last ${options.nodePosts} Node.js security posts...`, options.verbose);
+		try {
+			const posts = await scrapeNodeSecurityPosts(options.nodePosts, cacheOpts, { verbose: options.verbose });
+			sink.posts(posts);
+			log(`  Extracted ${posts.reduce((sum, p) => sum + p.vulnerabilities.length, 0)} CVEs from ${posts.length} posts`, options.verbose);
+		} catch (err) {
+			const message = err instanceof Error ? err.message : String(err);
+			console.warn(`Warning: Could not fetch Node.js security posts: ${message}`);
+			console.warn("Continuing without Node.js security post data...");
+			sink.posts([]);
+		}
+	}
+	log(`Stage 3: Querying OSV.dev and GitHub for ${packages.length} packages...`, options.verbose);
+	const [osvSettled, githubAdvisorySettled] = await Promise.allSettled([options.osvEnabled ? queryOsvBatch(packages, cacheOpts, { verbose: options.verbose }) : Promise.resolve(null), options.githubEnabled ? queryGithubAdvisoryBatch(packages, cacheOpts, githubToken, { verbose: options.verbose }) : Promise.resolve(null)]);
+	if (options.osvEnabled) {
+		if (osvSettled.status === "fulfilled" && osvSettled.value) sink.osvResults(osvSettled.value);
+		else if (osvSettled.status === "rejected") sink.osvError(osvSettled.reason);
+	}
+	if (options.githubEnabled) {
+		if (githubAdvisorySettled.status === "fulfilled" && githubAdvisorySettled.value) sink.githubAdvisoryResults(githubAdvisorySettled.value);
+		else if (githubAdvisorySettled.status === "rejected") sink.githubAdvisoryError(githubAdvisorySettled.reason);
+	}
+	if (!options.dependabot) {
+		log("Stage 4: Dependabot alerts skipped (--skip-dependabot)", options.verbose);
+		return;
+	}
+	log("Stage 4: Fetching Dependabot alerts...", options.verbose);
+	const repository = options.remoteRepo || detectGithubRepo(options.project);
+	if (!repository) {
+		console.warn("Warning: Could not detect GitHub repository for Dependabot alerts.");
+		console.warn("  Use --remote-repo owner/repo or run from a git clone with a GitHub origin remote.");
+		return;
+	}
+	if (!githubToken) {
+		console.warn(`Warning: ${githubTokenEnvLabel(options.githubTokenEnv)} not set — Dependabot alerts require a GitHub token.`);
+		console.warn("  Add a token to the project .env (e.g. NPM_TOKEN), export it in your shell, or set GITHUB_TOKEN_FILE.");
+		return;
+	}
+	log(`  Repository: ${repository}`, options.verbose);
+	const dependabotAlerts = await fetchDependabotAlerts(repository, cacheOpts, githubToken, options.githubAlertStates, { verbose: options.verbose });
+	sink.dependabotAlerts(dependabotAlerts);
 }
 //#endregion
 //#region src/commands/scan/scan.command.ts
@@ -1754,17 +1930,25 @@ const SCAN_FLAG_DEFS = {
 		type: "boolean",
 		description: "Verbose progress output"
 	},
-	"no-github": {
+	"skip-osv": {
 		type: "boolean",
-		description: "Disable GitHub Advisory Database checks"
+		description: "Skip OSV.dev vulnerability queries"
 	},
-	"dependabot": {
+	"skip-node-posts": {
 		type: "boolean",
-		description: "Fetch Dependabot alerts for the repository"
+		description: "Skip Node.js runtime security post scraping"
 	},
-	"github-repo": {
+	"skip-github": {
+		type: "boolean",
+		description: "Skip GitHub Advisory Database queries"
+	},
+	"skip-dependabot": {
+		type: "boolean",
+		description: "Skip Dependabot alert fetching"
+	},
+	"remote-repo": {
 		type: "string",
-		description: "GitHub owner/repo for Dependabot alerts"
+		description: "Remote owner/repo for Dependabot alerts"
 	},
 	"github-alert-states": {
 		type: "string",
@@ -1788,9 +1972,11 @@ const runScanCommand = async ({ argv, cwd }) => {
 			nodePosts: flow.flags["node-posts"] || 5,
 			jsonOut: flow.flags["json-out"] || void 0,
 			verbose: flow.flags.verbose ?? false,
-			githubEnabled: !(flow.flags["no-github"] ?? false),
-			dependabot: flow.flags.dependabot ?? false,
-			githubRepo: flow.flags["github-repo"] || void 0,
+			osvEnabled: !(flow.flags["skip-osv"] ?? false),
+			nodePostsEnabled: !(flow.flags["skip-node-posts"] ?? false),
+			githubEnabled: !(flow.flags["skip-github"] ?? false),
+			dependabot: !(flow.flags["skip-dependabot"] ?? false),
+			remoteRepo: flow.flags["remote-repo"] || void 0,
 			githubAlertStates: parseAlertStates(flow.flags["github-alert-states"]),
 			githubTokenEnv: flow.flags["github-token-env"] || void 0
 		});

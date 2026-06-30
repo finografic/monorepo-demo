@@ -13,10 +13,10 @@ export function DemoPage() {
   return (
     <DemoLayout
       header={{
-        title: 'Dependency Scanner Demo',
-        subtitle: 'xscan · GitHub lockfiles · Live terminal output',
+        title: 'Demo 3: Supply-Chain Security Scanner',
+        subtitle: 'xscan · GitHub lockfiles · Dependency tree analysis',
       }}
-      footer={<p className="text-sm text-primary-foreground">Vendored xscan dist · Server-side scan</p>}
+      footer={<p className="text-sm text-primary-foreground">Vendored xscan dist · Supply-chain scan</p>}
     >
       <ScanPane repo={null} repoUrl={repoUrl} suggestions={REPOS} onRepoUrlSubmit={handleRepoUrlSubmit} />
     </DemoLayout>

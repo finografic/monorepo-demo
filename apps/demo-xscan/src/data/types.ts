@@ -1,1 +1,1 @@
-export type { RepoMeta } from '../../shared/repos.js';
+export type { RepoMeta, SuggestionTone } from '../../shared/repos.js';

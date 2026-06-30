@@ -17,9 +17,10 @@
       "components/*": ["./src/components/*"],
       "pages/*": ["./src/pages/*"],
       "data/*": ["./src/data/*"],
-      "lib/*": ["./src/lib/*"]
+      "lib/*": ["./src/lib/*"],
+      "shared/*": ["./shared/*"]
     }
   },
-  "include": ["src"],
+  "include": ["src", "shared"],
   "exclude": ["node_modules", "dist"]
 }

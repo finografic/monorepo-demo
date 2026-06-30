@@ -2,10 +2,13 @@ import { FitAddon } from '@xterm/addon-fit';
 import { Terminal } from '@xterm/xterm';
 import '@xterm/xterm/css/xterm.css';
 import { useEffect, useRef } from 'react';
+import { appendScanSourceParams } from 'shared/scan-sources';
+import type { ScanSourceToggles } from 'shared/scan-sources';
 
 interface XscanTerminalProps {
   repoId: string | null;
   repoUrl: string | null;
+  scanSources: ScanSourceToggles;
   standby: boolean;
 }
 
@@ -19,7 +22,7 @@ function writeStandbyPrompt(terminal: Terminal): void {
   terminal.write('\x1b[32m$\x1b[0m ');
 }
 
-function scanUrl(repoId: string | null, repoUrl: string | null): string {
+function scanUrl(repoId: string | null, repoUrl: string | null, scanSources: ScanSourceToggles): string {
   const searchParams = new URLSearchParams();
   if (repoUrl) {
     searchParams.set('repoUrl', repoUrl);
@@ -27,10 +30,12 @@ function scanUrl(repoId: string | null, repoUrl: string | null): string {
     searchParams.set('repoId', repoId);
   }
 
+  appendScanSourceParams(searchParams, scanSources);
+
   return apiUrl(`/api/scan?${searchParams.toString()}`);
 }
 
-export function XscanTerminal({ repoId, repoUrl, standby }: XscanTerminalProps) {
+export function XscanTerminal({ repoId, repoUrl, scanSources, standby }: XscanTerminalProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const terminalRef = useRef<Terminal | null>(null);
   const fitRef = useRef<FitAddon | null>(null);
@@ -46,6 +51,7 @@ export function XscanTerminal({ repoId, repoUrl, standby }: XscanTerminalProps) 
       fontFamily: 'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace',
       fontSize: 15,
       lineHeight: 1.35,
+      scrollback: 5000,
       theme: {
         background: '#0f172a',
         foreground: '#f8fafc',
@@ -92,7 +98,7 @@ export function XscanTerminal({ repoId, repoUrl, standby }: XscanTerminalProps) 
 
     void (async () => {
       try {
-        const res = await fetch(scanUrl(repoId, repoUrl), {
+        const res = await fetch(scanUrl(repoId, repoUrl, scanSources), {
           signal: controller.signal,
         });
         if (!res.ok || !res.body) {
@@ -135,7 +141,7 @@ export function XscanTerminal({ repoId, repoUrl, standby }: XscanTerminalProps) 
     })();
 
     return () => controller.abort();
-  }, [repoId, repoUrl, standby]);
+  }, [repoId, repoUrl, scanSources, standby]);
 
   return (
     <div

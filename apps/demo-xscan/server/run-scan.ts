@@ -1,14 +1,15 @@
-import { spawn } from 'node:child_process';
 import { existsSync, rmSync } from 'node:fs';
 import { resolve } from 'node:path';
 
-import { XSCAN_CLI } from './constants.js';
+import { XSCAN_CLI, demoSkipsCache } from './constants.js';
 import { materializeGithubProject } from './materialize-github.js';
+import { spawnScanProcess } from './spawn-scan.js';
+import type { ScanSourceToggles } from '../shared/scan-sources.js';
 
 export interface ScanStreamOptions {
   owner: string;
   repo: string;
-  dependabot: boolean;
+  sources: ScanSourceToggles;
   onChunk: (chunk: string) => void;
   onDone: (exitCode: number) => void;
   onError: (message: string) => void;
@@ -57,27 +58,19 @@ export async function streamGithubScan(options: ScanStreamOptions): Promise<void
       materialized.directory,
       '--format',
       'terminal',
-      ...(options.dependabot ? ['--dependabot', '--github-repo', slug] : []),
+      ...(demoSkipsCache() ? ['--no-cache'] : []),
+      ...(options.sources.osv ? [] : ['--skip-osv']),
+      ...(options.sources.nodePosts ? [] : ['--skip-node-posts']),
+      ...(options.sources.githubAdvisory ? [] : ['--skip-github']),
+      ...(options.sources.dependabot ? ['--remote-repo', slug] : ['--skip-dependabot']),
     ];
 
     options.onChunk(`\x1b[2m$ node ${XSCAN_CLI} ${args.join(' ')}\x1b[0m\n\n`);
 
-    const child = spawn(process.execPath, [XSCAN_CLI, ...args], {
-      cwd: resolve(XSCAN_CLI, '../..'),
-      env: process.env,
-      stdio: ['ignore', 'pipe', 'pipe'],
-    });
-
-    child.stdout.on('data', (buf: Buffer) => options.onChunk(buf.toString('utf-8')));
-    child.stderr.on('data', (buf: Buffer) => options.onChunk(buf.toString('utf-8')));
-
-    child.on('error', (err) => {
-      options.onError(err.message);
-      finish(2);
-    });
-
-    child.on('close', (code) => {
-      finish(code ?? 1);
+    spawnScanProcess(XSCAN_CLI, args, resolve(XSCAN_CLI, '../..'), {
+      onChunk: options.onChunk,
+      onError: options.onError,
+      onExit: finish,
     });
   } catch (err: unknown) {
     const message = err instanceof Error ? err.message : String(err);
