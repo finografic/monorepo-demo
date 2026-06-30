@@ -24,7 +24,7 @@ export function DemoPage() {
   return (
     <DemoLayout
       header={{
-        title: 'Transport Data Dashboard',
+        title: 'Demo 2: Transport Data Dashboard',
         subtitle: 'QLD transport data · Recharts · D3 · CKAN live API',
       }}
       sidebar={
@@ -40,12 +40,12 @@ export function DemoPage() {
       }
       sidebarLabel="Chart navigation"
       footer={
-        <p className="text-sm text-primary-foreground">
-          WCAG 2.1 AA · Accessible data charts
-          <span className="mt-0.5 mx-4 text-primary-foreground/60">
+        <>
+          <p className="text-sm text-primary-foreground">WCAG 2.1 AA · Accessible data charts</p>
+          <p className="text-sm text-primary-foreground/60">
             Keyboard navigable · → chart · ← or Esc sidebar
-          </span>
-        </p>
+          </p>
+        </>
       }
     >
       {selectedChart ? (

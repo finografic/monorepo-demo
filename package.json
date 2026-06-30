@@ -25,6 +25,7 @@
     "dev:all": "pnpm kill:dev && moon run client:dev server:dev demo-ai-pipeline:dev demo-datavis:dev demo-xscan:dev",
     "dev:reset": "run-s reset",
     "dev:db:reset": "run-s db:reset",
+    "dev:sync:xscan": "pnpm --filter @workspace/demo-xscan sync:xscan",
     "start": "moon run client:start server:start",
     "build": "moon run :build",
     "build:pages": "moon run client:build-pages demo-ai-pipeline:build-pages demo-datavis:build-pages demo-xscan:build-pages",

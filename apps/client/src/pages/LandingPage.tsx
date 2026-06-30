@@ -38,7 +38,7 @@ function demoUrl(path: string, localUrl: string, envUrl?: string): string {
 const DEMOS = [
   {
     id: 'ai-pipeline',
-    title: 'AI Markdown Pipeline',
+    title: 'Demo 1: AI Markdown Pipeline',
     description:
       'LLM-powered markdown generation using public Queensland TMR data, with live streaming, fixture replay, Mermaid diagrams, Shiki code highlighting, and RAG-style service guidance.',
     tags: ['LLM UI', 'Streaming SSE', 'Mermaid', 'Shiki'],
@@ -47,7 +47,7 @@ const DEMOS = [
   },
   {
     id: 'datavis',
-    title: 'Transport Data Dashboard',
+    title: 'Demo 2: Transport Data Dashboard',
     description:
       'Accessible Queensland TMR dashboard with interactive charts, keyboard-friendly views, source links, and live Open Data catalogue integration.',
     tags: ['Data visualisation', 'Recharts', 'D3', 'WCAG AA'],
@@ -56,10 +56,10 @@ const DEMOS = [
   },
   {
     id: 'xscan',
-    title: 'Dependency Scan Terminal',
+    title: 'Demo 3: Supply-Chain Security Scanner',
     description:
-      'Browser-based security scan console for running dependency checks against GitHub repositories, with terminal streaming and structured summaries.',
-    tags: ['xterm.js', 'CLI bridge', 'Security', 'SSE'],
+      'Browser-based supply-chain security scanner for GitHub repositories, with lockfile dependency-tree analysis, terminal streaming, and structured summaries.',
+    tags: ['Supply chain', 'xterm.js', 'Security', 'SSE'],
     url: demoUrl('demo-xscan', 'http://localhost:3003', import.meta.env['VITE_DEMO_XSCAN_URL']),
     disabledInProduction: true,
   },

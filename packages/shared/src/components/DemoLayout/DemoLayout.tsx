@@ -103,7 +103,11 @@ export function DemoLayout({
         <main className="flex-1 flex flex-col overflow-hidden">{children}</main>
       </div>
 
-      {footer != null && <footer className="flex-none bg-primary px-6 py-3">{footer}</footer>}
+      {footer != null && (
+        <footer className="flex flex-none items-center justify-between gap-6 bg-primary px-6 py-3">
+          {footer}
+        </footer>
+      )}
     </div>
   );
 }
