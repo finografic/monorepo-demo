@@ -17,7 +17,7 @@ export function ModelSelector({
 
   return (
     <div className={disabled ? 'opacity-60 space-y-1.5' : 'space-y-1.5'}>
-      <label htmlFor="live-model" className="text-xs font-medium tracking-wider text-primary">
+      <label htmlFor="live-model" className="text-sm font-medium tracking-wider text-primary">
         Live LLM model
       </label>
       <select

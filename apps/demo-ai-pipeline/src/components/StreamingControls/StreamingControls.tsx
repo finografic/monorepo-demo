@@ -1,5 +1,6 @@
 import type { GenerationStatus, ModelOption, StreamMode } from '@workspace/shared';
 import { ModelSelector } from 'components/ModelSelector/ModelSelector';
+import { PromptSourceSelector } from 'components/PromptSourceSelector/PromptSourceSelector';
 
 interface StreamingControlsProps {
   status: GenerationStatus;
@@ -31,35 +32,9 @@ export function StreamingControls({
   const secondaryActionClass =
     'rounded-md border-2 border-amber-500 px-4 py-3 text-base font-semibold text-amber-500 transition-colors hover:bg-amber-200 hover:border-amber-600 hover:text-amber-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:border-muted-foreground disabled:bg-transparent disabled:text-muted-foreground disabled:opacity-30';
 
-  const modeLabels: Record<StreamMode, string> = {
-    fixture: 'Mock Fixture',
-    live: 'Live LLM API',
-  };
-
   return (
     <div className="space-y-3">
-      {/* Mode toggle */}
-      <div style={isStreaming ? { opacity: 0.5, cursor: 'not-allowed' } : {}}>
-        <p className="mb-1 text-xs font-semibold tracking-wide text-primary">Prompt Source</p>
-        <div className="flex overflow-hidden rounded-md border border-border text-sm font-medium">
-          {(['live', 'fixture'] as StreamMode[]).map((m) => (
-            <button
-              key={m}
-              type="button"
-              disabled={isStreaming}
-              onClick={() => onModeChange(m)}
-              className={[
-                'flex-1 py-2 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed',
-                mode === m
-                  ? 'bg-primary text-primary-foreground'
-                  : 'text-muted-foreground hover:bg-accent hover:text-foreground',
-              ].join(' ')}
-            >
-              {modeLabels[m]}
-            </button>
-          ))}
-        </div>
-      </div>
+      <PromptSourceSelector mode={mode} disabled={isStreaming} onModeChange={onModeChange} />
 
       <ModelSelector
         models={liveModels}

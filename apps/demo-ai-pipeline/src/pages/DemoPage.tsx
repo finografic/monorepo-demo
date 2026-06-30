@@ -118,7 +118,7 @@ export function DemoPage() {
   return (
     <DemoLayout
       header={{
-        title: 'AI Markdown Pipeline',
+        title: 'Demo 1: AI Markdown Pipeline',
         subtitle: 'Streaming markdown · Mermaid diagrams · Syntax highlighting',
       }}
       sidebar={
@@ -147,22 +147,15 @@ export function DemoPage() {
               onStop={stop}
               onClear={handleClear}
             />
-            <p className="mt-3 text-center text-xs font-medium text-primary text-muted-foreground/70">
-              {mode === 'fixture'
-                ? 'Fixture mode — pre-recorded responses, no API cost'
-                : 'Live mode — calls the configured OpenAI-compatible server provider'}
-            </p>
           </div>
         </>
       }
       sidebarLabel="Prompt selection"
       footer={
-        <p className="text-sm text-primary-foreground">
-          Fixture mode · Live OpenAI-compatible API
-          <span className="mt-0.5 mx-4 text-primary-foreground/60">
-            Streaming · Mermaid · Syntax highlighting
-          </span>
-        </p>
+        <>
+          <p className="text-sm text-primary-foreground">Fixture mode · Live OpenAI-compatible API</p>
+          <p className="text-sm text-primary-foreground/60">Streaming · Mermaid · Syntax highlighting</p>
+        </>
       }
     >
       <div className="flex-1 overflow-y-auto px-8 py-6" aria-live="polite" aria-label="Generated content">
@@ -175,7 +168,7 @@ export function DemoPage() {
         )}
       </div>
 
-      <div className="flex min-h-24 flex-wrap items-center justify-between gap-5 border-t border-border bg-background px-8 py-4">
+      <div className="flex min-h-24 flex-wrap items-center justify-between gap-5 bg-blue-200 px-8 py-4">
         <div className="min-w-0 flex-1" aria-live="polite">
           <MetricsBar status={status} metrics={metrics} />
         </div>
