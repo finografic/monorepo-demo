@@ -7,7 +7,7 @@ import { Link, NavLink, Outlet, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
 const NAV_ITEMS = [
-  { to: '/admin', label: 'Dashboard', end: true },
+  { to: '/admin', label: 'Server Health', end: true },
   { to: '/admin/users', label: 'Users', end: false },
   { to: '/admin/translations', label: 'Translations', end: false },
   { to: '/admin/settings', label: 'Settings', end: false },

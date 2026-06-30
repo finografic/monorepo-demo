@@ -43,6 +43,7 @@ const DEMOS = [
       'LLM-powered markdown generation using public Queensland TMR data, with live streaming, fixture replay, Mermaid diagrams, Shiki code highlighting, and RAG-style service guidance.',
     tags: ['LLM UI', 'Streaming SSE', 'Mermaid', 'Shiki'],
     url: demoUrl('demo-ai-pipeline', 'http://localhost:3001', import.meta.env['VITE_DEMO_AI_PIPELINE_URL']),
+    disabledInProduction: false,
   },
   {
     id: 'datavis',
@@ -51,6 +52,7 @@ const DEMOS = [
       'Accessible Queensland TMR dashboard with interactive charts, keyboard-friendly views, source links, and live Open Data catalogue integration.',
     tags: ['Data visualisation', 'Recharts', 'D3', 'WCAG AA'],
     url: demoUrl('demo-datavis', 'http://localhost:3002', import.meta.env['VITE_DEMO_DATAVIS_URL']),
+    disabledInProduction: false,
   },
   {
     id: 'xscan',
@@ -59,6 +61,7 @@ const DEMOS = [
       'Browser-based security scan console for running dependency checks against GitHub repositories, with terminal streaming and structured summaries.',
     tags: ['xterm.js', 'CLI bridge', 'Security', 'SSE'],
     url: demoUrl('demo-xscan', 'http://localhost:3003', import.meta.env['VITE_DEMO_XSCAN_URL']),
+    disabledInProduction: true,
   },
 ] as const;
 
@@ -147,30 +150,49 @@ export function LandingPage(): React.JSX.Element {
         </p>
 
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {DEMOS.map((demo) => (
-            <Card key={demo.id} className="flex flex-col transition-shadow border-2 hover:shadow-md">
-              <CardContent className="flex flex-1 flex-col gap-3 p-5">
-                <p className="text-base font-semibold leading-snug text-foreground">{demo.title}</p>
+          {DEMOS.map((demo) => {
+            const isDisabled = demo.disabledInProduction === true && import.meta.env.PROD;
 
-                <p className="flex-1 text-sm leading-snug text-muted-foreground">{demo.description}</p>
+            return (
+              <Card key={demo.id} className="flex flex-col transition-shadow border-2 hover:shadow-md">
+                <CardContent className="flex flex-1 flex-col gap-3 p-5">
+                  <div className="flex flex-wrap items-center gap-2">
+                    <p className="text-base font-semibold leading-snug text-foreground">{demo.title}</p>
+                    {isDisabled ? (
+                      <span
+                        className={`inline-block rounded-full px-2.5 py-1 text-xs font-medium ${BADGE_COLOR_CLASSES.green}`}
+                      >
+                        Soon
+                      </span>
+                    ) : null}
+                  </div>
 
-                <div className="flex flex-wrap gap-1.5">
-                  {demo.tags.map((tag) => (
-                    <span
-                      key={tag}
-                      className={`inline-block rounded-full px-2.5 py-1 text-xs font-medium ${BADGE_COLOR_CLASSES.sky}`}
-                    >
-                      {tag}
-                    </span>
-                  ))}
-                </div>
+                  <p className="flex-1 text-sm leading-snug text-muted-foreground">{demo.description}</p>
 
-                <Button asChild className="mt-2 min-h-11 px-5 text-sm font-semibold">
-                  <a href={demo.url}>Open demo</a>
-                </Button>
-              </CardContent>
-            </Card>
-          ))}
+                  <div className="flex flex-wrap gap-1.5">
+                    {demo.tags.map((tag) => (
+                      <span
+                        key={tag}
+                        className={`inline-block rounded-full px-2.5 py-1 text-xs font-medium ${BADGE_COLOR_CLASSES.sky}`}
+                      >
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+
+                  {isDisabled ? (
+                    <Button disabled className="mt-2 min-h-11 px-5 text-sm font-semibold">
+                      Open demo
+                    </Button>
+                  ) : (
+                    <Button asChild className="mt-2 min-h-11 px-5 text-sm font-semibold">
+                      <a href={demo.url}>Open demo</a>
+                    </Button>
+                  )}
+                </CardContent>
+              </Card>
+            );
+          })}
         </div>
       </section>
 

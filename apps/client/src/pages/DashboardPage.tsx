@@ -27,8 +27,7 @@ export function DashboardPage(): React.JSX.Element {
 
   return (
     <div>
-      <h1>Dashboard</h1>
-      <h2>Server Health</h2>
+      <h1>Server Health</h1>
       {error && <p style={{ color: 'red' }}>Error: {error}</p>}
       {health && (
         <pre style={{ background: '#f5f5f5', padding: '1rem', borderRadius: '4px' }}>

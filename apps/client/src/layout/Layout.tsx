@@ -1,11 +1,9 @@
 import { Avatar, AvatarFallback } from '@workspace/ui/components/avatar';
-import { Badge } from '@workspace/ui/components/badge';
 import { Button } from '@workspace/ui/components/button';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link, NavLink, Outlet, useNavigate } from 'react-router-dom';
 
-import { LanguageSwitcher } from '../components/LanguageSwitcher/LanguageSwitcher';
 import { useAuth } from '../context/AuthContext';
 
 function navLinkClass({ isActive }: { isActive: boolean }): string {
@@ -42,12 +40,9 @@ export function Layout(): React.JSX.Element {
             monorepo-demo
           </Link>
           <nav className="flex items-center gap-4">
-            <NavLink to="/" end className={navLinkClass}>
-              {t('ui.nav.home', 'Home')}
-            </NavLink>
             {isAuthenticated ? (
               <NavLink to="/dashboard" className={navLinkClass}>
-                {t('ui.nav.dashboard', 'Dashboard')}
+                Server Health
               </NavLink>
             ) : null}
             {role === 'admin' ? (
@@ -59,10 +54,10 @@ export function Layout(): React.JSX.Element {
         </div>
 
         <div className="flex items-center gap-4">
-          <LanguageSwitcher />
+          {/* <LanguageSwitcher /> */}
           {isAuthenticated ? (
             <>
-              <Badge variant={role === 'admin' ? 'destructive' : 'default'}>{role}</Badge>
+              {/* <Badge variant={role === 'admin' ? 'destructive' : 'default'}>{role}</Badge> */}
               <Avatar size="sm">
                 <AvatarFallback>{initials(user?.name ?? 'User') || 'U'}</AvatarFallback>
               </Avatar>
