@@ -39,10 +39,30 @@ function githubHeaders(): Record<string, string> {
   return headers;
 }
 
-async function fetchDefaultBranch(owner: string, repo: string): Promise<string> {
-  const res = await fetch(`${GITHUB_API_BASE}/repos/${owner}/${repo}`, {
+async function fetchRepoApi(owner: string, repo: string): Promise<Response> {
+  return fetch(`${GITHUB_API_BASE}/repos/${owner}/${repo}`, {
     headers: githubHeaders(),
   });
+}
+
+export async function fetchGithubRepoMeta(
+  owner: string,
+  repo: string,
+): Promise<{ fullName: string; description: string | null }> {
+  const res = await fetchRepoApi(owner, repo);
+  if (!res.ok) {
+    return { fullName: `${owner}/${repo}`, description: null };
+  }
+
+  const meta = (await res.json()) as { full_name?: string; description?: string | null };
+  return {
+    fullName: meta.full_name ?? `${owner}/${repo}`,
+    description: meta.description?.trim() || null,
+  };
+}
+
+async function fetchDefaultBranch(owner: string, repo: string): Promise<string> {
+  const res = await fetchRepoApi(owner, repo);
   if (!res.ok) {
     throw new Error(`GitHub repo lookup failed (${res.status}) for ${owner}/${repo}`);
   }

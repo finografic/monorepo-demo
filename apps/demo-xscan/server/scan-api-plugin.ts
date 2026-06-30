@@ -1,6 +1,8 @@
 import type { ServerResponse } from 'node:http';
 import type { Plugin, PreviewServer, ViteDevServer } from 'vite';
 
+import { fetchGithubRepoMeta } from './materialize-github.js';
+import { githubSlugFromUrl } from './github-url.js';
 import { findRepo } from './repos.js';
 import { streamGithubScan } from './run-scan.js';
 
@@ -16,24 +18,48 @@ function writeSse(res: ServerResponse, event: string, data: string): void {
 }
 
 function scanTargetFromGithubUrl(repoUrl: string): ScanTarget | null {
-  try {
-    const url = new URL(repoUrl);
-    if (!['github.com', 'www.github.com'].includes(url.hostname)) {
-      return null;
-    }
-
-    const [owner, repo] = url.pathname.split('/').filter(Boolean);
-    if (!owner || !repo) {
-      return null;
-    }
-
-    return { owner, repo, dependabot: true };
-  } catch {
+  const slug = githubSlugFromUrl(repoUrl);
+  if (!slug) {
     return null;
   }
+
+  return { owner: slug.owner, repo: slug.repo, dependabot: true };
 }
 
 function attachScanMiddleware(server: Pick<ViteDevServer | PreviewServer, 'middlewares'>): void {
+  server.middlewares.use('/api/github-repo', (req, res, next) => {
+    if (req.method !== 'GET') {
+      next();
+      return;
+    }
+
+    const url = new URL(req.url ?? '/', 'http://localhost');
+    const repoUrl = url.searchParams.get('repoUrl');
+    if (!repoUrl) {
+      res.statusCode = 400;
+      res.end('Missing repoUrl');
+      return;
+    }
+
+    const slug = githubSlugFromUrl(repoUrl);
+    if (!slug) {
+      res.statusCode = 400;
+      res.end(`Invalid GitHub repository URL: ${repoUrl}`);
+      return;
+    }
+
+    void (async () => {
+      try {
+        const meta = await fetchGithubRepoMeta(slug.owner, slug.repo);
+        res.setHeader('Content-Type', 'application/json');
+        res.end(JSON.stringify(meta));
+      } catch {
+        res.statusCode = 502;
+        res.end('Failed to fetch GitHub repository metadata');
+      }
+    })();
+  });
+
   server.middlewares.use('/api/scan', (req, res, next) => {
     if (req.method !== 'GET') {
       next();

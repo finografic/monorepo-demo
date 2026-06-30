@@ -25,6 +25,7 @@ export default defineConfig(({ mode }) => {
         'components': resolve('src/components'),
         'pages': resolve('src/pages'),
         'data': resolve('src/data'),
+        'lib': resolve('src/lib'),
         '@workspace/shared': resolve('../../packages/shared/src'),
         '@workspace/ui/globals.css': resolve('../../packages/ui/src/styles/globals.css'),
         '@workspace/ui': resolve('../../packages/ui/src'),

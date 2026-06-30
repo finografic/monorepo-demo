@@ -44,11 +44,11 @@ export function XscanTerminal({ repoId, repoUrl, standby }: XscanTerminalProps) 
       convertEol: true,
       cursorBlink: true,
       fontFamily: 'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace',
-      fontSize: 13,
+      fontSize: 15,
       lineHeight: 1.35,
       theme: {
         background: '#0f172a',
-        foreground: '#e2e8f0',
+        foreground: '#f8fafc',
         cursor: '#38bdf8',
         selectionBackground: '#334155',
       },

@@ -72,16 +72,16 @@ Shared across Claude Code, Cursor, and GitHub Copilot.
 
 - Do not create git commits unless the user explicitly asks.
 - Treat pasted handoff or context blocks as orientation only; do not start work unless the user asks for a specific action.
-- For typography changes, prefer global tokens (`html` root font-size, CSS variables in `globals.css`) over per-component tweaks; prepend new body fonts to the stack and keep existing fallbacks unless asked to remove a family.
+- For typography and input placeholder styling, prefer global tokens in `globals.css` (`--placeholder-foreground` with base `::placeholder` rules, `html` root font-size, semantic text tokens) over per-component `placeholder:text-*` classes; prepend new body fonts to the stack and keep existing fallbacks unless asked to remove a family.
 - In `demo-datavis`, centralize common Recharts props in `src/constants/charts.config.ts`; keep chart-specific constants (domains, IDs, label text) in each chart file.
 - npm dependency upgrades use pnpm + syncpack (Moon/Proto pin Node/pnpm/moon only); `deps:update` chains `pnpm syncpack:fix` after `--latest --recursive`; syncpack v14+ uses `fix` not `fix-mismatches`.
 - For `@finografic/design-system`, ship prebuilt `dist/` from CI in the npm tarball; do not commit `dist/` or use postinstall build scripts.
-- In this workspace, use `source.addMissingImports: explicit` and `source.sortImports: explicit`; do not remove unused imports on save (`source.organizeImports: never`); keep `source.fixAll.oxc: explicit` for oxlint without organize-imports cleanup.
+- In this workspace, use `source.addMissingImports: explicit` and `source.sortImports: explicit`; do not remove unused imports on save (`source.organizeImports: never`); keep `source.fixAll.oxc: explicit` for oxlint without organize-imports cleanup. Prefer keeping `index.ts`/`index.tsx` as re-export barrels; split implementation into sibling modules (e.g. `{id}.prompt.ts`) rather than inlining into index files.
 - Use `:` as the segment separator in npm script names everywhere (e.g. `db:migrations:seed`, not `db.migrations.seed` or space-separated variants).
-- Prefer the published `@finografic/project-scripts` from the registry; use `file:`/`link:` only when explicitly testing local project-scripts changes.
-- `pnpm link` writes persistent `link:` specifiers in `package.json` and `pnpm-workspace.yaml` overrides — global unlink does not restore registry ranges.
+- Prefer the published `@finografic/project-scripts` from the registry; use `file:`/`link:` only when explicitly testing local changes — `pnpm link` writes persistent `link:` specifiers in `package.json` and `pnpm-workspace.yaml` overrides, and global unlink does not restore registry ranges.
+- When `docs/todo/TODO_*.md` work is complete, rename to `DONE_*.md`, cross-check against the codebase, and update `ROADMAP.md` and `NEXT_STEPS.md` links.
+- `target="_blank"` in Cursor's embedded browser/Simple Browser often does not open a system tab; verify in an external browser before treating link behavior as an app bug.
 - Only list seeds in `config/db-setup.config.ts` for schemas/tables that exist in this repo.
-- Prefer keeping `index.ts`/`index.tsx` as re-export barrels; split implementation into sibling modules (e.g. `{id}.prompt.ts`) rather than inlining into index files.
 
 ## Learned Workspace Facts
 
@@ -90,10 +90,10 @@ Shared across Claude Code, Cursor, and GitHub Copilot.
 - Moon drives `build`, `dev`, `lint`, `typecheck`, `test`, and `clean` tasks (Turbo removed); Moon/Proto pin toolchain (Node, pnpm, moon)—npm deps are upgraded via pnpm + syncpack.
 - `apps/client`: Vite 8 + React 19 + React Router v7 + shadcn/Tailwind 4; dev on port 3000, proxies `/api` → server. `apps/server`: Hono + @hono/node-server; `tsdown` build, `tsx watch` dev, default port 4000.
 - `@workspace/config`: Valibot env validation + dotenv with root-dir auto-discovery + workspace paths; hosts `db-setup.config.ts`.
-- Each app has a local `oxlint.config.ts` importing presets from `@finografic/oxc-config/oxlint`.
+- Each app has a local `oxlint.config.ts` importing presets from `@finografic/oxc-config/oxlint`; root `lint:ci` uses `oxlint --quiet` so warnings are hidden and only errors fail CI.
 - Root `package.json` does NOT set `"type": "module"` — each sub-package declares its own.
-- `packages/ui` contains owned shadcn components and Tailwind 4 globals (`@workspace/ui/*`); shadcn theme `baseColor: neutral`, `style: radix-vega`; semantic text tokens in `globals.css` (`--foreground`, `--muted-foreground`); `body` uses `text-foreground`, most paragraph copy `text-muted-foreground`; root scale via `html { font-size: 112.5%; }`.
-- `packages/core` was intentionally skipped in Phase 03; `@workspace/shared` main barrel is types/models only (server-safe); JSX components (`DemoLayout`, `StandbyPlaceholder`, `OptionCard`) export via `@workspace/shared/components`; assets via `@workspace/shared/assets/*`; demo apps alias `@workspace/shared` → `packages/shared/src` (directory, required for asset subpaths). Portfolio demos: `demo-ai-pipeline` :3001, `demo-datavis` :3002, `demo-xscan` :3003 (`demo-xscan` keeps its own monitor-icon `StandbyPlaceholder`, not QLD branding).
+- `packages/ui` contains owned shadcn components and Tailwind 4 globals (`@workspace/ui/*`); shadcn theme `baseColor: neutral`, `style: radix-vega`; semantic text tokens in `globals.css` (`--foreground`, `--muted-foreground`, `--placeholder-foreground` with base `::placeholder` rules); `body` uses `text-foreground`, most paragraph copy `text-muted-foreground`; root scale via `html { font-size: 112.5%; }`.
+- `packages/core` was intentionally skipped in Phase 03; `@workspace/shared` main barrel is types/models only (server-safe); JSX components (`DemoLayout`, `StandbyPlaceholder`, `OptionCard`) export via `@workspace/shared/components`; assets via `@workspace/shared/assets/*`; demo apps alias `@workspace/shared` → `packages/shared/src` (directory, required for asset subpaths). Portfolio demos: `demo-ai-pipeline` :3001, `demo-datavis` :3002, `demo-xscan` :3003 (`demo-xscan` keeps its own monitor-icon `StandbyPlaceholder`, runs vendored `@finografic/deps-xscan` inline in an xterm terminal during dev, not QLD branding).
 - `.github/workflows/deploy-demo-pages.yml` publishes static demo apps to GitHub Pages under `/demo-ai-pipeline/`, `/demo-datavis/`, and `/demo-xscan/`; API-backed demo features still require a hosted Node service.
 - Root `db:reset` chains drop → migrate → `db:setup` via the `@finografic/project-scripts` `db-setup` CLI (`NODE_OPTIONS='--import tsx' db-setup -y`); do not duplicate a local db-setup script.
 - `config/db-setup.config.ts` seeds: `user`, `supported_languages`, `translations_ui`, `translations_app`, `translations_admin`; `viewConfigs` is empty (no SQL views). Seed files use underscore names matching schema exports.
