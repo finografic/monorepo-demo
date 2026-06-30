@@ -108,7 +108,7 @@ export function LandingPage(): React.JSX.Element {
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-12">
-      <section className="mb-16 text-center">
+      <section className="mb-10 text-center">
         <Badge className="mb-4 px-3 py-3">{t('app.badge', 'Open-source starter')}</Badge>
 
         <h1 className="text-4xl font-bold tracking-tight text-foreground">
@@ -119,7 +119,7 @@ export function LandingPage(): React.JSX.Element {
           {t('app.subtitle', 'A full-stack monorepo with auth, i18n, and a design system — ready to fork.')}
         </p>
 
-        <div className="mt-8 flex flex-wrap justify-center gap-3">
+        <div className="mt-6 flex flex-wrap justify-center gap-3">
           {isAuthenticated && role === 'admin' ? (
             <Button asChild className="min-h-11 px-5 text-sm font-semibold">
               <Link to="/admin">{t('ui.nav.adminPanel', 'Admin Panel')}</Link>
@@ -140,6 +140,30 @@ export function LandingPage(): React.JSX.Element {
               </Button>
             </>
           )}
+        </div>
+      </section>
+
+      <section className="mb-12">
+        <h2 className="mb-6 text-center text-2xl font-semibold">
+          {t('app.features.heading', 'Monorepo Features')}
+        </h2>
+
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          {FEATURES.map((feature) => (
+            <Card key={feature.key} className="border-2">
+              <CardContent className="flex items-center gap-4 px-5 py-1">
+                <div className="flex w-12 shrink-0 items-center justify-center" aria-hidden="true">
+                  <feature.Icon size={32} style={{ color: '#005EB8' }} />
+                </div>
+                <div>
+                  <p className="font-semibold">{t(feature.titleKey, feature.titleDefault)}</p>
+                  <p className="mt-1 text-sm text-muted-foreground">
+                    {t(feature.descKey, feature.descDefault)}
+                  </p>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
         </div>
       </section>
 
@@ -193,30 +217,6 @@ export function LandingPage(): React.JSX.Element {
               </Card>
             );
           })}
-        </div>
-      </section>
-
-      <section>
-        <h2 className="mb-6 text-center text-2xl font-semibold">
-          {t('app.features.heading', 'Monorepo Features')}
-        </h2>
-
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-          {FEATURES.map((feature) => (
-            <Card key={feature.key} className="border-2">
-              <CardContent className="flex items-center gap-4 px-5 py-3">
-                <div className="flex w-12 shrink-0 items-center justify-center" aria-hidden="true">
-                  <feature.Icon size={32} style={{ color: '#005EB8' }} />
-                </div>
-                <div>
-                  <p className="font-semibold">{t(feature.titleKey, feature.titleDefault)}</p>
-                  <p className="mt-1 text-sm text-muted-foreground">
-                    {t(feature.descKey, feature.descDefault)}
-                  </p>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
         </div>
       </section>
     </div>
