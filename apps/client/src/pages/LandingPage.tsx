@@ -61,7 +61,7 @@ const DEMOS = [
       'Browser-based supply-chain security scanner for GitHub repositories, with lockfile dependency-tree analysis, terminal streaming, and structured summaries.',
     tags: ['Supply chain', 'xterm.js', 'Security', 'SSE'],
     url: demoUrl('demo-xscan', 'http://localhost:3003', import.meta.env['VITE_DEMO_XSCAN_URL']),
-    disabledInProduction: true,
+    disabledInProduction: false,
   },
 ] as const;
 

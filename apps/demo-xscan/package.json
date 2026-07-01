@@ -17,7 +17,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@finografic/deps-xscan-demo": "^0.0.2",
+    "@finografic/deps-xscan-demo": "^0.0.5",
     "@workspace/shared": "workspace:*",
     "@workspace/ui": "workspace:*",
     "react": "^19.2.0",

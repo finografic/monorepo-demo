@@ -306,8 +306,8 @@ importers:
   apps/demo-xscan:
     dependencies:
       '@finografic/deps-xscan-demo':
-        specifier: ^0.0.2
-        version: 0.0.2(@date-fns/tz@1.5.0)(@types/react@19.2.17)(date-fns@4.4.0)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(typescript@5.9.3)
+        specifier: ^0.0.5
+        version: 0.0.5(@date-fns/tz@1.5.0)(@types/react@19.2.17)(date-fns@4.4.0)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(typescript@5.9.3)
       '@workspace/shared':
         specifier: workspace:*
         version: link:../../packages/shared
@@ -467,6 +467,9 @@ importers:
       '@workspace/ui':
         specifier: workspace:*
         version: link:../ui
+      lucide-react:
+        specifier: ^1.22.0
+        version: 1.22.0(react@19.2.7)
       react:
         specifier: ^19.2.0
         version: 19.2.7
@@ -1377,8 +1380,8 @@ packages:
     cpu: [x64]
     os: [win32]
 
-  '@finografic/deps-xscan-demo@0.0.2':
-    resolution: {integrity: sha512-3DqWmxh3Ul/uimbGz9ZP2noTb0nuX5v9bXlPtzm+p7MN3yH2QYuFKV00wxGcxjG+KLf1TW+0rweky7YC/sbKhg==, tarball: https://npm.pkg.github.com/download/@finografic/deps-xscan-demo/0.0.2/843dcf4156c8d47f076e589296f5ec7be215ecc2}
+  '@finografic/deps-xscan-demo@0.0.5':
+    resolution: {integrity: sha512-1JQod9cpj+D7y2jC0pOjQy0ShHdUt8comVYqwZLbGhJAmMbkuRUOPUZ9YwHImVjuEVjz2eAa8tMuNJ9aqvNjVA==, tarball: https://npm.pkg.github.com/download/@finografic/deps-xscan-demo/0.0.5/6152d07adfc1e67919830893f9c4d0e698b31d4a}
     peerDependencies:
       react: ^19.2.0
       react-dom: ^19.2.0
@@ -7481,7 +7484,7 @@ snapshots:
   '@esbuild/win32-x64@0.28.1':
     optional: true
 
-  '@finografic/deps-xscan-demo@0.0.2(@date-fns/tz@1.5.0)(@types/react@19.2.17)(date-fns@4.4.0)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(typescript@5.9.3)':
+  '@finografic/deps-xscan-demo@0.0.5(@date-fns/tz@1.5.0)(@types/react@19.2.17)(date-fns@4.4.0)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(typescript@5.9.3)':
     dependencies:
       '@base-ui/react': 1.6.0(@date-fns/tz@1.5.0)(@types/react@19.2.17)(date-fns@4.4.0)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       '@xterm/addon-fit': 0.10.0(@xterm/xterm@5.5.0)

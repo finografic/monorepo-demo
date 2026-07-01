@@ -34,15 +34,19 @@ It runs:
 pnpm build:pages
 ```
 
-Set these repository variables when live API features should work from Pages:
+Set these GitHub Actions repository variables before deploying Pages:
+
+GitHub repo -> Settings -> Secrets and variables -> Actions -> Variables tab -> Repository variables
 
 | Variable                  | Value                                                                        |
 | ------------------------- | ---------------------------------------------------------------------------- |
 | `DEMO_API_BASE_URL`       | Hosted Hono API origin, for example `https://monorepo-demo-api.onrender.com` |
-| `DEMO_XSCAN_API_BASE_URL` | Optional hosted xscan API origin, if xscan is deployed separately            |
+| `DEMO_XSCAN_API_BASE_URL` | Hosted xscan API origin, for example `https://deps-xscan-api.onrender.com`   |
 
-The root login app and all demo auth guards use `DEMO_API_BASE_URL` for Auth.js session checks. If xscan is served by
-the same Hono service, leave `DEMO_XSCAN_API_BASE_URL` unset so the workflow falls back to `DEMO_API_BASE_URL`.
+The root login app and all demo auth guards use `DEMO_API_BASE_URL` for Auth.js session checks. The xscan demo uses
+`DEMO_XSCAN_API_BASE_URL` for scan requests because the scanner API is hosted by the separate `deps-xscan-api` Render
+service. Both values are build-time Vite inputs for the GitHub Pages workflow, so changes require rerunning the Pages
+workflow or pushing a new commit.
 
 ## Render API
 

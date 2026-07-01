@@ -1,5 +1,5 @@
-import { Avatar, AvatarFallback } from '@workspace/ui/components/avatar';
 import { Button } from '@workspace/ui/components/button';
+import { User } from 'lucide-react';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link, NavLink, Outlet, useNavigate } from 'react-router-dom';
@@ -13,18 +13,9 @@ function navLinkClass({ isActive }: { isActive: boolean }): string {
   ].join(' ');
 }
 
-function initials(name: string): string {
-  return name
-    .split(/\s+/)
-    .filter(Boolean)
-    .slice(0, 2)
-    .map((part) => part[0]?.toUpperCase())
-    .join('');
-}
-
 export function Layout(): React.JSX.Element {
   const { t } = useTranslation();
-  const { user, isAuthenticated, role, signOut } = useAuth();
+  const { isAuthenticated, role, signOut } = useAuth();
   const navigate = useNavigate();
 
   const handleSignOut = async () => {
@@ -61,9 +52,7 @@ export function Layout(): React.JSX.Element {
           {isAuthenticated ? (
             <>
               {/* <Badge variant={role === 'admin' ? 'destructive' : 'default'}>{role}</Badge> */}
-              <Avatar size="sm">
-                <AvatarFallback>{initials(user?.name ?? 'User') || 'U'}</AvatarFallback>
-              </Avatar>
+              <User className="size-5 text-muted-foreground" aria-label="Signed in user" />
               <Button variant="ghost" size="sm" onClick={() => void handleSignOut()}>
                 {t('ui.buttons.signOut', 'Sign out')}
               </Button>

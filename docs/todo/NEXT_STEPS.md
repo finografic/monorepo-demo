@@ -17,7 +17,7 @@ GitHub Pages serves static apps only. Live auth, LLM streaming, and xscan execut
 `apps/server`.
 
 - [ ] Deploy `apps/server` per [Portfolio Deployment](/docs/process/PORTFOLIO_DEPLOYMENT.md)
-- [ ] Set `DEMO_API_BASE_URL` (and optional `DEMO_XSCAN_API_BASE_URL`) on the Pages repo
+- [ ] Set `DEMO_API_BASE_URL` and `DEMO_XSCAN_API_BASE_URL` as GitHub Actions repository variables
 - [ ] Configure `CORS_ORIGINS`, `AUTH_COOKIE_SAME_SITE=none`, `AUTH_COOKIE_SECURE=true`
 - [ ] Smoke test sign-in from `https://finografic.github.io/monorepo-demo/` against the hosted API
 - [ ] Smoke test `POST /api/stream/live` with credentials from the AI pipeline demo
