@@ -306,8 +306,8 @@ importers:
   apps/demo-xscan:
     dependencies:
       '@finografic/deps-xscan-demo':
-        specifier: link:../../../@finografic-deps-xscan/demo
-        version: link:../../../@finografic-deps-xscan/demo
+        specifier: ^0.0.2
+        version: 0.0.2(@date-fns/tz@1.5.0)(@types/react@19.2.17)(date-fns@4.4.0)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(typescript@5.9.3)
       '@workspace/shared':
         specifier: workspace:*
         version: link:../../packages/shared
@@ -1376,6 +1376,12 @@ packages:
     engines: {node: '>=18'}
     cpu: [x64]
     os: [win32]
+
+  '@finografic/deps-xscan-demo@0.0.2':
+    resolution: {integrity: sha512-3DqWmxh3Ul/uimbGz9ZP2noTb0nuX5v9bXlPtzm+p7MN3yH2QYuFKV00wxGcxjG+KLf1TW+0rweky7YC/sbKhg==, tarball: https://npm.pkg.github.com/download/@finografic/deps-xscan-demo/0.0.2/843dcf4156c8d47f076e589296f5ec7be215ecc2}
+    peerDependencies:
+      react: ^19.2.0
+      react-dom: ^19.2.0
 
   '@finografic/md-lint@0.16.6':
     resolution: {integrity: sha512-5GA8M3HV75wGEXfAc8lwmBYlQSY8KtIdA9IReePNspBPR0dWxg6AjYHKC9qzw0USzrj8uM/easqvB8BrxmOihQ==, tarball: https://npm.pkg.github.com/download/@finografic/md-lint/0.16.6/11d3bc70cfddd72ef6b21fe398a4ea407ef60e2c}
@@ -3350,6 +3356,14 @@ packages:
 
   '@vitest/utils@4.1.9':
     resolution: {integrity: sha512-A51o8ymO5PpqlWNnBP9ZHPXDIpuMtTLlGSjN7la4US+LJzoUMyhwjA5QXlm39JexgwHKW4Xjs8Z2d3dLCXOeuA==}
+
+  '@xterm/addon-fit@0.10.0':
+    resolution: {integrity: sha512-UFYkDm4HUahf2lnEyHvio51TNGiLK66mqP2JoATy7hRZeXaGMRDr00JiSF7m63vR5WKATF605yEggJKsw0JpMQ==}
+    peerDependencies:
+      '@xterm/xterm': ^5.0.0
+
+  '@xterm/xterm@5.5.0':
+    resolution: {integrity: sha512-hqJHYaQb5OptNunnyAnkHyM8aCjZ1MEIDTQu1iIbbTD/xops91NB5yq1ZK/dC2JDbVWtF23zUtl9JE2NqwT87A==}
 
   accepts@2.0.0:
     resolution: {integrity: sha512-5cvg6CtKwfgdmVqY1WIiXKc3Q1bkRqGLi+2W/6ao+6Y7gu/RCwRuAhGEzh5B4KlszSuTLgZYuqFqo5bImjNKng==}
@@ -5341,6 +5355,12 @@ packages:
   node-abi@3.93.0:
     resolution: {integrity: sha512-Cu6yUpX5Iavugm8BeX7c0wgU9CvOqfd1yM6A1d2q2ZMjym7GjpASv2GdRcTq3Fx+Sb5OgBkEEpw4VnAbY6Y5RA==}
     engines: {node: '>=10'}
+
+  node-addon-api@7.1.1:
+    resolution: {integrity: sha512-5m3bsyrjFWE1xf7nz7YXdN4udnVtXK6/Yfgn5qnahL6bCkf2yKt4k3nuTKAtT4r3IG8JNR2ncsIMdZuAzJjHQQ==}
+
+  node-pty@1.1.0:
+    resolution: {integrity: sha512-20JqtutY6JPXTUnL0ij1uad7Qe1baT46lyolh2sSENDd4sTzKZ4nmAFkeAARDKwmlLjPx6XKRlwRUxwjOy+lUg==}
 
   node-releases@2.0.50:
     resolution: {integrity: sha512-J6l92tKHX6w8Jy5nO1Vuc01NoIiRGi/d6qBKVxh+IQ8Cr3b6HbVNfKiF8ZpFKufTwpwxMmce2W3iQZ861ZRyTg==}
@@ -7461,6 +7481,29 @@ snapshots:
   '@esbuild/win32-x64@0.28.1':
     optional: true
 
+  '@finografic/deps-xscan-demo@0.0.2(@date-fns/tz@1.5.0)(@types/react@19.2.17)(date-fns@4.4.0)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(typescript@5.9.3)':
+    dependencies:
+      '@base-ui/react': 1.6.0(@date-fns/tz@1.5.0)(@types/react@19.2.17)(date-fns@4.4.0)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
+      '@xterm/addon-fit': 0.10.0(@xterm/xterm@5.5.0)
+      '@xterm/xterm': 5.5.0
+      class-variance-authority: 0.7.1
+      clsx: 2.1.1
+      lucide-react: 1.22.0(react@19.2.7)
+      node-pty: 1.1.0
+      react: 19.2.7
+      react-dom: 19.2.7(react@19.2.7)
+      shadcn: 4.12.0(typescript@5.9.3)
+      tailwind-merge: 3.6.0
+      tw-animate-css: 1.4.0
+    transitivePeerDependencies:
+      - '@cfworker/json-schema'
+      - '@date-fns/tz'
+      - '@types/react'
+      - babel-plugin-macros
+      - date-fns
+      - supports-color
+      - typescript
+
   '@finografic/md-lint@0.16.6':
     dependencies:
       globby: 16.2.0
@@ -9234,6 +9277,12 @@ snapshots:
       '@vitest/pretty-format': 4.1.9
       convert-source-map: 2.0.0
       tinyrainbow: 3.1.0
+
+  '@xterm/addon-fit@0.10.0(@xterm/xterm@5.5.0)':
+    dependencies:
+      '@xterm/xterm': 5.5.0
+
+  '@xterm/xterm@5.5.0': {}
 
   accepts@2.0.0:
     dependencies:
@@ -11414,6 +11463,12 @@ snapshots:
   node-abi@3.93.0:
     dependencies:
       semver: 7.8.5
+
+  node-addon-api@7.1.1: {}
+
+  node-pty@1.1.0:
+    dependencies:
+      node-addon-api: 7.1.1
 
   node-releases@2.0.50: {}
 

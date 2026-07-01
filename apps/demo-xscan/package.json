@@ -13,10 +13,11 @@
     "start": "vite preview",
     "test": "vitest run",
     "test:watch": "vitest",
+    "update:xscan-demo": "pnpm update @finografic/deps-xscan-demo --latest",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@finografic/deps-xscan-demo": "link:../../../@finografic-deps-xscan/demo",
+    "@finografic/deps-xscan-demo": "^0.0.2",
     "@workspace/shared": "workspace:*",
     "@workspace/ui": "workspace:*",
     "react": "^19.2.0",
