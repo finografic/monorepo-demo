@@ -3,8 +3,6 @@ import tailwindcss from '@tailwindcss/vite';
 import react from '@vitejs/plugin-react';
 import { defineConfig, loadEnv } from 'vite';
 
-import { scanApiPlugin } from './server/scan-api-plugin.js';
-
 export default defineConfig(({ mode }) => {
   const rootEnv = loadEnv(mode, resolve(__dirname, '../..'), '');
   const apiPort = rootEnv['API_PORT'] ?? '4000';
@@ -17,16 +15,12 @@ export default defineConfig(({ mode }) => {
       ),
     },
 
-    plugins: [react(), tailwindcss(), scanApiPlugin()],
+    plugins: [react(), tailwindcss()],
 
     resolve: {
       dedupe: ['react', 'react-dom'],
       alias: {
-        'components': resolve('src/components'),
         'pages': resolve('src/pages'),
-        'data': resolve('src/data'),
-        'lib': resolve('src/lib'),
-        'shared': resolve('shared'),
         '@workspace/shared': resolve('../../packages/shared/src'),
         '@workspace/ui/globals.css': resolve('../../packages/ui/src/styles/globals.css'),
         '@workspace/ui': resolve('../../packages/ui/src'),

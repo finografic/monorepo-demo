@@ -14,13 +14,9 @@
       "hooks/*": ["../../packages/ui/src/hooks/*"],
       "ui/*": ["../../packages/ui/src/components/*"],
       "utils": ["../../packages/ui/src/lib/utils"],
-      "components/*": ["./src/components/*"],
-      "pages/*": ["./src/pages/*"],
-      "data/*": ["./src/data/*"],
-      "lib/*": ["./src/lib/*"],
-      "shared/*": ["./shared/*"]
+      "pages/*": ["./src/pages/*"]
     }
   },
-  "include": ["src", "shared"],
+  "include": ["src"],
   "exclude": ["node_modules", "dist"]
 }

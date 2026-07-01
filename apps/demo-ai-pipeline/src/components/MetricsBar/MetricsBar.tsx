@@ -18,7 +18,7 @@ export function MetricsBar({ status, metrics }: MetricsBarProps) {
         <span className="inline-block h-2 w-28 overflow-hidden rounded-full bg-muted">
           <span className="block h-full w-1/2 animate-pulse rounded-full bg-primary/50" />
         </span>
-        <span className="animate-pulse">Streaming…</span>
+        <span className="animate-pulse text-primary">Streaming…</span>
       </div>
     );
   }

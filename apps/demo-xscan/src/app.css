@@ -1,18 +1,1 @@
 @import "@workspace/ui/globals.css";
-
-.xterm-viewport::-webkit-scrollbar {
-  width: 8px;
-}
-
-.xterm-viewport::-webkit-scrollbar-track {
-  background: #0f172a;
-}
-
-.xterm-viewport::-webkit-scrollbar-thumb {
-  background: #334155;
-  border-radius: 4px;
-}
-
-.xterm-viewport::-webkit-scrollbar-thumb:hover {
-  background: #475569;
-}

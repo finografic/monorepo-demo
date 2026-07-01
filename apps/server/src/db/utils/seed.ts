@@ -37,7 +37,6 @@ async function seedSchema(schema: string): Promise<void> {
     const { seed } = await import(`../seeds/${schema}.seed.ts`);
     console.log(`🌱 Seeding ${schema}...`);
     await seed();
-    console.log(`✅ Seeded ${schema} successfully!`);
   } catch (error) {
     console.error(`❌ Error seeding ${schema}:`, error);
     throw error;

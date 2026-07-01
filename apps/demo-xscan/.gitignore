@@ -1,2 +1,0 @@
-# Vendored xscan runtime deps — reinstall via `pnpm sync:xscan`
-vendor/xscan/node_modules/

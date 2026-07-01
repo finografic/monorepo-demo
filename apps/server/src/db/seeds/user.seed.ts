@@ -1,4 +1,5 @@
-import { hashPassword } from '../../utils/password.utils';
+import { hashPassword } from 'utils/password.utils';
+
 import { db } from '../index';
 import { user } from '../schemas';
 
