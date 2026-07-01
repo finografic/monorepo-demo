@@ -343,3 +343,34 @@ Exact mirror of demo-ai-pipeline: left sidebar with keyboard-navigable chart car
 - TMR alignment matters more than generic technical examples.
 - Demo can use mock data; factual accuracy is not critical.
 - Any real QLD/TMR data should be used as flavour/source context, not treated as authoritative production logic.
+
+---
+
+## Current State — 2026-07-01
+
+Portfolio GitHub Pages deployment is live and includes all three demos:
+
+- `/demo-ai-pipeline/`
+- `/demo-datavis/`
+- `/demo-xscan/`
+
+`apps/demo-xscan` is now a thin wrapper around published `@finografic/deps-xscan-demo`; the scanner UI/source lives in
+`@finografic-deps-xscan/demo`.
+
+Required GitHub Actions repository variables for Pages:
+
+GitHub repo -> Settings -> Secrets and variables -> Actions -> Variables tab -> Repository variables
+
+| Variable                  | Value                                    |
+| ------------------------- | ---------------------------------------- |
+| `DEMO_API_BASE_URL`       | `https://monorepo-demo-api.onrender.com` |
+| `DEMO_XSCAN_API_BASE_URL` | `https://deps-xscan-api.onrender.com`    |
+
+`VITE_AUTH_API_BASE_URL` uses `DEMO_API_BASE_URL`; xscan scan requests use `DEMO_XSCAN_API_BASE_URL`.
+
+Root database scripts are intentionally minimal:
+
+- `db:reset` delegates to `@workspace/server db:reset`
+- `db:studio` delegates to `@workspace/server db:studio`
+
+Granular DB scripts live in `apps/server/package.json`.
