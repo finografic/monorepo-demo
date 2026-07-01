@@ -74,7 +74,7 @@ jobs:
       - name: Build xscan demo
         env:
           VITE_AUTH_API_BASE_URL: ${{ vars.DEMO_API_BASE_URL }}
-          VITE_API_BASE_URL: ${{ vars.DEMO_XSCAN_API_BASE_URL || 'https://deps-xscan-api.onrender.com' }}
+          VITE_API_BASE_URL: ${{ vars.DEMO_XSCAN_API_BASE_URL }}
           VITE_BASE_PATH: ${{ env.PAGES_BASE }}/demo-xscan/
         run: moon run demo-xscan:build-pages
 
