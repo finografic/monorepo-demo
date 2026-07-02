@@ -2,9 +2,10 @@ import { Button } from '@workspace/ui/components/button';
 import { User } from 'lucide-react';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Link, NavLink, Outlet, useNavigate } from 'react-router-dom';
+import { Link, NavLink, Outlet, useMatch, useNavigate } from 'react-router-dom';
 
 import { useAuth } from '../context/AuthContext';
+import { DEFAULT_LANGUAGE } from '../i18n/i18n.constants';
 
 function navLinkClass({ isActive }: { isActive: boolean }): string {
   return [
@@ -14,7 +15,18 @@ function navLinkClass({ isActive }: { isActive: boolean }): string {
 }
 
 export function Layout(): React.JSX.Element {
-  const { t } = useTranslation();
+  const landingMatch = useMatch({ path: '/', end: true });
+
+  // NOTE: Autodetection (`localStorage` → `navigator`) still applies on login, dashboard, and admin.
+  //       A stale `localStorage.i18nextLng=es-ES` survives browser sessions and overrides navigator —
+  //       e.g. after living in Spain, even when based in Australia. Fresh AU visitors with `en-AU`
+  //       navigator language would get en-GB without this override.
+  // TEMP: Pin navbar chrome to en-GB on the landing route only — portfolio copy is partly inline English
+  //       and partly partial DB translations; the language switcher is intentionally hidden.
+  // TODO: Remove this route override once docs/todo/TODO_I18N.md Phase E ships full landing translations.
+  const { t: tDetected } = useTranslation();
+  const { t: tLanding } = useTranslation(undefined, { lng: DEFAULT_LANGUAGE });
+  const t = landingMatch ? tLanding : tDetected;
   const { isAuthenticated, role, signOut } = useAuth();
   const navigate = useNavigate();
 

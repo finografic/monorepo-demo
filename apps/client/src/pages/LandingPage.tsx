@@ -2,12 +2,13 @@ import { BADGE_COLOR_CLASSES } from '@workspace/shared';
 import { Badge } from '@workspace/ui/components/badge';
 import { Button } from '@workspace/ui/components/button';
 import { Card, CardContent } from '@workspace/ui/components/card';
-import { Globe, Palette, ShieldCheck, Zap } from 'lucide-react';
+import { ExternalLink, Globe, Palette, ShieldCheck, Zap } from 'lucide-react';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 
 import { useAuth } from '../context/AuthContext';
+import { DEFAULT_LANGUAGE } from '../i18n/i18n.constants';
 
 const GITHUB_URL = 'https://github.com/finografic/monorepo-demo';
 
@@ -103,11 +104,28 @@ const FEATURES = [
 ];
 
 export function LandingPage(): React.JSX.Element {
-  const { t } = useTranslation();
+  // NOTE: `fallbackLng` is en-GB, but the active locale comes from i18next-browser-languagedetector
+  //       (`localStorage.i18nextLng` first, then `navigator`). See Layout.tsx for the same context.
+  // TEMP: Force en-GB for all landing `t(...)` calls — not a global detection fix; route-scoped override
+  //       until portfolio/demo copy is fully externalised to packages/i18n.
+  // TODO: Replace with standard `useTranslation()` after docs/todo/TODO_I18N.md Phase E.
+  const { t } = useTranslation(undefined, { lng: DEFAULT_LANGUAGE });
   const { isAuthenticated, role } = useAuth();
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-12">
+      <Button
+        asChild
+        variant="outline"
+        size="sm"
+        className="fixed right-4 top-3 z-40 gap-2 bg-background px-3"
+      >
+        <a href={GITHUB_URL} target="_blank" rel="noopener noreferrer" aria-label="Open GitHub repository">
+          GitHub
+          <ExternalLink className="size-3.5" aria-hidden="true" />
+        </a>
+      </Button>
+
       <section className="mb-10 text-center">
         <Badge className="mb-4 px-3 py-3">{t('app.badge', 'Open-source starter')}</Badge>
 
