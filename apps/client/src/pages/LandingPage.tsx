@@ -2,15 +2,11 @@ import { BADGE_COLOR_CLASSES } from '@workspace/shared';
 import { Badge } from '@workspace/ui/components/badge';
 import { Button } from '@workspace/ui/components/button';
 import { Card, CardContent } from '@workspace/ui/components/card';
-import { ExternalLink, Globe, Palette, ShieldCheck, Zap } from 'lucide-react';
+import { Globe, Palette, ShieldCheck, Zap } from 'lucide-react';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Link } from 'react-router-dom';
 
-import { useAuth } from '../context/AuthContext';
 import { DEFAULT_LANGUAGE } from '../i18n/i18n.constants';
-
-const GITHUB_URL = 'https://github.com/finografic/monorepo-demo';
 
 function isLocalHost(): boolean {
   if (typeof window === 'undefined') {
@@ -110,22 +106,9 @@ export function LandingPage(): React.JSX.Element {
   //       until portfolio/demo copy is fully externalised to packages/i18n.
   // TODO: Replace with standard `useTranslation()` after docs/todo/TODO_I18N.md Phase E.
   const { t } = useTranslation(undefined, { lng: DEFAULT_LANGUAGE });
-  const { isAuthenticated, role } = useAuth();
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-12">
-      <Button
-        asChild
-        variant="outline"
-        size="sm"
-        className="fixed right-4 top-3 z-40 gap-2 bg-background px-3"
-      >
-        <a href={GITHUB_URL} target="_blank" rel="noopener noreferrer" aria-label="Open GitHub repository">
-          GitHub
-          <ExternalLink className="size-3.5" aria-hidden="true" />
-        </a>
-      </Button>
-
       <section className="mb-10 text-center">
         <Badge className="mb-4 px-3 py-3">{t('app.badge', 'Open-source starter')}</Badge>
 
@@ -133,35 +116,12 @@ export function LandingPage(): React.JSX.Element {
           {t('app.title', 'monorepo-demo')}
         </h1>
 
-        <p className="mx-auto mt-4 max-w-2xl text-lg text-muted-foreground">
+        <p className="mx-auto mt-3 max-w-2xl text-lg text-muted-foreground">
           {t('app.subtitle', 'A full-stack monorepo with auth, i18n, and a design system — ready to fork.')}
         </p>
-
-        <div className="mt-6 flex flex-wrap justify-center gap-3">
-          {isAuthenticated && role === 'admin' ? (
-            <Button asChild className="min-h-11 px-5 text-sm font-semibold">
-              <Link to="/admin">{t('ui.nav.adminPanel', 'Admin Panel')}</Link>
-            </Button>
-          ) : isAuthenticated ? (
-            <Button asChild className="min-h-11 px-5 text-sm font-semibold">
-              <Link to="/dashboard">{t('ui.nav.dashboard', 'Check server health')}</Link>
-            </Button>
-          ) : (
-            <>
-              <Button asChild className="min-h-11 px-5 text-sm font-semibold">
-                <Link to="/login">{t('ui.buttons.signIn', 'Sign In')}</Link>
-              </Button>
-              <Button asChild variant="outline" className="min-h-11 px-5 text-sm font-semibold">
-                <a href={GITHUB_URL} target="_blank" rel="noopener noreferrer">
-                  {t('ui.buttons.viewSource', 'View on GitHub')}
-                </a>
-              </Button>
-            </>
-          )}
-        </div>
       </section>
 
-      <section className="mb-12">
+      <section className="pt-2 mb-12">
         <h2 className="mb-6 text-center text-2xl font-semibold">
           {t('app.features.heading', 'Monorepo Features')}
         </h2>
