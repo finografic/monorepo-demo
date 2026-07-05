@@ -9,6 +9,7 @@ interface OptionCardProps {
   title: string;
   description: string;
   sourceContext?: string;
+  sourceContextLabel?: string;
   badges?: OptionCardBadge[];
   selected: boolean;
   disabled?: boolean;
@@ -24,6 +25,7 @@ export function OptionCard({
   title,
   description,
   sourceContext,
+  sourceContextLabel = 'Source intent',
   badges = EMPTY_BADGES,
   selected,
   disabled,
@@ -57,7 +59,7 @@ export function OptionCard({
       <p className="mt-2 text-sm leading-6 text-muted-foreground">{description}</p>
       {sourceContext ? (
         <p className="mt-2 text-xs font-semibold leading-5 text-primary opacity-70">
-          Source intent: {sourceContext}
+          {sourceContextLabel}: {sourceContext}
         </p>
       ) : null}
       {badges.length > 0 && (

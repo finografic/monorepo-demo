@@ -117,6 +117,8 @@ export const ChartSelector = forwardRef<ChartSelectorHandle, ChartSelectorProps>
             key={chart.id}
             title={chart.title}
             description={chart.description}
+            sourceContext={chart.source}
+            sourceContextLabel={LIVE_IDS.has(chart.id) ? 'Live source' : 'Data basis'}
             badges={chart.tags.map((tag) => ({
               label: tag,
               className: resolveBadgeClass(chartTagColors[tag] ?? 'blue'),
