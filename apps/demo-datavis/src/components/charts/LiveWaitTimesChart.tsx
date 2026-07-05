@@ -1,5 +1,7 @@
+import { LiveDataProgress } from 'components/LiveDataProgress/LiveDataProgress';
 import { useEffect, useRef, useState } from 'react';
 import { CartesianGrid, ResponsiveContainer, Scatter, ScatterChart, Tooltip, XAxis, YAxis } from 'recharts';
+import type { LiveDataProgressPhase } from 'components/LiveDataProgress/LiveDataProgress';
 import type { TooltipContentProps } from 'recharts';
 
 import {
@@ -76,6 +78,7 @@ export function LiveWaitTimesChart() {
   const [asOf, setAsOf] = useState<string>('');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [phase, setPhase] = useState<LiveDataProgressPhase>('requesting');
   const abortRef = useRef<AbortController | null>(null);
 
   useEffect(() => {
@@ -85,14 +88,17 @@ export function LiveWaitTimesChart() {
 
     setLoading(true);
     setError(null);
+    setPhase('requesting');
 
     fetch(DATASTORE_URL, { signal: ac.signal, mode: 'cors' })
       .then((res) => {
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        setPhase('receiving');
         return res.json() as Promise<DatastoreResponse>;
       })
       .then((json) => {
         if (!json.success) throw new Error('DataStore returned success: false');
+        setPhase('parsing');
 
         const { records } = json.result;
 
@@ -120,6 +126,7 @@ export function LiveWaitTimesChart() {
 
         setRows(parsed);
         setAsOf(latestDate);
+        setPhase('rendering');
         setLoading(false);
         return undefined;
       })
@@ -156,12 +163,7 @@ export function LiveWaitTimesChart() {
         )}
       </div>
 
-      {loading && (
-        <div className="flex items-center justify-center py-20" role="status" aria-live="polite">
-          <span className="h-10 w-10 animate-spin rounded-full border-4 border-primary/20 border-t-primary/70" />
-          <span className="sr-only">Fetching live wait time data from QLD DataStore…</span>
-        </div>
-      )}
+      {loading && <LiveDataProgress phase={phase} detail="QLD DataStore wait-time records" />}
 
       {error && (
         <div

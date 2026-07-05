@@ -108,15 +108,15 @@ export function LandingPage(): React.JSX.Element {
   const { t } = useTranslation(undefined, { lng: DEFAULT_LANGUAGE });
 
   return (
-    <div className="mx-auto max-w-6xl px-4 py-12">
+    <div className="mx-auto max-w-6xl px-4 py-10 md:py-12">
       <section className="mb-10 text-center">
         <Badge className="mb-4 px-3 py-3">{t('app.badge', 'Open-source starter')}</Badge>
 
-        <h1 className="text-4xl font-bold tracking-tight text-foreground">
+        <h1 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
           {t('app.title', 'monorepo-demo')}
         </h1>
 
-        <p className="mx-auto mt-3 max-w-2xl text-lg text-muted-foreground">
+        <p className="mx-auto mt-3 max-w-2xl text-base text-muted-foreground sm:text-lg">
           {t('app.subtitle', 'A full-stack monorepo with auth, i18n, and a design system — ready to fork.')}
         </p>
       </section>
@@ -126,10 +126,10 @@ export function LandingPage(): React.JSX.Element {
           {t('app.features.heading', 'Monorepo Features')}
         </h2>
 
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
           {FEATURES.map((feature) => (
             <Card key={feature.key} className="border-2">
-              <CardContent className="flex items-center gap-4 px-5 py-1">
+              <CardContent className="flex items-start gap-4 px-5 py-3 sm:items-center sm:py-1">
                 <div className="flex w-12 shrink-0 items-center justify-center" aria-hidden="true">
                   <feature.Icon size={32} style={{ color: '#005EB8' }} />
                 </div>
@@ -151,7 +151,7 @@ export function LandingPage(): React.JSX.Element {
           Live interactive demos built to address specific frontend engineering capabilities.
         </p>
 
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
           {DEMOS.map((demo) => {
             const isDisabled = demo.disabledInProduction && import.meta.env.PROD;
 

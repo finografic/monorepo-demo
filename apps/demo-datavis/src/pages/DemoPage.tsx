@@ -8,6 +8,7 @@ import type { ChartSelectorHandle } from 'components/ChartSelector/ChartSelector
 
 export function DemoPage() {
   const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(true);
   const selectorRef = useRef<ChartSelectorHandle>(null);
   const chartPaneRef = useRef<ChartPaneHandle>(null);
 
@@ -18,7 +19,15 @@ export function DemoPage() {
   }, []);
 
   const handleReturnToSidebar = useCallback(() => {
-    selectorRef.current?.focusSelected();
+    setIsMobileSidebarOpen(true);
+    requestAnimationFrame(() => {
+      selectorRef.current?.focusSelected();
+    });
+  }, []);
+
+  const handleSelectChart = useCallback((id: string) => {
+    setSelectedId(id);
+    setIsMobileSidebarOpen(false);
   }, []);
 
   return (
@@ -27,13 +36,15 @@ export function DemoPage() {
         title: 'Demo 2: Transport Data Dashboard',
         subtitle: 'QLD transport data · Recharts · D3 · CKAN live API',
       }}
+      mobileSidebarOpen={isMobileSidebarOpen}
+      onMobileSidebarOpenChange={setIsMobileSidebarOpen}
       sidebar={
-        <div className="flex-1 overflow-y-auto px-4 py-5">
+        <div className="min-h-0 flex-1 overflow-y-auto px-4 py-4 md:py-5">
           <ChartSelector
             ref={selectorRef}
             charts={CHARTS}
             selectedId={selectedId}
-            onSelect={setSelectedId}
+            onSelect={handleSelectChart}
             onFocusChart={handleFocusChart}
           />
         </div>

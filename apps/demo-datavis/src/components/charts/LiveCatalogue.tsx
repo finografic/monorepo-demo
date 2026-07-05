@@ -1,4 +1,6 @@
+import { LiveDataProgress } from 'components/LiveDataProgress/LiveDataProgress';
 import { useEffect, useRef, useState } from 'react';
+import type { LiveDataProgressPhase } from 'components/LiveDataProgress/LiveDataProgress';
 
 interface CkanDataset {
   id: string;
@@ -38,6 +40,7 @@ export function LiveCatalogue() {
   const [count, setCount] = useState<number>(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [phase, setPhase] = useState<LiveDataProgressPhase>('requesting');
   const abortRef = useRef<AbortController | null>(null);
 
   useEffect(() => {
@@ -47,16 +50,20 @@ export function LiveCatalogue() {
 
     setLoading(true);
     setError(null);
+    setPhase('requesting');
 
     fetch(CKAN_URL, { signal: ac.signal, mode: 'cors' })
       .then((res) => {
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        setPhase('receiving');
         return res.json() as Promise<CkanResponse>;
       })
       .then((json) => {
         if (!json.success) throw new Error('CKAN returned success: false');
+        setPhase('parsing');
         setData(json.result.results);
         setCount(json.result.count);
+        setPhase('rendering');
         setLoading(false);
         return undefined;
       })
@@ -76,7 +83,7 @@ export function LiveCatalogue() {
       className="w-full rounded-sm outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
       tabIndex={0}
     >
-      <div className="flex items-center gap-2 mb-4">
+      <div className="mb-4 flex flex-wrap items-center gap-2">
         <h3 id={CHART_ID} className="sr-only">
           Live dataset catalogue from Queensland Open Data CKAN API
         </h3>
@@ -91,12 +98,7 @@ export function LiveCatalogue() {
         )}
       </div>
 
-      {loading && (
-        <div className="flex items-center justify-center py-20" role="status" aria-live="polite">
-          <span className="h-10 w-10 animate-spin rounded-full border-4 border-primary/20 border-t-primary/70" />
-          <span className="sr-only">Loading live data from Queensland Open Data…</span>
-        </div>
-      )}
+      {loading && <LiveDataProgress phase={phase} detail="Queensland Open Data CKAN catalogue" />}
 
       {error && (
         <div
@@ -118,7 +120,7 @@ export function LiveCatalogue() {
             {data.map((ds) => (
               <article
                 key={ds.id}
-                className="flex items-start gap-3 rounded-lg border border-border bg-card/50 px-4 py-3 hover:bg-card transition-colors"
+                className="flex flex-col gap-3 rounded-lg border border-border bg-card/50 px-4 py-3 transition-colors hover:bg-card sm:flex-row sm:items-start"
               >
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-medium text-foreground truncate">{ds.title}</p>
@@ -138,7 +140,7 @@ export function LiveCatalogue() {
                     ))}
                   </div>
                 </div>
-                <div className="flex-none text-right space-y-1">
+                <div className="flex-none space-y-1 sm:text-right">
                   <p className="text-xs font-semibold text-primary tabular-nums">
                     {ds.num_resources} resource{ds.num_resources !== 1 ? 's' : ''}
                   </p>

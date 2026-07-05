@@ -41,7 +41,8 @@ export function DemoPage() {
   const [mode, setMode] = useState<StreamMode>('live');
   const [selectedModelId, setSelectedModelId] = useState(DEFAULT_LIVE_MODEL_ID);
   const [parameterValues, setParameterValues] = useState<Record<string, string>>({});
-  const { status, buffer, metrics, start, stop, clear, restore } = useStreamingGeneration();
+  const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(true);
+  const { status, buffer, metrics, progress, start, stop, clear, restore } = useStreamingGeneration();
 
   const selectedPrompt = PROMPTS.find((p) => p.id === selectedId) ?? null;
   const selectedPromptParameters = useMemo(() => selectedPrompt?.parameters ?? [], [selectedPrompt]);
@@ -98,6 +99,7 @@ export function DemoPage() {
   function handleStart() {
     if (!selectedPrompt || !selectedSystemPrompt || !cacheKey || !fixturePromptId) return;
     setShowRaw(false);
+    setIsMobileSidebarOpen(false);
     start(cacheKey, fixturePromptId, mode, selectedSystemPrompt, selectedModelId);
   }
 
@@ -121,9 +123,11 @@ export function DemoPage() {
         title: 'Demo 1: AI Markdown Pipeline',
         subtitle: 'Streaming markdown · Mermaid diagrams · Syntax highlighting',
       }}
+      mobileSidebarOpen={isMobileSidebarOpen}
+      onMobileSidebarOpenChange={setIsMobileSidebarOpen}
       sidebar={
         <>
-          <div className="flex-1 overflow-y-auto px-4 py-5">
+          <div className="min-h-0 flex-1 overflow-y-auto px-4 py-4 md:py-5">
             <PromptSelector
               prompts={PROMPTS}
               selectedId={selectedId}
@@ -158,7 +162,11 @@ export function DemoPage() {
         </>
       }
     >
-      <div className="flex-1 overflow-y-auto px-8 py-6" aria-live="polite" aria-label="Generated content">
+      <div
+        className="min-h-0 flex-1 overflow-y-auto px-4 py-4 md:px-8 md:py-6"
+        aria-live="polite"
+        aria-label="Generated content"
+      >
         {isWaitingForFirstPaint ? (
           <GeneratingPlaceholder label={generationStatusLabel} />
         ) : buffer.length ? (
@@ -168,9 +176,9 @@ export function DemoPage() {
         )}
       </div>
 
-      <div className="flex min-h-20 flex-wrap items-center justify-between gap-5 bg-gray-300 px-8 py-4">
-        <div className="min-w-0 flex-1" aria-live="polite">
-          <MetricsBar status={status} metrics={metrics} />
+      <div className="flex min-h-20 flex-wrap items-center justify-between gap-4 bg-gray-300 px-4 py-4 md:gap-5 md:px-8">
+        <div className="min-w-0 flex-1 basis-full md:basis-auto" aria-live="polite">
+          <MetricsBar status={status} metrics={metrics} progress={progress} />
         </div>
         <SourceToggle showRaw={showRaw} onToggle={() => setShowRaw((v) => !v)} />
         {sourceReference ? <SourceAttribution source={sourceReference} /> : null}

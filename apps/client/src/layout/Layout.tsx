@@ -48,12 +48,12 @@ export function Layout(): React.JSX.Element {
 
   return (
     <div className="flex min-h-dvh flex-col bg-background">
-      <header className="sticky top-0 z-30 flex h-14 items-center justify-between border-b bg-background/95 px-4 backdrop-blur supports-[backdrop-filter]:bg-background/75 sm:px-6">
-        <div className="flex items-center gap-8">
-          <Link to="/" className="text-sm font-bold text-foreground no-underline">
+      <header className="sticky top-0 z-30 flex min-h-14 flex-wrap items-center justify-between gap-3 border-b bg-background/95 px-4 py-2 backdrop-blur supports-[backdrop-filter]:bg-background/75 sm:flex-nowrap sm:px-6">
+        <div className="flex min-w-0 items-center gap-4 md:gap-8">
+          <Link to="/" className="shrink-0 text-sm font-bold text-foreground no-underline">
             monorepo-demo
           </Link>
-          <nav className="flex items-center gap-8">
+          <nav className="flex min-w-0 items-center gap-4 md:gap-8">
             <NavLink to="/" end className={navLinkClass}>
               {t('ui.nav.home', 'Home')}
             </NavLink>
@@ -70,20 +70,22 @@ export function Layout(): React.JSX.Element {
           </nav>
         </div>
 
-        <div className="flex items-center gap-4">
+        <div className="ml-auto flex min-w-0 items-center gap-3 sm:gap-4">
           {/* <LanguageSwitcher /> */}
           {landingMatch ? (
             <a
               href={GITHUB_URL}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 text-sm font-medium text-muted-foreground no-underline transition-colors hover:text-foreground"
+              className="inline-flex shrink-0 items-center gap-1.5 text-sm font-medium text-muted-foreground no-underline transition-colors hover:text-foreground"
             >
               <GitHubMark />
-              <span>View on GitHub</span>
+              <span className="hidden sm:inline">View on GitHub</span>
             </a>
           ) : null}
-          {landingMatch ? <Separator orientation="vertical" className="h-6" aria-hidden="true" /> : null}
+          {landingMatch ? (
+            <Separator orientation="vertical" className="hidden h-6 sm:block" aria-hidden="true" />
+          ) : null}
           {isAuthenticated ? (
             <div className="flex items-center gap-2">
               {/* <Badge variant={role === 'admin' ? 'destructive' : 'default'}>{role}</Badge> */}
@@ -94,7 +96,9 @@ export function Layout(): React.JSX.Element {
             </div>
           ) : (
             <Button asChild size="sm" className="px-4">
-              <Link to="/login">{t('ui.buttons.signIn', 'Sign in')}</Link>
+              <Link to="/login" className="whitespace-nowrap">
+                {t('ui.buttons.signIn', 'Sign in')}
+              </Link>
             </Button>
           )}
         </div>

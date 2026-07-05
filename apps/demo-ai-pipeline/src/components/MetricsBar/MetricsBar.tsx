@@ -1,24 +1,42 @@
 import type { GenerationStatus, MetricsData } from '@workspace/shared';
 
+import type { StreamingProgress } from 'lib/useStreamingGeneration';
+
 interface MetricsBarProps {
   status: GenerationStatus;
   metrics: MetricsData | null;
+  progress: StreamingProgress;
 }
 
-export function MetricsBar({ status, metrics }: MetricsBarProps) {
+export function MetricsBar({ status, metrics, progress }: MetricsBarProps) {
   if (status === 'idle') return null;
 
   if (status === 'streaming' || !metrics) {
+    const elapsedSeconds = Math.max(0, progress.elapsedMs / 1000);
+
     return (
       <div
         aria-live="polite"
         aria-label="Generation in progress"
-        className="flex items-center gap-4 text-sm text-muted-foreground"
+        className="flex min-w-0 flex-wrap items-center gap-x-4 gap-y-2 text-sm text-muted-foreground"
       >
-        <span className="inline-block h-2 w-28 overflow-hidden rounded-full bg-muted">
-          <span className="block h-full w-1/2 animate-pulse rounded-full bg-primary/50" />
+        <span
+          className="inline-block h-2 w-36 overflow-hidden rounded-full bg-muted"
+          role="progressbar"
+          aria-valuemin={0}
+          aria-valuemax={100}
+          aria-valuenow={Math.round(progress.percent)}
+        >
+          <span
+            className="block h-full rounded-full bg-primary/70 transition-all duration-300 ease-out"
+            style={{ width: `${progress.percent}%` }}
+          />
         </span>
-        <span className="animate-pulse text-primary">Streaming…</span>
+        <span className="font-semibold text-primary">{progress.label}</span>
+        <span className="text-xs text-muted-foreground/80">
+          {progress.tokenEstimate > 0 ? `${progress.tokenEstimate} est. tokens · ` : null}
+          {elapsedSeconds.toFixed(1)}s
+        </span>
       </div>
     );
   }

@@ -73,23 +73,23 @@ export const ChartPane = forwardRef<ChartPaneHandle, ChartPaneProps>(function Ch
 
   return (
     <div className="flex h-full flex-col">
-      <div className="border-b border-border px-8 py-5">
-        <h2 className="text-2xl font-semibold text-foreground">{chart.title}</h2>
+      <div className="border-b border-border px-4 py-4 md:px-8 md:py-5">
+        <h2 className="text-xl font-semibold text-foreground md:text-2xl">{chart.title}</h2>
         <p className="mt-1 text-sm text-muted-foreground">{chart.description}</p>
       </div>
 
-      <div className="flex-1 min-h-0 overflow-y-auto overflow-x-hidden px-8 py-6 flex flex-col">
+      <div className="flex min-h-0 flex-1 flex-col overflow-y-auto overflow-x-hidden px-4 py-4 md:px-8 md:py-6">
         <div
           key={chart.id}
           ref={chartAreaRef}
-          className="my-auto w-full [@media(min-height:800px)]:pb-[25vh]"
+          className="my-auto w-full min-w-0 [@media(min-height:800px)]:pb-[25vh]"
           onKeyDown={handleChartKeyDown}
         >
           <ChartComponent id={chart.id} />
         </div>
       </div>
 
-      <div className="min-h-16 flex flex-wrap items-center gap-x-4 gap-y-1.5 border-t border-border bg-background px-8 py-3">
+      <div className="flex min-h-16 flex-wrap items-center gap-x-4 gap-y-1.5 border-t border-border bg-background px-4 py-3 md:px-8">
         <p className="text-xs text-muted-foreground">
           <span className="font-medium">Source:</span>{' '}
           <a
