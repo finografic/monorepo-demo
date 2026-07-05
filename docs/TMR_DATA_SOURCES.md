@@ -166,6 +166,9 @@
 ### `demo-ai-pipeline` — implemented
 
 - AI Service Finder references transport customer service centres and registration/call-centre themes via `service-finder` parameter fixtures.
+- Prompt cards display intended source context for all five prompts, including registration enquiries,
+  service centres, Q-Ride/BoatSafe provider context, QLDTraffic, road-crash/open-data context, and CKAN
+  metadata.
 - Fixture text includes source context, confidence/review flags, and stale-data disclaimers.
 
 ---

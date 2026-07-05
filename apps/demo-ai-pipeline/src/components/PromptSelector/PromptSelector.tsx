@@ -73,6 +73,7 @@ export function PromptSelector({
               key={prompt.id}
               title={prompt.title}
               description={prompt.description}
+              sourceContext={prompt.sourceContext}
               badges={badges}
               selected={isSelected}
               disabled={!!disabled}

@@ -52,7 +52,7 @@ export function StreamingControls({
           aria-label="Generate response"
           className="flex-1 rounded-md bg-green-600 px-4 py-3 mr-4 text-base font-semibold text-primary-foreground transition-opacity hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
         >
-          {isStreaming ? 'Generating…' : 'Generate'}
+          {isStreaming ? 'Generating…' : 'Generate Markdown'}
         </button>
 
         <button

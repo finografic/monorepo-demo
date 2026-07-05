@@ -29,6 +29,7 @@ export interface Prompt {
   id: string;
   title: string;
   description: string;
+  sourceContext: string;
   capabilities: CapabilityTag[];
   systemPrompt: string;
   parameters?: PromptParameter[];

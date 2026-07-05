@@ -8,6 +8,7 @@ export interface OptionCardBadge {
 interface OptionCardProps {
   title: string;
   description: string;
+  sourceContext?: string;
   badges?: OptionCardBadge[];
   selected: boolean;
   disabled?: boolean;
@@ -22,6 +23,7 @@ const EMPTY_BADGES: OptionCardBadge[] = [];
 export function OptionCard({
   title,
   description,
+  sourceContext,
   badges = EMPTY_BADGES,
   selected,
   disabled,
@@ -53,6 +55,11 @@ export function OptionCard({
         {headerAction}
       </div>
       <p className="mt-2 text-sm leading-6 text-muted-foreground">{description}</p>
+      {sourceContext ? (
+        <p className="mt-2 text-xs font-semibold leading-5 text-primary opacity-70">
+          Source intent: {sourceContext}
+        </p>
+      ) : null}
       {badges.length > 0 && (
         <div className="mt-3 flex flex-wrap gap-1.5">
           {badges.map((badge) => (
