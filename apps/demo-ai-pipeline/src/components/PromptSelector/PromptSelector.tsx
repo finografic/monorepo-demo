@@ -1,6 +1,7 @@
 import type { Prompt } from '@workspace/shared';
 import { resolveBadgeClass } from '@workspace/shared';
 import { OptionCard } from '@workspace/shared/components/OptionCard';
+import { NativeSelect, NativeSelectOption } from '@workspace/ui/components/native-select';
 import { useRef } from 'react';
 
 interface PromptSelectorProps {
@@ -90,21 +91,21 @@ export function PromptSelector({
                       >
                         {parameter.label}
                       </label>
-                      <select
+                      <NativeSelect
                         id={`prompt-param-${parameter.id}`}
                         value={parameterValues[parameter.id] ?? parameter.defaultValue}
                         disabled={disabled}
                         onClick={(event) => event.stopPropagation()}
                         onKeyDown={(event) => event.stopPropagation()}
                         onChange={(event) => onParameterChange(parameter.id, event.target.value)}
-                        className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
+                        className="w-full"
                       >
                         {parameter.options.map((option) => (
-                          <option key={option.value} value={option.value}>
+                          <NativeSelectOption key={option.value} value={option.value}>
                             {option.label}
-                          </option>
+                          </NativeSelectOption>
                         ))}
-                      </select>
+                      </NativeSelect>
                     </div>
                   ))}
                 </div>

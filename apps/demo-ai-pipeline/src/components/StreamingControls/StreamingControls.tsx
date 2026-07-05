@@ -1,4 +1,5 @@
 import type { GenerationStatus, ModelOption, StreamMode } from '@workspace/shared';
+import { Button } from '@workspace/ui/components/button';
 import { ModelSelector } from 'components/ModelSelector/ModelSelector';
 import { PromptSourceSelector } from 'components/PromptSourceSelector/PromptSourceSelector';
 
@@ -45,35 +46,37 @@ export function StreamingControls({
 
       {/* Action buttons */}
       <div className="flex gap-2 pt-2">
-        <button
+        <Button
           type="button"
           onClick={onStart}
           disabled={isStreaming || !hasSelection}
           aria-label="Generate response"
-          className="flex-1 rounded-md bg-green-600 px-4 py-3 mr-4 text-base font-semibold text-primary-foreground transition-opacity hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
+          className="mr-4 h-auto flex-1 rounded-md bg-green-600 px-4 py-3 text-base font-semibold text-primary-foreground transition-opacity hover:bg-green-600 hover:opacity-90"
         >
           {isStreaming ? 'Generating…' : 'Generate Markdown'}
-        </button>
+        </Button>
 
-        <button
+        <Button
           type="button"
+          variant="outline"
           onClick={onStop}
           disabled={!isStreaming}
           aria-label="Stop generation"
           className={secondaryActionClass}
         >
           Stop
-        </button>
+        </Button>
 
-        <button
+        <Button
           type="button"
+          variant="outline"
           onClick={onClear}
           disabled={!hasContent}
           aria-label="Clear output"
           className={secondaryActionClass}
         >
           Clear
-        </button>
+        </Button>
       </div>
     </div>
   );

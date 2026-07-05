@@ -1,3 +1,4 @@
+import { Button } from '@workspace/ui/components/button';
 import {
   NavigationMenu,
   NavigationMenuItem,
@@ -119,8 +120,9 @@ export function DemoLayout({
                   <Separator orientation="vertical" className="h-6 bg-primary-foreground/35" />
                 </NavigationMenuItem>
                 <NavigationMenuItem>
-                  <button
+                  <Button
                     type="button"
+                    variant="ghost"
                     className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm text-primary-foreground transition-all outline-none hover:bg-primary-foreground/15 hover:text-primary-foreground focus:bg-primary-foreground/15 focus:text-primary-foreground focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-1"
                     onClick={() => {
                       void handleSignOut();
@@ -128,7 +130,7 @@ export function DemoLayout({
                   >
                     <User className="size-4" aria-hidden="true" />
                     Sign out
-                  </button>
+                  </Button>
                 </NavigationMenuItem>
               </NavigationMenuList>
             </NavigationMenu>

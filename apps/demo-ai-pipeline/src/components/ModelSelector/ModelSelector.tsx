@@ -1,4 +1,5 @@
 import type { ModelOption } from '@workspace/shared';
+import { NativeSelect, NativeSelectOption } from '@workspace/ui/components/native-select';
 
 interface ModelSelectorProps {
   models: readonly ModelOption[];
@@ -20,19 +21,19 @@ export function ModelSelector({
       <label htmlFor="live-model" className="text-sm font-medium tracking-wider text-primary">
         Live LLM model
       </label>
-      <select
+      <NativeSelect
         id="live-model"
         value={selectedModelId}
         disabled={disabled}
         onChange={(event) => onModelChange(event.target.value)}
-        className="w-full rounded-md border border-border bg-background px-3 py-2.5 text-sm text-foreground shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
+        className="w-full"
       >
         {models.map((model) => (
-          <option key={model.id} value={model.id}>
+          <NativeSelectOption key={model.id} value={model.id}>
             {model.label}
-          </option>
+          </NativeSelectOption>
         ))}
-      </select>
+      </NativeSelect>
       {selectedModel ? (
         <p className="text-xs leading-5 font-medium text-muted-foreground/75 pt-2">
           {selectedModel.description}

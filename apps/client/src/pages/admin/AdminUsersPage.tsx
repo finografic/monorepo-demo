@@ -1,5 +1,6 @@
 import { Badge } from '@workspace/ui/components/badge';
 import { DataTable } from '@workspace/ui/components/data-table';
+import { NativeSelect, NativeSelectOption } from '@workspace/ui/components/native-select';
 import { Spinner } from '@workspace/ui/components/spinner';
 import type { DataTableColumns } from '@workspace/ui/lib/data-table-utils';
 import { useUpdateUser, useUsers } from 'queries/users';
@@ -23,16 +24,17 @@ function RoleCell({ user: userRow, updatingId, onUpdateRole }: RoleCellProps): R
   return (
     <div className="flex items-center gap-2">
       <Badge variant={ROLE_VARIANT[userRow.role]}>{userRow.role}</Badge>
-      <select
+      <NativeSelect
+        size="sm"
         value={userRow.role}
         disabled={updatingId === userRow.id}
         onChange={(e) => onUpdateRole(userRow.id, e.target.value as UserRow['role'])}
-        className="h-7 rounded-md border border-input bg-background px-2 text-xs disabled:cursor-not-allowed disabled:opacity-50"
+        className="w-24"
       >
-        <option value="public">public</option>
-        <option value="user">user</option>
-        <option value="admin">admin</option>
-      </select>
+        <NativeSelectOption value="public">public</NativeSelectOption>
+        <NativeSelectOption value="user">user</NativeSelectOption>
+        <NativeSelectOption value="admin">admin</NativeSelectOption>
+      </NativeSelect>
     </div>
   );
 }

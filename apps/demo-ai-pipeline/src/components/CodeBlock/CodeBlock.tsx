@@ -1,3 +1,4 @@
+import { Button } from '@workspace/ui/components/button';
 import { useEffect, useRef, useState } from 'react';
 
 import { getHighlighter, highlightCode } from 'lib/shiki';
@@ -53,14 +54,16 @@ export function CodeBlock({ code, language }: CodeBlockProps) {
     <div className="relative my-4 rounded-lg overflow-hidden border border-border">
       <div className="flex items-center justify-between px-4 py-1.5 bg-muted border-b border-border">
         <span className="text-xs text-muted-foreground font-mono">{language || 'text'}</span>
-        <button
+        <Button
           type="button"
+          variant="ghost"
+          size="xs"
           onClick={handleCopy}
           aria-label={copied ? 'Copied!' : 'Copy code'}
-          className="text-xs text-muted-foreground hover:text-foreground transition-colors px-2 py-0.5 rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          className="h-6 px-2 text-xs text-muted-foreground hover:text-foreground"
         >
           {copied ? 'Copied!' : 'Copy'}
-        </button>
+        </Button>
       </div>
       {html ? (
         <div

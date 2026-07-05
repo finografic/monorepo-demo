@@ -1,4 +1,5 @@
 import type { StreamMode } from '@workspace/shared';
+import { Button } from '@workspace/ui/components/button';
 
 interface PromptSourceSelectorProps {
   mode: StreamMode;
@@ -24,20 +25,21 @@ export function PromptSourceSelector({ mode, disabled = false, onModeChange }: P
       <p className="text-sm font-semibold tracking-wide text-primary">Prompt Source</p>
       <div className="flex overflow-hidden rounded-md border border-border text-sm font-medium">
         {STREAM_MODES.map((streamMode) => (
-          <button
+          <Button
             key={streamMode}
             type="button"
+            variant="ghost"
             disabled={disabled}
             onClick={() => onModeChange(streamMode)}
             className={[
-              'flex-1 py-2 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed',
+              'h-auto flex-1 rounded-none border-0 py-2 text-sm font-medium transition-colors disabled:cursor-not-allowed',
               mode === streamMode
                 ? 'bg-primary text-primary-foreground'
                 : 'text-muted-foreground hover:bg-accent hover:text-foreground',
             ].join(' ')}
           >
             {MODE_LABELS[streamMode]}
-          </button>
+          </Button>
         ))}
       </div>
       <p className="text-xs leading-5 font-medium text-muted-foreground/75 pt-2">{MODE_DESCRIPTIONS[mode]}</p>
