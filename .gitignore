@@ -7,7 +7,6 @@ dist/
 !apps/demo-xscan/vendor/xscan/dist/
 !apps/demo-xscan/vendor/xscan/dist/**
 build/
-.turbo/
 styled-system/
 *.tsbuildinfo
 deployments/
@@ -29,9 +28,6 @@ deployments/
 !.codex/hooks.json
 .worktrees/
 .ideas/
-
-# Graphify
-graphify-out/
 
 # Database and local app data
 *.db
@@ -103,6 +99,14 @@ html/
 *.tgz
 *.zip
 
+# Monorepos
+.turbo/
+.moon/cache
+.moon/docker
+
+# Graphify
+graphify-out/
+
 # OS files
 .DS_Store
 Thumbs.db
@@ -111,6 +115,5 @@ Desktop.ini
 *~ehthumbs.db
 *~
 
-# moon
-.moon/cache
-.moon/docker
+# security
+deps-xscan-report.json
