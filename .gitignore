@@ -4,30 +4,65 @@ node_modules/
 
 # Build outputs
 dist/
-!apps/demo-xscan/vendor/xscan/dist/
-!apps/demo-xscan/vendor/xscan/dist/**
 build/
-styled-system/
-*.tsbuildinfo
-deployments/
 
-# Environment and secrets
+# Environment files
 .env
 .env.*
 !.env.example
 
-# Agent tooling
+# Agents
 .agents/*
 !.agents/
 !.agents/handoff.md
+.codex/
 .claude/*
 !.claude/settings.json
 !.claude/commands/
 !.claude/commands/**
-.codex/*
-!.codex/hooks.json
 .worktrees/
-.ideas/
+
+# IDE
+**/.cursor/**
+!**/.cursor/.gitkeep
+!**/.cursor/rules/
+!**/.cursor/rules/**
+!.vscode/settings.json
+.idea/
+*.swp
+*.swo
+
+# Docs
+docs/drafts/
+
+# Logs
+*.log
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Cache
+.cache/
+.llm-cache/
+.tmp/
+
+# Testing
+coverage/
+.playwright-mcp/
+
+# TypeScript
+*.tsbuildinfo
+
+# CSS tooling (generated)
+styled-system/
+
+# Monorepos
+.turbo/
+.moon/cache
+.moon/docker
 
 # Database and local app data
 *.db
@@ -38,37 +73,44 @@ data/db/
 data/uploads/
 !data/migrations/
 
-# IDE
-.cursor/*
-!.cursor/.gitkeep
-!.cursor/rules/
-!.cursor/rules/**
-.idea/
-.vscode/*
-!.vscode/settings.json
-*.swp
-*.swo
-
-# Logs, temp files, and caches
-*.pid
-*.pid.lock
-*.seed
-*.local.*
-*.tmp.*
-.cache/
-.llm-cache/
-.tmp/
-*.log
-configs/cron-history.json
-pids
-
-# Testing
-coverage/
-.playwright-mcp/
+# Web host folders
+cgi-bin/
+fcgi-bin/
+html/
 
 # HTTP client cookies
 cookies.txt
 cookies_*.txt
+
+# Graphify
+graphify-out/
+
+# Archives
+*.tar
+*.tar.gz
+*.tgz
+*.zip
+
+# OS files
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+*~
+
+# Security
+deps-xscan-report.json
+
+# Project-specific
+# Agent tooling
+.codex/*
+!.codex/hooks.json
+.ideas/
+
+# Logs, temp files, and caches
+*.local.*
+*.tmp.*
+configs/cron-history.json
 
 # Local scratch areas
 vault/.tmp/
@@ -87,33 +129,3 @@ yarn-error.log*
 # Icon manager runtime output
 lucide-manager.config.json
 packages/icons/.icons-server-runtime/
-
-# Default web host folders
-cgi-bin/
-fcgi-bin/
-html/
-
-# Archives
-*.tar
-*.tar.gz
-*.tgz
-*.zip
-
-# Monorepos
-.turbo/
-.moon/cache
-.moon/docker
-
-# Graphify
-graphify-out/
-
-# OS files
-.DS_Store
-Thumbs.db
-ehthumbs.db
-Desktop.ini
-*~ehthumbs.db
-*~
-
-# security
-deps-xscan-report.json

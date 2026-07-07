@@ -1,5 +1,26 @@
 # AGENTS.md — AI Assistant Guide
 
+## Project Memory Model
+
+- `docs/todo/ROADMAP.md` = milestone plan, near-term tasks, and completed history.
+- `.agents/handoff.md` = stable current project state.
+- `.agents/memory.md` = chronological session log.
+
+Promote durable findings from memory → handoff, priorities and follow-ups → roadmap.
+
+Reference: [`docs/process/PROJECT_MEMORY_MODEL.md`](./docs/process/PROJECT_MEMORY_MODEL.md)
+
+---
+
+## Roadmap and Planning Docs
+
+- Check `ROADMAP.md` before proposing new initiatives.
+- Use `ROADMAP.md#next` for small follow-ups and manual validation.
+- Keep detailed plans in `docs/todo/TODO_*.md`; graduate completed plans to `DONE_*.md`.
+- Follow `.github/instructions/documentation/todo-done-docs.instructions.md`.
+
+---
+
 ## Rules — Project-Specific
 
 - Project-specific rules live in `.github/instructions/project/**/*.instructions.md`.
@@ -19,7 +40,7 @@ Shared across Claude Code, Cursor, and GitHub Copilot.
 
 - TypeScript patterns: `.github/instructions/code/typescript-patterns.instructions.md`
 - Modern TS patterns: `.github/instructions/code/modern-typescript-patterns.instructions.md`
-- ESLint & style: `.github/instructions/code/linting-code-style.instructions.md`
+- Oxlint & style: `.github/instructions/code/linting-code-style.instructions.md`
 - Provider/context patterns: `.github/instructions/code/provider-context-patterns.instructions.md`
 - Picocolors CLI styling: `.github/instructions/code/picocolors-cli-styling.instructions.md`
 
@@ -59,12 +80,24 @@ Shared across Claude Code, Cursor, and GitHub Copilot.
 
 ---
 
-## Claude Code — Session Memory and Handoff
+## graphify
 
-> This section applies to Claude Code only. Other agents can ignore it.
+This project has a knowledge graph at graphify-out/ with god nodes, community structure, and cross-file relationships.
 
-- **Session log:** `.claude/memory.md` (gitignored) — maintenance rules are in that file.
-- **Project state snapshot:** `.agents/handoff.md` (git-tracked) — maintenance rules are in that file.
+When the user types `/graphify`, invoke the `skill` tool with `skill: "graphify"` before doing anything else.
+
+Rules:
+
+- Use `./.codex/scripts/graphify` instead of relying on `graphify` being on PATH.
+- For codebase questions, first run `./.codex/scripts/graphify query "<question>"` when graphify-out/graph.json exists. Use `./.codex/scripts/graphify path "<A>" "<B>"` for relationships and `./.codex/scripts/graphify explain "<concept>"` for focused concepts. These return a scoped subgraph, usually much smaller than GRAPH_REPORT.md or raw grep output.
+- Dirty graphify-out/ files are expected after hooks or incremental updates; dirty graph files are not a reason to skip graphify. Only skip graphify if the task is about stale or incorrect graph output, or the user explicitly says not to use it.
+- If graphify-out/wiki/index.md exists, use it for broad navigation instead of raw source browsing.
+- Read graphify-out/GRAPH_REPORT.md only for broad architecture review or when query/path/explain do not surface enough context.
+- After modifying code, run `./.codex/scripts/graphify update .` to keep the graph current (AST-only, no API cost).
+
+## Cursor
+
+- Always-on rules: `.cursor/rules/` (`alwaysApply` — entry point is `AGENTS.md`, same as `CLAUDE.md`)
 
 ---
 
@@ -99,18 +132,3 @@ Shared across Claude Code, Cursor, and GitHub Copilot.
 - `config/db-setup.config.ts` seeds: `user`, `supported_languages`, `translations_ui`, `translations_app`, `translations_admin`; `viewConfigs` is empty (no SQL views). Seed files use underscore names matching schema exports.
 
 ---
-
-## graphify
-
-This project has a knowledge graph at graphify-out/ with god nodes, community structure, and cross-file relationships.
-
-When the user types `/graphify`, invoke the `skill` tool with `skill: "graphify"` before doing anything else.
-
-Rules:
-
-- Use `./.codex/scripts/graphify` instead of relying on `graphify` being on PATH.
-- For codebase questions, first run `./.codex/scripts/graphify query "<question>"` when graphify-out/graph.json exists. Use `./.codex/scripts/graphify path "<A>" "<B>"` for relationships and `./.codex/scripts/graphify explain "<concept>"` for focused concepts. These return a scoped subgraph, usually much smaller than GRAPH_REPORT.md or raw grep output.
-- Dirty graphify-out/ files are expected after hooks or incremental updates; dirty graph files are not a reason to skip graphify. Only skip graphify if the task is about stale or incorrect graph output, or the user explicitly says not to use it.
-- If graphify-out/wiki/index.md exists, use it for broad navigation instead of raw source browsing.
-- Read graphify-out/GRAPH_REPORT.md only for broad architecture review or when query/path/explain do not surface enough context.
-- After modifying code, run `./.codex/scripts/graphify update .` to keep the graph current (AST-only, no API cost).
