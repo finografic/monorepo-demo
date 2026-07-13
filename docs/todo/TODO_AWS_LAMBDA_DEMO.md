@@ -1,6 +1,6 @@
 # TODO — AWS Lambda + API Gateway Demo
 
-> **Status:** Phase 1 complete (2026-07-14). Phase 2 starting.
+> **Status:** Phase 2 complete (2026-07-14). Phase 3 starting.
 >
 > **Branch:** `feat/aws-lambda-demo` · **Region:** `ap-southeast-2` · **Profile:** `default`
 >
@@ -50,10 +50,10 @@ Reuse `createApp()` / router patterns. Do **not** import full `app.ts` (Auth.js,
 
 ## Phase 2 — Bundle + package scripts
 
-- [ ] Add Lambda bundle script (esbuild) — entry `src/lambda.ts`, Node 22, no `better-sqlite3`
-- [ ] Add `package.json` scripts: `lambda:build`, `lambda:deploy`, `lambda:delete`, `lambda:logs`
-- [ ] Validate artifact locally (handler present; native SQLite absent)
-- [ ] Commit Phase 2
+- [x] Add Lambda bundle script (esbuild) — entry `src/lambda.ts`, Node 22, no `better-sqlite3`
+- [x] Add `package.json` scripts: `lambda:build`, `lambda:deploy`, `lambda:delete`, `lambda:logs`
+- [x] Validate artifact locally (handler present; native SQLite absent)
+- [x] Commit Phase 2
 
 ---
 
@@ -100,3 +100,4 @@ Reuse `createApp()` / router patterns. Do **not** import full `app.ts` (Auth.js,
 
 - Phase 0 — Planning doc + ROADMAP link (2026-07-14)
 - Phase 1 — Lambda-safe Hono slice (`lambda.ts`, `lambda-app.ts`, aws-demo routes) (2026-07-14)
+- Phase 2 — esbuild `dist-lambda` + `lambda:*` scripts (2026-07-14)

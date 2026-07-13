@@ -4,6 +4,8 @@ node_modules/
 
 # Build outputs
 dist/
+dist-lambda/
+.aws-sam/
 build/
 
 # Environment files
@@ -129,3 +131,4 @@ yarn-error.log*
 # Icon manager runtime output
 lucide-manager.config.json
 packages/icons/.icons-server-runtime/
+
