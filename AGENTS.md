@@ -108,7 +108,7 @@ Rules:
 - For typography and input placeholder styling, prefer global tokens in `globals.css` (`--placeholder-foreground` with base `::placeholder` rules, `html` root font-size, semantic text tokens) over per-component `placeholder:text-*` classes; prepend new body fonts to the stack and keep existing fallbacks unless asked to remove a family.
 - In `demo-datavis`, centralize common Recharts props in `src/constants/charts.config.ts`; keep chart-specific constants (domains, IDs, label text) in each chart file.
 - npm dependency upgrades use pnpm + syncpack (Moon/Proto pin Node/pnpm/moon only); `deps:update` chains `pnpm syncpack:fix` after `--latest --recursive`; syncpack v14+ uses `fix` not `fix-mismatches`.
-- For `@finografic/design-system`, ship prebuilt `dist/` from CI in the npm tarball; do not commit `dist/` or use postinstall build scripts.
+- Prefer en-GB as the default locale; do not re-enable the portfolio landing language selector without an explicit ask (translations are incomplete). For i18n architecture, use touch-monorepo `packages/i18n` + JSON-as-seed-source as the reference.
 - In this workspace, use `source.addMissingImports: explicit` and `source.sortImports: explicit`; do not remove unused imports on save (`source.organizeImports: never`); keep `source.fixAll.oxc: explicit` for oxlint without organize-imports cleanup. Prefer keeping `index.ts`/`index.tsx` as re-export barrels; split implementation into sibling modules (e.g. `{id}.prompt.ts`) rather than inlining into index files.
 - Use `:` as the segment separator in npm script names everywhere (e.g. `db:migrations:seed`, not `db.migrations.seed` or space-separated variants).
 - Prefer the published `@finografic/project-scripts` from the registry; use `file:`/`link:` only when explicitly testing local changes — `pnpm link` writes persistent `link:` specifiers in `package.json` and `pnpm-workspace.yaml` overrides, and global unlink does not restore registry ranges.
@@ -118,10 +118,10 @@ Rules:
 
 ## Learned Workspace Facts
 
-- This is a portfolio monorepo demo (`monorepo-demo`) selectively extracted from touch-monorepo (auth/server/db); use LLAAB and vite-monorepo for shadcn/Tailwind UI patterns; intentionally beyond bare-bones (auth, admin/CMS, Drizzle, i18n) and also a GitHub demo/portfolio piece.
+- This is a portfolio monorepo demo (`monorepo-demo`, renamed from `monorepo-starter`); `monorepo-starter` is a separate repo—mention it only as migration history. Selectively extracted from touch-monorepo (auth/server/db); use LLAAB and vite-monorepo for shadcn/Tailwind UI patterns; intentionally beyond bare-bones (auth, admin/CMS, Drizzle, i18n) and also a GitHub demo/portfolio piece.
 - `pnpm-workspace.yaml` declares: `config`, `packages/*`, `apps/*`.
 - Moon drives `build`, `dev`, `lint`, `typecheck`, `test`, and `clean` tasks (Turbo removed); Moon/Proto pin toolchain (Node, pnpm, moon)—npm deps are upgraded via pnpm + syncpack.
-- `apps/client`: Vite 8 + React 19 + React Router v7 + shadcn/Tailwind 4; dev on port 3000, proxies `/api` → server. `apps/server`: Hono + @hono/node-server; `tsdown` build, `tsx watch` dev, default port 4000.
+- `apps/client`: Vite 8 + React 19 + React Router v7 + shadcn/Tailwind 4; dev on port 3000, proxies `/api` → server; landing keeps the language selector hidden (translations incomplete) with en-GB as default locale. `apps/server`: Hono + @hono/node-server; `tsdown` build, `tsx watch` dev, default port 4000.
 - `@workspace/config`: Valibot env validation + dotenv with root-dir auto-discovery + workspace paths; hosts `db-setup.config.ts`.
 - Each app has a local `oxlint.config.ts` importing presets from `@finografic/oxc-config/oxlint`; root `lint:ci` uses `oxlint --quiet` so warnings are hidden and only errors fail CI.
 - Root `package.json` does NOT set `"type": "module"` — each sub-package declares its own.

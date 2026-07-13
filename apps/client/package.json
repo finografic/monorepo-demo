@@ -11,6 +11,7 @@
     "build:pages": "pnpm build",
     "clean": "pnpm --package=@finografic/project-scripts dlx purge-builds --detach",
     "dev": "vite",
+    "dev:aws": "VITE_API_BASE_URL=https://lepd52mqnj.execute-api.ap-southeast-2.amazonaws.com vite",
     "lint": "oxlint -c oxlint.config.ts",
     "lint:fix": "oxlint -c oxlint.config.ts --fix",
     "start": "vite preview",

@@ -79,9 +79,11 @@ curl -sS "$API_URL/api/aws-demo"
 Do **not** change GitHub Actions `DEMO_API_BASE_URL`.
 
 ```sh
-VITE_API_BASE_URL=https://xxxx.execute-api.ap-southeast-2.amazonaws.com \
-  pnpm --filter @workspace/client dev
+pnpm dev:aws
+# or: pnpm --filter @workspace/client dev:aws
 ```
+
+This sets `VITE_API_BASE_URL` to the live HTTP API URL and starts Vite on port 3000.
 
 Only `/health` and `/api/aws-demo` exist on Lambda; auth and other APIs still need Render/local server.
 

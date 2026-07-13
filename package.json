@@ -22,6 +22,7 @@
   "scripts": {
     "---------- DEV_AND_BUILD": "---------------------------------------------",
     "dev": "moon run client:dev server:dev",
+    "dev:aws": "pnpm --filter @workspace/client dev:aws",
     "dev:all": "pnpm kill:dev && moon run client:dev server:dev demo-ai-pipeline:dev demo-datavis:dev demo-xscan:dev",
     "dev:reset": "run-s reset",
     "dev:db:reset": "run-s db:reset",

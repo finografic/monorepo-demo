@@ -30,12 +30,13 @@ This roadmap is the high-level sequencing plan for the monorepo-demo portfolio a
 - [DONE — Portfolio Demos Plan](/docs/todo/DONE_PLAN_PORTFOLIO_DEMOS.md)
 - [DONE — demo-datavis](/docs/todo/DONE_DEMO_DATAVIS.md)
 - [DONE — AI Pipeline TMR Fixtures](/docs/todo/DONE_5_FIXTURES.md)
+- [DONE — AWS Lambda + API Gateway Demo](/docs/todo/DONE_AWS_LAMBDA_DEMO.md)
 
 **Active planning docs**
 
-- [TODO — AWS Lambda + API Gateway Demo](/docs/todo/TODO_AWS_LAMBDA_DEMO.md)
 - [TODO — I18n JSON source of truth](/docs/todo/TODO_I18N.md)
 - [TODO — AI Pipeline Model Selection](/docs/todo/TODO_AI_PIPELINE_MODEL_SELECTION.md)
+- [TODO — AWS Full Server App Runner Demo](/docs/todo/TODO_AWS_FULL_SERVER_APP_RUNNER.md)
 - [TMR Data Sources](/docs/TMR_DATA_SOURCES.md) (reference + optional expansions)
 - [Next Steps](/docs/todo/NEXT_STEPS.md)
 

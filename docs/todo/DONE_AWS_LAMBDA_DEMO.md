@@ -1,6 +1,6 @@
-# TODO — AWS Lambda + API Gateway Demo
+# DONE — AWS Lambda + API Gateway Demo
 
-> **Status:** Phase 5 complete (2026-07-14). All phases done — ready to graduate to DONE when desired.
+> **Completed:** 2026-07-14 — API Gateway HTTP API + Lambda demo deployed and verified.
 >
 > **Branch:** `feat/aws-lambda-demo` · **Region:** `ap-southeast-2` · **Profile:** `default`
 >
