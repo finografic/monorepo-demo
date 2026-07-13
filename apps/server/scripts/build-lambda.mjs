@@ -51,7 +51,7 @@ await esbuild.build({
 
 await writeFile(
   path.join(outDir, 'package.json'),
-  `${JSON.stringify({ type: 'module' }, null, 2)}\n`,
+  `${JSON.stringify({ name: 'monorepo-demo-aws-lambda', version: '0.0.1', type: 'module' }, null, 2)}\n`,
   'utf8',
 );
 

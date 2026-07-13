@@ -1,0 +1,17 @@
+version = 0.1
+
+[default.build.parameters]
+cached = true
+parallel = true
+
+[default.deploy.parameters]
+stack_name = "monorepo-demo-aws-api"
+resolve_s3 = true
+capabilities = "CAPABILITY_IAM"
+region = "ap-southeast-2"
+profile = "default"
+confirm_changeset = false
+fail_on_empty_changeset = false
+
+[default.local_start_api.parameters]
+warm_containers = "EAGER"

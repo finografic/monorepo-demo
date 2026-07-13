@@ -1,6 +1,6 @@
 # TODO — AWS Lambda + API Gateway Demo
 
-> **Status:** Phase 2 complete (2026-07-14). Phase 3 starting.
+> **Status:** Phase 3 complete (2026-07-14). Phase 4 starting.
 >
 > **Branch:** `feat/aws-lambda-demo` · **Region:** `ap-southeast-2` · **Profile:** `default`
 >
@@ -59,10 +59,10 @@ Reuse `createApp()` / router patterns. Do **not** import full `app.ts` (Auth.js,
 
 ## Phase 3 — SAM infrastructure
 
-- [ ] Add `apps/server/infra/aws-demo/template.yaml` (HttpApi + Function + IAM)
-- [ ] Add `apps/server/infra/aws-demo/samconfig.toml` (`ap-southeast-2`)
-- [ ] Wire build to pre-built `.aws-sam` / `dist-lambda` artifact
-- [ ] Commit Phase 3
+- [x] Add `apps/server/infra/aws-demo/template.yaml` (HttpApi + Function + IAM)
+- [x] Add `apps/server/infra/aws-demo/samconfig.toml` (`ap-southeast-2`)
+- [x] Wire build to pre-built `dist-lambda` artifact
+- [x] Commit Phase 3
 
 ---
 
@@ -101,3 +101,4 @@ Reuse `createApp()` / router patterns. Do **not** import full `app.ts` (Auth.js,
 - Phase 0 — Planning doc + ROADMAP link (2026-07-14)
 - Phase 1 — Lambda-safe Hono slice (`lambda.ts`, `lambda-app.ts`, aws-demo routes) (2026-07-14)
 - Phase 2 — esbuild `dist-lambda` + `lambda:*` scripts (2026-07-14)
+- Phase 3 — SAM HttpApi + Lambda template (`infra/aws-demo`) (2026-07-14)

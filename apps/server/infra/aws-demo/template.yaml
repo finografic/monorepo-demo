@@ -1,0 +1,66 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: monorepo-demo interview slice — HTTP API → Lambda (Hono) → CloudWatch
+
+Globals:
+  Function:
+    Timeout: 10
+    MemorySize: 256
+    Runtime: nodejs22.x
+    Architectures:
+      - arm64
+    Environment:
+      Variables:
+        NODE_ENV: production
+
+Resources:
+  AwsDemoHttpApi:
+    Type: AWS::Serverless::HttpApi
+    Properties:
+      StageName: $default
+      CorsConfiguration:
+        AllowOrigins:
+          - http://localhost:3000
+          - http://localhost:3001
+          - http://localhost:3002
+          - http://localhost:3003
+          - https://finografic.github.io
+        AllowMethods:
+          - GET
+          - OPTIONS
+        AllowHeaders:
+          - '*'
+
+  AwsDemoFunction:
+    Type: AWS::Serverless::Function
+    Metadata:
+      SkipBuild: true
+    Properties:
+      FunctionName: monorepo-demo-aws-api
+      CodeUri: ../../dist-lambda/
+      Handler: lambda.handler
+      Description: Minimal Hono GET /health and GET /api/aws-demo (no Auth/SQLite)
+      Events:
+        ProxyAny:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref AwsDemoHttpApi
+            Path: /{proxy+}
+            Method: ANY
+        RootAny:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref AwsDemoHttpApi
+            Path: /
+            Method: ANY
+
+Outputs:
+  HttpApiUrl:
+    Description: API Gateway HTTP API base URL
+    Value: !Sub 'https://${AwsDemoHttpApi}.execute-api.${AWS::Region}.amazonaws.com'
+  FunctionArn:
+    Description: Lambda function ARN
+    Value: !GetAtt AwsDemoFunction.Arn
+  FunctionName:
+    Description: Lambda function name
+    Value: !Ref AwsDemoFunction
