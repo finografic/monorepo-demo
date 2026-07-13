@@ -1,6 +1,6 @@
 # TODO — AWS Lambda + API Gateway Demo
 
-> **Status:** Phase 3 complete (2026-07-14). Phase 4 starting.
+> **Status:** Phase 4 complete (2026-07-14). Phase 5 starting.
 >
 > **Branch:** `feat/aws-lambda-demo` · **Region:** `ap-southeast-2` · **Profile:** `default`
 >
@@ -68,10 +68,10 @@ Reuse `createApp()` / router patterns. Do **not** import full `app.ts` (Auth.js,
 
 ## Phase 4 — Docs + local validation
 
-- [ ] Add `docs/process/AWS_LAMBDA_DEMO.md` (architecture, commands, teardown, interview notes)
-- [ ] Run `lambda:build` + `sam build` successfully
-- [ ] Optional: `sam local invoke` smoke
-- [ ] Commit Phase 4
+- [x] Add `docs/process/AWS_LAMBDA_DEMO.md` (architecture, commands, teardown, interview notes)
+- [x] Run `lambda:build` + `sam build` successfully
+- [x] Optional: `sam local invoke` smoke — skipped (no Docker/Finch runtime locally); event fixture added under `infra/aws-demo/events/`
+- [x] Commit Phase 4
 
 ---
 
@@ -102,3 +102,4 @@ Reuse `createApp()` / router patterns. Do **not** import full `app.ts` (Auth.js,
 - Phase 1 — Lambda-safe Hono slice (`lambda.ts`, `lambda-app.ts`, aws-demo routes) (2026-07-14)
 - Phase 2 — esbuild `dist-lambda` + `lambda:*` scripts (2026-07-14)
 - Phase 3 — SAM HttpApi + Lambda template (`infra/aws-demo`) (2026-07-14)
+- Phase 4 — Process doc + local `sam build` validation (2026-07-14)
