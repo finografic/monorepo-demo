@@ -5,7 +5,7 @@ import * as esbuild from 'esbuild';
 
 const serverRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const outDir = path.join(serverRoot, 'dist-lambda');
-const outfile = path.join(outDir, 'lambda.mjs');
+const outfile = path.join(outDir, 'lambda.js');
 
 const srcAlias = (name) => path.join(serverRoot, 'src', name);
 
@@ -17,10 +17,9 @@ await esbuild.build({
   bundle: true,
   platform: 'node',
   target: 'node22',
-  format: 'esm',
+  format: 'cjs',
   sourcemap: true,
   logLevel: 'info',
-  // Keep the Lambda package free of native / DB deps from the Render app.
   packages: 'bundle',
   alias: {
     db: srcAlias('db'),
@@ -30,7 +29,6 @@ await esbuild.build({
     types: srcAlias('types'),
     utils: srcAlias('utils'),
   },
-  // Fail the build if something accidentally pulls SQLite into the Lambda artifact.
   plugins: [
     {
       name: 'reject-better-sqlite3',
@@ -51,7 +49,7 @@ await esbuild.build({
 
 await writeFile(
   path.join(outDir, 'package.json'),
-  `${JSON.stringify({ name: 'monorepo-demo-aws-lambda', version: '0.0.1', type: 'module' }, null, 2)}\n`,
+  `${JSON.stringify({ name: 'monorepo-demo-aws-lambda', version: '0.0.1' }, null, 2)}\n`,
   'utf8',
 );
 

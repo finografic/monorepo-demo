@@ -93,6 +93,21 @@ pnpm --filter @workspace/server lambda:delete
 
 Confirm stack `DELETE_COMPLETE`. SAM may leave an empty packaging bucket — delete in the console if prompted.
 
+## Live endpoint (feat/aws-lambda-demo)
+
+Stack: `monorepo-demo-aws-api` · Region: `ap-southeast-2`
+
+```text
+https://lepd52mqnj.execute-api.ap-southeast-2.amazonaws.com
+```
+
+Verified (2026-07-14):
+
+- `GET /health` → `{ "status": "ok", ... }`
+- `GET /api/aws-demo` → demo JSON including `region: ap-southeast-2`
+
+Bundle note: Lambda artifact is **CJS** (`dist-lambda/lambda.js`). An ESM bundle tripped pino’s dynamic `require("node:os")` at init.
+
 ## Cost notes
 
 Creates only: HTTP API, Lambda, IAM execution role, CloudWatch log group (+ ephemeral SAM packaging bucket). No VPC, EC2, RDS, ALB, or NAT.

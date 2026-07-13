@@ -1,6 +1,6 @@
 # TODO — AWS Lambda + API Gateway Demo
 
-> **Status:** Phase 4 complete (2026-07-14). Phase 5 starting.
+> **Status:** Phase 5 complete (2026-07-14). All phases done — ready to graduate to DONE when desired.
 >
 > **Branch:** `feat/aws-lambda-demo` · **Region:** `ap-southeast-2` · **Profile:** `default`
 >
@@ -77,12 +77,12 @@ Reuse `createApp()` / router patterns. Do **not** import full `app.ts` (Auth.js,
 
 ## Phase 5 — Deploy + verify
 
-- [ ] `sam deploy` to `ap-southeast-2` (stack e.g. `monorepo-demo-aws-api`)
-- [ ] Retrieve HTTP API URL from stack outputs
-- [ ] `curl` `/health` and `/api/aws-demo`
-- [ ] Inspect CloudWatch logs (`sam logs` / console)
-- [ ] Document URL + teardown in process doc (no secrets)
-- [ ] Commit Phase 5 (docs/scripts only if deploy artifacts are gitignored)
+- [x] `sam deploy` to `ap-southeast-2` (stack `monorepo-demo-aws-api`)
+- [x] Retrieve HTTP API URL from stack outputs
+- [x] `curl` `/health` and `/api/aws-demo`
+- [x] Inspect CloudWatch logs (`sam logs` / console)
+- [x] Document URL + teardown in process doc (no secrets)
+- [x] Commit Phase 5 (CJS bundle fix + deploy script + docs)
 
 ---
 
@@ -103,3 +103,4 @@ Reuse `createApp()` / router patterns. Do **not** import full `app.ts` (Auth.js,
 - Phase 2 — esbuild `dist-lambda` + `lambda:*` scripts (2026-07-14)
 - Phase 3 — SAM HttpApi + Lambda template (`infra/aws-demo`) (2026-07-14)
 - Phase 4 — Process doc + local `sam build` validation (2026-07-14)
+- Phase 5 — Deployed + verified `https://lepd52mqnj.execute-api.ap-southeast-2.amazonaws.com` (2026-07-14)

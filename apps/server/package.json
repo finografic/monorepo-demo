@@ -18,7 +18,7 @@
     "start": "node dist/index.mjs",
     "·········· AWS_LAMBDA": "···············································",
     "lambda:build": "node ./scripts/build-lambda.mjs",
-    "lambda:deploy": "pnpm lambda:build && sam build --template infra/aws-demo/template.yaml --build-dir infra/aws-demo/.aws-sam/build && sam deploy --config-file infra/aws-demo/samconfig.toml --config-env default --no-confirm-changeset --no-fail-on-empty-changeset",
+    "lambda:deploy": "pnpm lambda:build && sam build --template infra/aws-demo/template.yaml --build-dir infra/aws-demo/.aws-sam/build && sam deploy --template-file infra/aws-demo/.aws-sam/build/template.yaml --stack-name monorepo-demo-aws-api --resolve-s3 --capabilities CAPABILITY_IAM --region ap-southeast-2 --profile default --no-confirm-changeset --no-fail-on-empty-changeset",
     "lambda:delete": "sam delete --stack-name monorepo-demo-aws-api --region ap-southeast-2 --profile default --no-prompts",
     "lambda:logs": "sam logs -n AwsDemoFunction --stack-name monorepo-demo-aws-api --region ap-southeast-2 --profile default --tail",
     "·········· RENDER": "·····················································",
