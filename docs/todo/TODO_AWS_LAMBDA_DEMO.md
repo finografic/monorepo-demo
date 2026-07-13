@@ -1,6 +1,6 @@
 # TODO — AWS Lambda + API Gateway Demo
 
-> **Status:** Phase 0 complete (2026-07-14). Phase 1 starting.
+> **Status:** Phase 1 complete (2026-07-14). Phase 2 starting.
 >
 > **Branch:** `feat/aws-lambda-demo` · **Region:** `ap-southeast-2` · **Profile:** `default`
 >
@@ -40,11 +40,11 @@ Reuse `createApp()` / router patterns. Do **not** import full `app.ts` (Auth.js,
 
 ## Phase 1 — Lambda-safe Hono slice
 
-- [ ] Add `apps/server/src/routes/aws-demo/` (`GET /api/aws-demo`)
-- [ ] Add `apps/server/src/lambda-app.ts` (createApp + `/health` + aws-demo; no Auth/DB)
-- [ ] Add `apps/server/src/lambda.ts` (`hono/aws-lambda` handler)
-- [ ] Confirm Render entry (`index.ts` / `app.ts`) unchanged
-- [ ] Commit Phase 1
+- [x] Add `apps/server/src/routes/aws-demo/` (`GET /api/aws-demo`)
+- [x] Add `apps/server/src/lambda-app.ts` (createApp + `/health` + aws-demo; no Auth/DB)
+- [x] Add `apps/server/src/lambda.ts` (`hono/aws-lambda` handler)
+- [x] Confirm Render entry (`index.ts` / `app.ts`) unchanged
+- [x] Commit Phase 1
 
 ---
 
@@ -99,3 +99,4 @@ Reuse `createApp()` / router patterns. Do **not** import full `app.ts` (Auth.js,
 ## Done
 
 - Phase 0 — Planning doc + ROADMAP link (2026-07-14)
+- Phase 1 — Lambda-safe Hono slice (`lambda.ts`, `lambda-app.ts`, aws-demo routes) (2026-07-14)
