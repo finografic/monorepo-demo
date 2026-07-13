@@ -480,7 +480,6 @@ Remove or stop referencing:
 - [x] Run the relevant demo tests
 - [-] Ensure all diagrams render without clipped labels — manual polish; no known blockers in fixture set
 - [-] Browser smoke all five prompt cards — manual QA; automated Vitest/Playwright coverage exists
-- [x] Run `graphify update .`
 
 ---
 

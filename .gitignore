@@ -84,9 +84,6 @@ html/
 cookies.txt
 cookies_*.txt
 
-# Graphify
-graphify-out/
-
 # Archives
 *.tar
 *.tar.gz
@@ -131,4 +128,3 @@ yarn-error.log*
 # Icon manager runtime output
 lucide-manager.config.json
 packages/icons/.icons-server-runtime/
-

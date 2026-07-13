@@ -252,14 +252,12 @@ During this work, these passed at different points:
 - `corepack pnpm --filter @workspace/demo-ai-pipeline test`
 - `corepack pnpm --filter @workspace/demo-ai-pipeline build`
 - `corepack pnpm typecheck`
-- `./.codex/scripts/graphify update . --force`
 
 After any new edits, run at least:
 
 ```sh
 corepack pnpm --filter @workspace/demo-ai-pipeline typecheck
 corepack pnpm --filter @workspace/demo-ai-pipeline lint
-./.codex/scripts/graphify update . --force
 ```
 
 Lint is expected to pass with existing warnings only unless they are fixed.
@@ -270,7 +268,6 @@ Lint is expected to pass with existing warnings only unless they are fixed.
 - Use `corepack pnpm ...`.
 - Use `:` in npm script names.
 - Keep `index.ts` files barrel-only.
-- After code changes, run `./.codex/scripts/graphify update . --force` when possible.
 - Do not publish/release.
 - Do not convert this into a full backend/RAG/data integration without explicit instruction.
 

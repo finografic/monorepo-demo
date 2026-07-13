@@ -2,7 +2,7 @@ name: Deploy Demo Pages
 
 on:
   push:
-    branches: [master]
+    branches: [master, feat/aws-lambda-demo]
     paths:
       - '.github/workflows/deploy-demo-pages.yml'
       - '.moon/**'
@@ -16,6 +16,15 @@ on:
       - 'pnpm-lock.yaml'
       - 'pnpm-workspace.yaml'
   workflow_dispatch:
+    inputs:
+      api_base_url:
+        description: 'API base URL for the Pages build'
+        required: false
+        default: 'https://qvyq3mdegk.ap-southeast-2.awsapprunner.com'
+      xscan_api_base_url:
+        description: 'xscan API base URL for the Pages build'
+        required: false
+        default: ''
 
 permissions:
   contents: read
@@ -33,6 +42,8 @@ jobs:
 
     env:
       PAGES_BASE: /${{ github.event.repository.name }}
+      PAGES_API_BASE_URL: ${{ github.event_name == 'workflow_dispatch' && inputs.api_base_url || github.ref_name == 'feat/aws-lambda-demo' && 'https://qvyq3mdegk.ap-southeast-2.awsapprunner.com' || vars.DEMO_API_BASE_URL }}
+      PAGES_XSCAN_API_BASE_URL: ${{ github.event_name == 'workflow_dispatch' && inputs.xscan_api_base_url || vars.DEMO_XSCAN_API_BASE_URL }}
 
     steps:
       - name: Checkout
@@ -53,28 +64,28 @@ jobs:
 
       - name: Build portfolio landing page
         env:
-          VITE_API_BASE_URL: ${{ vars.DEMO_API_BASE_URL }}
+          VITE_API_BASE_URL: ${{ env.PAGES_API_BASE_URL }}
           VITE_BASE_PATH: ${{ env.PAGES_BASE }}/
         run: moon run client:build-pages
 
       - name: Build AI pipeline demo
         env:
-          VITE_AUTH_API_BASE_URL: ${{ vars.DEMO_API_BASE_URL }}
-          VITE_API_BASE_URL: ${{ vars.DEMO_API_BASE_URL }}
+          VITE_AUTH_API_BASE_URL: ${{ env.PAGES_API_BASE_URL }}
+          VITE_API_BASE_URL: ${{ env.PAGES_API_BASE_URL }}
           VITE_BASE_PATH: ${{ env.PAGES_BASE }}/demo-ai-pipeline/
         run: moon run demo-ai-pipeline:build-pages
 
       - name: Build data visualisation demo
         env:
-          VITE_AUTH_API_BASE_URL: ${{ vars.DEMO_API_BASE_URL }}
-          VITE_API_BASE_URL: ${{ vars.DEMO_API_BASE_URL }}
+          VITE_AUTH_API_BASE_URL: ${{ env.PAGES_API_BASE_URL }}
+          VITE_API_BASE_URL: ${{ env.PAGES_API_BASE_URL }}
           VITE_BASE_PATH: ${{ env.PAGES_BASE }}/demo-datavis/
         run: moon run demo-datavis:build-pages
 
       - name: Build xscan demo
         env:
-          VITE_AUTH_API_BASE_URL: ${{ vars.DEMO_API_BASE_URL }}
-          VITE_API_BASE_URL: ${{ vars.DEMO_XSCAN_API_BASE_URL }}
+          VITE_AUTH_API_BASE_URL: ${{ env.PAGES_API_BASE_URL }}
+          VITE_API_BASE_URL: ${{ env.PAGES_XSCAN_API_BASE_URL }}
           VITE_BASE_PATH: ${{ env.PAGES_BASE }}/demo-xscan/
         run: moon run demo-xscan:build-pages
 

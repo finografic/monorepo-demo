@@ -153,7 +153,6 @@ Theme source for this repo:
 
 - [x] `pnpm typecheck`
 - [x] `pnpm build`
-- [x] `graphify update .`
 
 ## Phase 07G — Visual Smoke and Polish
 

@@ -183,7 +183,6 @@ apps/client/src/providers/
 - [x] Update `apps/client/docs/GUIDE.md` to reflect this starter's actual choices.
 - [x] Update this TODO as phases complete.
 - [x] Update `docs/todo/ROADMAP.md` Done table.
-- [x] Run `graphify update .` after code changes.
 
 ### Validation
 
