@@ -30,8 +30,9 @@ export function StreamingControls({
 }: StreamingControlsProps) {
   const isStreaming = status === 'streaming';
   const hasContent = status !== 'idle';
-  const secondaryActionClass =
-    'rounded-md border-2 border-amber-500 px-4 py-3 text-base font-semibold text-amber-500 transition-colors hover:bg-amber-200 hover:border-amber-600 hover:text-amber-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:border-muted-foreground disabled:bg-transparent disabled:text-muted-foreground disabled:opacity-30';
+  const actionButtonClass =
+    'h-auto rounded-md px-4 py-3 text-base font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-30';
+  const secondaryActionClass = `${actionButtonClass} border-2 border-amber-500 text-amber-500 hover:bg-amber-200 hover:border-amber-600 hover:text-amber-600 disabled:border-muted-foreground disabled:bg-transparent disabled:text-muted-foreground`;
 
   return (
     <div className="space-y-3">
@@ -45,13 +46,13 @@ export function StreamingControls({
       />
 
       {/* Action buttons */}
-      <div className="flex gap-2 pt-2">
+      <div className="flex items-stretch gap-2 pt-2">
         <Button
           type="button"
           onClick={onStart}
           disabled={isStreaming || !hasSelection}
           aria-label="Generate response"
-          className="mr-4 h-auto flex-1 rounded-md bg-green-600 px-4 py-3 text-base font-semibold text-primary-foreground transition-opacity hover:bg-green-600 hover:opacity-90"
+          className={`${actionButtonClass} mr-4 flex-1 bg-green-600 text-primary-foreground hover:bg-green-600 hover:opacity-90`}
         >
           {isStreaming ? 'Generating…' : 'Generate Markdown'}
         </Button>
