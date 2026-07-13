@@ -1,0 +1,33 @@
+# syntax=docker/dockerfile:1.7
+
+FROM node:24-bookworm-slim
+
+WORKDIR /app
+
+ENV DATA_DIR=data
+ENV NODE_ENV=production
+ENV PNPM_HOME=/pnpm
+ENV PORT=4000
+ENV PATH="${PNPM_HOME}:${PATH}"
+
+RUN apt-get update \
+  && apt-get install -y --no-install-recommends ca-certificates g++ make python3 \
+  && rm -rf /var/lib/apt/lists/*
+
+RUN corepack enable && corepack prepare pnpm@10.33.4 --activate
+
+COPY . .
+
+RUN --mount=type=secret,id=npm_token \
+  NPM_TOKEN="$(cat /run/secrets/npm_token 2>/dev/null || true)" pnpm install --frozen-lockfile \
+  && pnpm --filter @workspace/server build \
+  && mkdir -p /app/data \
+  && DATA_DIR=data NODE_ENV=production AUTH_SECRET=app-runner-build-demo-secret pnpm --filter @workspace/server render:db:bootstrap \
+  && rm -f /app/.npmrc \
+  && chown -R node:node /app/data
+
+USER node
+
+EXPOSE 4000
+
+CMD ["node", "apps/server/dist/index.mjs"]

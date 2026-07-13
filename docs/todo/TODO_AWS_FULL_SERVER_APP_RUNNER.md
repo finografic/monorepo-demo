@@ -12,6 +12,7 @@ Context:
 
 - [DONE — AWS Lambda + API Gateway Demo](./DONE_AWS_LAMBDA_DEMO.md)
 - [AWS Lambda Demo process doc](../process/AWS_LAMBDA_DEMO.md)
+- [AWS App Runner Full Server Demo](../process/AWS_APP_RUNNER_FULL_SERVER.md)
 - [Portfolio Deployment](../process/PORTFOLIO_DEPLOYMENT.md)
 
 ---
@@ -82,12 +83,12 @@ Alternatives intentionally deferred:
 
 ## Phase 0 — Pre-flight and safety checks
 
-- [ ] Confirm AWS account is still on Free account plan or credits are active.
-- [ ] Confirm billing alert exists at `$5`.
-- [ ] Note current AWS region preference (`ap-southeast-2` unless App Runner constraints suggest otherwise).
+- [x] Confirm AWS account is still on Free account plan or credits are active.
+- [x] Confirm billing alert exists at `$5`.
+- [x] Note current AWS region preference (`ap-southeast-2` unless App Runner constraints suggest otherwise).
 - [ ] Capture current Render API URL and GitHub Pages client URL.
-- [ ] Confirm the intended demo backend URL will be additive, not a production cutover.
-- [ ] Confirm branch strategy: continue on `feat/aws-lambda-demo` unless this expands beyond interview-demo scope.
+- [x] Confirm the intended demo backend URL will be additive, not a production cutover.
+- [x] Confirm branch strategy: continue on `feat/aws-lambda-demo` unless this expands beyond interview-demo scope.
 
 Done when:
 
@@ -99,9 +100,9 @@ Done when:
 
 ## Phase 1 — Server runtime audit
 
-- [ ] Inspect `apps/server` build and start scripts.
-- [ ] Confirm the Render-style start command for the built server.
-- [ ] Identify required runtime environment variables:
+- [x] Inspect `apps/server` build and start scripts.
+- [x] Confirm the Render-style start command for the built server.
+- [x] Identify required runtime environment variables:
   - `NODE_ENV`
   - `PORT`
   - `DATABASE_URL` or SQLite path variables
@@ -111,7 +112,7 @@ Done when:
   - cookie security / SameSite variables
   - any live demo provider keys
 - [ ] Identify routes that must work for the interview:
-  - `/health`
+  - `/api/health`
   - auth/session routes if demoed
   - AI pipeline live or fixture-backed API route if demoed
   - stream routes if demoed
@@ -127,15 +128,15 @@ Done when:
 
 ## Phase 2 — Containerize the full server
 
-- [ ] Add a production Dockerfile for the full server.
-- [ ] Use the repo's existing pnpm/Node toolchain expectations.
-- [ ] Build only what is needed to run `apps/server`.
-- [ ] Keep implementation code out of `index.ts` files.
-- [ ] Ensure native dependencies are installed for the Linux container environment.
-- [ ] Ensure the container listens on App Runner's expected `PORT`.
-- [ ] Add `.dockerignore` if required to keep the build context small and safe.
-- [ ] Build the image locally.
-- [ ] Run the image locally with minimal env and smoke test `/health`.
+- [x] Add a production Dockerfile for the full server.
+- [x] Use the repo's existing pnpm/Node toolchain expectations.
+- [x] Build only what is needed to run `apps/server`.
+- [x] Keep implementation code out of `index.ts` files.
+- [x] Ensure native dependencies are installed for the Linux container environment.
+- [x] Ensure the container listens on App Runner's expected `PORT`.
+- [x] Add `.dockerignore` if required to keep the build context small and safe.
+- [x] Build the image locally.
+- [x] Run the image locally with minimal env and smoke test `/api/health`.
 
 Done when:
 
@@ -147,15 +148,18 @@ Done when:
 
 ## Phase 3 — App Runner deployment
 
-- [ ] Choose the lowest practical App Runner compute settings.
-- [ ] Create the App Runner service from the container source.
-- [ ] Configure runtime env vars in AWS, not in committed files.
-- [ ] Configure health check path.
-- [ ] Deploy the service.
-- [ ] Capture the App Runner service URL.
+- [x] Choose the lowest practical App Runner compute settings.
+- [x] Create ECR repository `monorepo-demo-server`.
+- [x] Push image `monorepo-demo-server:interview-demo` to ECR.
+- [x] Create App Runner ECR access role `AppRunnerEcrAccessRole`.
+- [x] Create the App Runner service from the container source.
+- [x] Configure runtime env vars in AWS, not in committed files.
+- [x] Configure health check path.
+- [x] Deploy the service.
+- [x] Capture the App Runner service URL.
 - [ ] Smoke test:
-  - [ ] `GET /health`
-  - [ ] one public API route
+  - [x] `GET /api/health`
+  - [x] one public API route (`HEAD /api/reference`)
   - [ ] one credentialed route if auth is part of the demo
   - [ ] one stream/live route only if needed
 - [ ] Inspect App Runner logs for startup errors.
@@ -165,6 +169,22 @@ Done when:
 - App Runner URL serves the expected full server route set.
 - Logs are clean enough for demo use.
 - The service can be deleted or paused after the interview.
+
+Current blocker:
+
+- [x] AWS returned `SubscriptionRequiredException` for App Runner service creation on 2026-07-14:
+      `The AWS Access Key Id needs a subscription for the service`.
+- [x] Account activation resolved the App Runner access blocker.
+- [x] First deployment failed on smallest instance because runtime DB bootstrap exited `137`.
+- [x] Move SQLite demo DB bootstrap to image build time and start the server directly at runtime.
+
+Current service:
+
+```text
+URL: https://qvyq3mdegk.ap-southeast-2.awsapprunner.com
+ARN: arn:aws:apprunner:ap-southeast-2:906655020591:service/monorepo-demo-server/60eb771e297f49fab58825d67e4a32be
+Instance: 0.25 vCPU / 0.5 GB
+```
 
 ---
 
@@ -187,15 +207,15 @@ Done when:
 
 ## Phase 5 — Documentation and interview talking points
 
-- [ ] Add or update a process doc for the full AWS server deployment.
-- [ ] Document:
+- [x] Add or update a process doc for the full AWS server deployment.
+- [x] Document:
   - chosen AWS service and why
   - why Lambda remains a stub
   - what would change for production
   - known demo limitations
   - teardown steps
-- [ ] Add exact commands used for local build, local container smoke, deploy, logs, and teardown.
-- [ ] Add short interview talking points:
+- [x] Add exact commands used for local build, local container smoke, deploy, logs, and teardown.
+- [x] Add short interview talking points:
   - Lambda vs containers
   - SQLite demo limitation vs Postgres production answer
   - CORS/auth cross-origin considerations
