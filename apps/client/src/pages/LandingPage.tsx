@@ -2,16 +2,15 @@ import type { BadgeColorName } from '@workspace/shared';
 import { BADGE_COLOR_CLASSES } from '@workspace/shared';
 import { Button } from '@workspace/ui/components/button';
 import { Card, CardContent } from '@workspace/ui/components/card';
-import { ArrowRight, BarChart3, Bot, Globe, Palette, ShieldCheck, Terminal, Zap } from 'lucide-react';
+import { ArrowRight, Globe, Palette, ShieldCheck, Zap } from 'lucide-react';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import type { LucideIcon } from 'lucide-react';
 
 import { DEFAULT_LANGUAGE } from '../i18n/i18n.constants';
 
 const GITHUB_URL = 'https://github.com/finografic/monorepo-demo';
 const BADGE_LAYOUT =
-  'inline-flex shrink-0 items-center whitespace-nowrap rounded-full px-2.5 py-0.5 text-xs font-medium';
+  'inline-flex shrink-0 items-center whitespace-nowrap rounded-full px-2.5 py-1 text-xs font-medium';
 
 function isLocalHost(): boolean {
   if (typeof window === 'undefined') {
@@ -54,8 +53,6 @@ const DEMOS: Array<{
   tags: Array<{ label: string; color: BadgeColorName }>;
   url: string;
   disabledInProduction: boolean;
-  Icon: LucideIcon;
-  iconClass: string;
 }> = [
   {
     id: 'ai-pipeline',
@@ -71,8 +68,6 @@ const DEMOS: Array<{
     ],
     url: demoUrl('demo-ai-pipeline', 'http://localhost:3001', import.meta.env['VITE_DEMO_AI_PIPELINE_URL']),
     disabledInProduction: false,
-    Icon: Bot,
-    iconClass: 'text-violet-600',
   },
   {
     id: 'datavis',
@@ -88,8 +83,6 @@ const DEMOS: Array<{
     ],
     url: demoUrl('demo-datavis', 'http://localhost:3002', import.meta.env['VITE_DEMO_DATAVIS_URL']),
     disabledInProduction: false,
-    Icon: BarChart3,
-    iconClass: 'text-sky-600',
   },
   {
     id: 'xscan',
@@ -105,8 +98,6 @@ const DEMOS: Array<{
     ],
     url: demoUrl('demo-xscan', 'http://localhost:3003', import.meta.env['VITE_DEMO_XSCAN_URL']),
     disabledInProduction: false,
-    Icon: Terminal,
-    iconClass: 'text-emerald-600',
   },
 ];
 
@@ -213,74 +204,9 @@ export function LandingPage(): React.JSX.Element {
         </div>
       </section>
 
-      {/* Portfolio demos — primary focus */}
-      <section id="portfolio-demos" className="scroll-mt-20 bg-blue-50/40">
-        <div className="mx-auto max-w-6xl px-4 pt-6 pb-6 md:pt-7 md:pb-7">
-          <h2 className="mb-2 text-center text-2xl font-semibold tracking-tight">Portfolio Demos</h2>
-          <p className="mb-8 text-center text-sm text-muted-foreground">
-            Live interactive demos built to address specific frontend engineering capabilities.
-          </p>
-
-          <div className="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-3">
-            {DEMOS.map((demo) => {
-              const isDisabled = demo.disabledInProduction && import.meta.env.PROD;
-
-              return (
-                <Card
-                  key={demo.id}
-                  className="flex flex-col overflow-visible rounded-2xl border-2 border-slate-200/90 bg-white shadow-sm transition-all duration-200 motion-safe:hover:-translate-y-0.5 hover:border-blue-200 hover:shadow-md"
-                >
-                  <CardContent className="flex flex-1 flex-col gap-3 overflow-visible p-5 sm:p-6">
-                    <div className="flex items-start gap-2">
-                      <div className="flex w-10 shrink-0 justify-start pt-0.5" aria-hidden="true">
-                        <demo.Icon className={`size-8 ${demo.iconClass}`} strokeWidth={1.75} />
-                      </div>
-                      <div className="min-w-0 flex-1">
-                        <p className="text-lg font-semibold leading-snug text-foreground">
-                          <span className="text-foreground/50">{demo.numberLabel}</span>
-                          <br />
-                          {demo.title}
-                          {isDisabled ? (
-                            <span
-                              className={`${BADGE_LAYOUT} ml-2 align-middle ${BADGE_COLOR_CLASSES.emerald}`}
-                            >
-                              Soon
-                            </span>
-                          ) : null}
-                        </p>
-                      </div>
-                    </div>
-
-                    <p className="flex-1 text-sm leading-relaxed text-muted-foreground">{demo.description}</p>
-
-                    <div className="flex flex-nowrap gap-1.5 overflow-x-visible">
-                      {demo.tags.map((tag) => (
-                        <span key={tag.label} className={`${BADGE_LAYOUT} ${BADGE_COLOR_CLASSES[tag.color]}`}>
-                          {tag.label}
-                        </span>
-                      ))}
-                    </div>
-
-                    {isDisabled ? (
-                      <Button disabled className="mt-2 min-h-11 px-5 text-sm font-semibold shadow-sm">
-                        Open demo
-                      </Button>
-                    ) : (
-                      <Button asChild className="mt-2 min-h-11 px-5 text-sm font-semibold shadow-sm">
-                        <a href={demo.url}>Open demo</a>
-                      </Button>
-                    )}
-                  </CardContent>
-                </Card>
-              );
-            })}
-          </div>
-        </div>
-      </section>
-
-      {/* Monorepo features — below demos */}
+      {/* Monorepo features */}
       <section className="bg-white">
-        <div className="mx-auto max-w-6xl px-4 pt-6 pb-12 md:pt-7 md:pb-14">
+        <div className="mx-auto max-w-6xl px-4 pt-6 pb-6 md:pt-7 md:pb-7">
           <h2 className="mb-6 text-center text-2xl font-semibold">
             {t('app.features.heading', 'Monorepo Features')}
           </h2>
@@ -304,6 +230,59 @@ export function LandingPage(): React.JSX.Element {
                 </CardContent>
               </Card>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Portfolio demos */}
+      <section id="portfolio-demos" className="scroll-mt-20 bg-blue-50/40">
+        <div className="mx-auto max-w-6xl px-4 pt-6 pb-12 md:pt-7 md:pb-14">
+          <h2 className="mb-2 text-center text-2xl font-semibold tracking-tight">Portfolio Demos</h2>
+          <p className="mb-8 text-center text-sm text-muted-foreground">
+            Live interactive demos built to address specific frontend engineering capabilities.
+          </p>
+
+          <div className="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-3">
+            {DEMOS.map((demo) => {
+              const isDisabled = demo.disabledInProduction && import.meta.env.PROD;
+
+              return (
+                <Card key={demo.id} className="flex flex-col border-2">
+                  <CardContent className="flex flex-1 flex-col gap-3 p-5">
+                    <div className="flex flex-wrap items-center gap-2">
+                      <p className="text-lg font-semibold leading-snug text-foreground">
+                        <span className="text-foreground/50">{demo.numberLabel}</span>
+                        <br />
+                        {demo.title}
+                      </p>
+                      {isDisabled ? (
+                        <span className={`${BADGE_LAYOUT} ${BADGE_COLOR_CLASSES.emerald}`}>Soon</span>
+                      ) : null}
+                    </div>
+
+                    <p className="flex-1 text-sm leading-relaxed text-muted-foreground">{demo.description}</p>
+
+                    <div className="flex flex-nowrap gap-1.5">
+                      {demo.tags.map((tag) => (
+                        <span key={tag.label} className={`${BADGE_LAYOUT} ${BADGE_COLOR_CLASSES[tag.color]}`}>
+                          {tag.label}
+                        </span>
+                      ))}
+                    </div>
+
+                    {isDisabled ? (
+                      <Button disabled className="mt-2 min-h-11 px-5 text-sm font-semibold shadow-sm">
+                        Open demo
+                      </Button>
+                    ) : (
+                      <Button asChild className="mt-2 min-h-11 px-5 text-sm font-semibold shadow-sm">
+                        <a href={demo.url}>Open demo</a>
+                      </Button>
+                    )}
+                  </CardContent>
+                </Card>
+              );
+            })}
           </div>
         </div>
       </section>
