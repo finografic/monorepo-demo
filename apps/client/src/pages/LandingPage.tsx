@@ -2,6 +2,7 @@ import type { BadgeColorName } from '@workspace/shared';
 import { BADGE_COLOR_CLASSES } from '@workspace/shared';
 import { Button } from '@workspace/ui/components/button';
 import { Card, CardContent } from '@workspace/ui/components/card';
+import { Col, Row } from '@workspace/ui/components/grid';
 import { ArrowRight, Globe, Palette, ShieldCheck, Zap } from 'lucide-react';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
@@ -211,26 +212,28 @@ export function LandingPage(): React.JSX.Element {
             {t('app.features.heading', 'Monorepo Features')}
           </h2>
 
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+          <Row align="stretch" gutterWidth={16}>
             {FEATURES.map((feature) => (
-              <Card key={feature.key} className="border-2">
-                <CardContent className="flex items-start gap-4 px-5 py-3 sm:items-center sm:py-1">
-                  <div
-                    className={`flex h-14 w-14 shrink-0 items-center justify-center rounded-xl ${feature.iconBgClass}`}
-                    aria-hidden="true"
-                  >
-                    <feature.Icon className={`size-8 ${feature.iconClass}`} strokeWidth={1.75} />
-                  </div>
-                  <div>
-                    <p className="font-semibold">{t(feature.titleKey, feature.titleDefault)}</p>
-                    <p className="mt-1 text-sm text-muted-foreground">
-                      {t(feature.descKey, feature.descDefault)}
-                    </p>
-                  </div>
-                </CardContent>
-              </Card>
+              <Col key={feature.key} xs={12} md={6} className="mb-4">
+                <Card className="h-full border-2">
+                  <CardContent className="flex items-start gap-4 px-5 py-3 sm:items-center sm:py-1">
+                    <div
+                      className={`flex h-14 w-14 shrink-0 items-center justify-center rounded-xl ${feature.iconBgClass}`}
+                      aria-hidden="true"
+                    >
+                      <feature.Icon className={`size-8 ${feature.iconClass}`} strokeWidth={1.75} />
+                    </div>
+                    <div>
+                      <p className="font-semibold">{t(feature.titleKey, feature.titleDefault)}</p>
+                      <p className="mt-1 text-sm text-muted-foreground">
+                        {t(feature.descKey, feature.descDefault)}
+                      </p>
+                    </div>
+                  </CardContent>
+                </Card>
+              </Col>
             ))}
-          </div>
+          </Row>
         </div>
       </section>
 
@@ -242,48 +245,55 @@ export function LandingPage(): React.JSX.Element {
             Live interactive demos built to address specific frontend engineering capabilities.
           </p>
 
-          <div className="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-3">
+          <Row align="stretch" gutterWidth={20}>
             {DEMOS.map((demo) => {
               const isDisabled = demo.disabledInProduction && import.meta.env.PROD;
 
               return (
-                <Card key={demo.id} className="flex flex-col border-2">
-                  <CardContent className="flex flex-1 flex-col gap-3 p-5">
-                    <div className="flex flex-wrap items-center gap-2">
-                      <p className="text-lg font-semibold leading-snug text-foreground">
-                        <span className="text-foreground/50">{demo.numberLabel}</span>
-                        <br />
-                        {demo.title}
+                <Col key={demo.id} xs={12} md={6} xl={4} className="mb-5">
+                  <Card className="flex h-full flex-col border-2">
+                    <CardContent className="flex flex-1 flex-col gap-3 p-5">
+                      <div className="flex flex-wrap items-center gap-2">
+                        <p className="text-lg font-semibold leading-snug text-foreground">
+                          <span className="text-foreground/50">{demo.numberLabel}</span>
+                          <br />
+                          {demo.title}
+                        </p>
+                        {isDisabled ? (
+                          <span className={`${BADGE_LAYOUT} ${BADGE_COLOR_CLASSES.emerald}`}>Soon</span>
+                        ) : null}
+                      </div>
+
+                      <p className="flex-1 text-sm leading-relaxed text-muted-foreground">
+                        {demo.description}
                       </p>
+
+                      <div className="flex flex-nowrap gap-1.5">
+                        {demo.tags.map((tag) => (
+                          <span
+                            key={tag.label}
+                            className={`${BADGE_LAYOUT} ${BADGE_COLOR_CLASSES[tag.color]}`}
+                          >
+                            {tag.label}
+                          </span>
+                        ))}
+                      </div>
+
                       {isDisabled ? (
-                        <span className={`${BADGE_LAYOUT} ${BADGE_COLOR_CLASSES.emerald}`}>Soon</span>
-                      ) : null}
-                    </div>
-
-                    <p className="flex-1 text-sm leading-relaxed text-muted-foreground">{demo.description}</p>
-
-                    <div className="flex flex-nowrap gap-1.5">
-                      {demo.tags.map((tag) => (
-                        <span key={tag.label} className={`${BADGE_LAYOUT} ${BADGE_COLOR_CLASSES[tag.color]}`}>
-                          {tag.label}
-                        </span>
-                      ))}
-                    </div>
-
-                    {isDisabled ? (
-                      <Button disabled className="mt-2 min-h-11 px-5 text-sm font-semibold shadow-sm">
-                        Open demo
-                      </Button>
-                    ) : (
-                      <Button asChild className="mt-2 min-h-11 px-5 text-sm font-semibold shadow-sm">
-                        <a href={demo.url}>Open demo</a>
-                      </Button>
-                    )}
-                  </CardContent>
-                </Card>
+                        <Button disabled className="mt-2 min-h-11 px-5 text-sm font-semibold shadow-sm">
+                          Open demo
+                        </Button>
+                      ) : (
+                        <Button asChild className="mt-2 min-h-11 px-5 text-sm font-semibold shadow-sm">
+                          <a href={demo.url}>Open demo</a>
+                        </Button>
+                      )}
+                    </CardContent>
+                  </Card>
+                </Col>
               );
             })}
-          </div>
+          </Row>
         </div>
       </section>
     </div>
