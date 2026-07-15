@@ -174,7 +174,7 @@ export function LandingPage(): React.JSX.Element {
               aria-hidden="true"
             />
             <h1 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
-              {t('app.title', 'monorepo-demo')}
+              finografic monorepo-demo
             </h1>
           </div>
 
