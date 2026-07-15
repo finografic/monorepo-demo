@@ -22,9 +22,10 @@ cp terraform.tfvars.example terraform.tfvars
 Review values before planning:
 
 ```hcl
-aws_region  = "ap-southeast-2"
-project_name = "monorepo-demo"
-environment = "demo"
+aws_region              = "ap-southeast-2"
+project_name            = "monorepo-demo"
+environment             = "demo"
+app_runner_api_base_url = "https://qvyq3mdegk.ap-southeast-2.awsapprunner.com"
 ```
 
 ## Commands
@@ -38,4 +39,11 @@ terraform plan
 
 ## Apply policy
 
-This environment should stay no-op during Checkpoint A. Do not apply resource changes until the relevant checkpoint is ready for AWS review.
+Do not run `terraform apply` until the plan has been reviewed.
+
+Checkpoint B creates the first AWS resources:
+
+- private S3 bucket
+- CloudFront Origin Access Control
+- CloudFront distribution
+- S3 bucket policy for CloudFront reads

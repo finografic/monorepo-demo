@@ -194,6 +194,20 @@ Done when:
 - CloudFront can serve the landing page and all three demo apps.
 - Auth, i18n, AI streaming, datavis, and xscan still call the App Runner API correctly.
 
+Plan validation:
+
+- [x] `terraform validate`
+- [x] `terraform plan -input=false -no-color`
+- [x] Plan proposes 7 resources to create and no changes/destroys:
+  - private S3 frontend bucket
+  - S3 ownership controls
+  - S3 public access block
+  - S3 versioning
+  - CloudFront Origin Access Control
+  - CloudFront distribution
+  - S3 bucket policy for CloudFront reads
+- [ ] Apply reviewed plan.
+
 ---
 
 ## Phase 3 — CloudFront CI/CD

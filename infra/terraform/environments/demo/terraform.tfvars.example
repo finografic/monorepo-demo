@@ -1,3 +1,5 @@
 aws_region   = "ap-southeast-2"
 project_name = "monorepo-demo"
 environment  = "demo"
+
+app_runner_api_base_url = "https://qvyq3mdegk.ap-southeast-2.awsapprunner.com"
