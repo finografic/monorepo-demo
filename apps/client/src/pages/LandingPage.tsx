@@ -1,5 +1,6 @@
 import type { BadgeColorName } from '@workspace/shared';
 import { BADGE_COLOR_CLASSES } from '@workspace/shared';
+import finograficLogoUrl from '@workspace/shared/assets/finografic-logo.png';
 import { Button } from '@workspace/ui/components/button';
 import { Card, CardContent } from '@workspace/ui/components/card';
 import { Col, Row } from '@workspace/ui/components/grid';
@@ -122,8 +123,6 @@ const FEATURES = [
     descKey: 'app.features.auth.desc',
     descDefault:
       'Credentials provider with JWT strategy, role-based access control, and secure cookie sessions.',
-    iconClass: 'text-emerald-600',
-    iconBgClass: 'bg-emerald-500/20',
   },
   {
     key: 'i18n',
@@ -132,8 +131,6 @@ const FEATURES = [
     titleDefault: 'i18n - DB-backed',
     descKey: 'app.features.i18n.desc',
     descDefault: 'Server-side translation tables with en-GB and es-ES, served via i18next HTTP backend.',
-    iconClass: 'text-sky-600',
-    iconBgClass: 'bg-sky-500/20',
   },
   {
     key: 'design',
@@ -142,8 +139,6 @@ const FEATURES = [
     titleDefault: 'Design System',
     descKey: 'app.features.design.desc',
     descDefault: 'shadcn components with Tailwind 4 tokens, recipes, and owned source components.',
-    iconClass: 'text-violet-600',
-    iconBgClass: 'bg-violet-500/20',
   },
   {
     key: 'stack',
@@ -153,8 +148,6 @@ const FEATURES = [
     descKey: 'app.features.stack.desc',
     descDefault:
       'Hono + Drizzle ORM server, deployed to AWS. Vite 8, React 19, React Router v7, Tanstack Query + Hono RPC client.',
-    iconClass: 'text-amber-600',
-    iconBgClass: 'bg-amber-500/20',
   },
 ];
 
@@ -171,9 +164,19 @@ export function LandingPage(): React.JSX.Element {
       {/* Hero */}
       <section className="border-b border-slate-200/80 bg-white">
         <div className="mx-auto max-w-6xl px-4 pt-12 pb-6 text-center md:pt-16 md:pb-7">
-          <h1 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
-            {t('app.title', 'monorepo-demo')}
-          </h1>
+          <div className="flex items-center justify-center gap-3 sm:gap-4">
+            <img
+              src={finograficLogoUrl}
+              alt=""
+              width={48}
+              height={48}
+              className="size-10 shrink-0 sm:size-12"
+              aria-hidden="true"
+            />
+            <h1 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
+              {t('app.title', 'monorepo-demo')}
+            </h1>
+          </div>
 
           <p className="mx-auto mt-4 max-w-2xl text-base text-muted-foreground sm:text-lg">
             {t(
@@ -235,10 +238,10 @@ export function LandingPage(): React.JSX.Element {
                 <Card className="h-full border-2">
                   <CardContent className="flex items-start gap-4 px-5 py-3 sm:items-center sm:py-1">
                     <div
-                      className={`flex h-14 w-14 shrink-0 items-center justify-center rounded-xl ${feature.iconBgClass}`}
+                      className="flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-brand-green-soft"
                       aria-hidden="true"
                     >
-                      <feature.Icon className={`size-8 ${feature.iconClass}`} strokeWidth={1.75} />
+                      <feature.Icon className="size-8 text-brand-green-strong" strokeWidth={1.75} />
                     </div>
                     <div>
                       <p className="font-semibold">{t(feature.titleKey, feature.titleDefault)}</p>
@@ -297,11 +300,17 @@ export function LandingPage(): React.JSX.Element {
                       </div>
 
                       {isDisabled ? (
-                        <Button disabled className="mt-2 min-h-11 px-5 text-sm font-semibold shadow-sm">
+                        <Button
+                          disabled
+                          className="mt-2 min-h-11 bg-brand-cyan px-5 text-sm font-semibold text-white shadow-sm hover:bg-brand-cyan-hover disabled:bg-brand-cyan/60"
+                        >
                           Open demo
                         </Button>
                       ) : (
-                        <Button asChild className="mt-2 min-h-11 px-5 text-sm font-semibold shadow-sm">
+                        <Button
+                          asChild
+                          className="mt-2 min-h-11 bg-brand-cyan px-5 text-sm font-semibold text-white shadow-sm hover:bg-brand-cyan-hover"
+                        >
                           <a href={demo.url}>Open demo</a>
                         </Button>
                       )}
