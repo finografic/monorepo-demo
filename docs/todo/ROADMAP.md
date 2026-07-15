@@ -37,6 +37,7 @@ This roadmap is the high-level sequencing plan for the monorepo-demo portfolio a
 - [TODO — I18n JSON source of truth](/docs/todo/TODO_I18N.md)
 - [TODO — AI Pipeline Model Selection](/docs/todo/TODO_AI_PIPELINE_MODEL_SELECTION.md)
 - [TODO — AWS Full Server App Runner Demo](/docs/todo/TODO_AWS_FULL_SERVER_APP_RUNNER.md)
+- [TODO — AWS Terraform CloudFront RDS Migration](/docs/todo/TODO_AWS_TERRAFORM_CLOUDFRONT_RDS.md)
 - [TMR Data Sources](/docs/TMR_DATA_SOURCES.md) (reference + optional expansions)
 - [Next Steps](/docs/todo/NEXT_STEPS.md)
 
