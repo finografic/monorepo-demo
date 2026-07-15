@@ -97,18 +97,18 @@ Deployability requirement:
 
 ## Phase 0 — Baseline and safety
 
-- [ ] Confirm current App Runner API is healthy.
-- [ ] Confirm current GitHub Pages frontend is healthy.
-- [ ] Record current public URLs:
-  - GitHub Pages frontend
-  - App Runner API
+- [x] Confirm current App Runner API is healthy.
+- [x] Confirm current GitHub Pages frontend is healthy.
+- [x] Record current public URLs:
+  - GitHub Pages frontend: `https://finografic.github.io/monorepo-demo/`
+  - App Runner API: `https://qvyq3mdegk.ap-southeast-2.awsapprunner.com`
   - Render API if still retained as fallback
-- [ ] Record current AWS resource identifiers:
-  - App Runner service ARN
-  - ECR repository
-  - AWS region
+- [x] Record current AWS resource identifiers:
+  - App Runner service name: `monorepo-demo-server`
+  - ECR repository: `monorepo-demo-server`
+  - AWS region: `ap-southeast-2`
 - [ ] Confirm billing alert and credits/free plan status.
-- [ ] Document rollback rule: `master` remains the known-good deployment baseline until CloudFront + RDS are proven.
+- [x] Document rollback rule: `master` remains the known-good deployment baseline until CloudFront + RDS are proven.
 
 Done when:
 
@@ -119,7 +119,7 @@ Done when:
 
 ## Phase 1 — Terraform foundation
 
-- [ ] Add Terraform folder structure:
+- [x] Add Terraform folder structure:
 
   ```text
   infra/terraform/
@@ -127,15 +127,15 @@ Done when:
     modules/
   ```
 
-- [ ] Configure AWS provider and required version constraints.
-- [ ] Add shared variables:
+- [x] Configure AWS provider and required version constraints.
+- [x] Add shared variables:
   - `aws_region`
   - `project_name`
   - `environment`
-- [ ] Decide initial state strategy:
+- [x] Decide initial state strategy:
   - local state for the first safe checkpoint, or
   - S3 backend after the frontend bucket/state bucket decision is made.
-- [ ] Add Terraform docs for:
+- [x] Add Terraform docs for:
   - `terraform init`
   - `terraform fmt`
   - `terraform validate`

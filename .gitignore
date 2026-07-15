@@ -8,6 +8,20 @@ dist-lambda/
 .aws-sam/
 build/
 
+# Terraform
+**/.terraform/
+*.tfstate
+*.tfstate.*
+*.tfplan
+*.tfvars
+!*.tfvars.example
+crash.log
+crash.*.log
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+
 # Environment files
 .env
 .env.*
