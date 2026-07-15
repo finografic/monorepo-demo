@@ -175,19 +175,19 @@ Deployability requirement:
 
 ## Phase 2 — S3 + CloudFront frontend
 
-- [ ] Use Terraform to create a private S3 bucket for built frontend assets.
-- [ ] Use Terraform to create a CloudFront distribution.
-- [ ] Configure CloudFront Origin Access Control for the S3 origin.
-- [ ] Enforce HTTPS viewer access.
-- [ ] Configure SPA fallback/error routing to `index.html`.
-- [ ] Use the default CloudFront domain; do not add Route 53 or ACM custom-domain work.
-- [ ] Build frontend apps with CloudFront-compatible base paths:
+- [x] Use Terraform to create a private S3 bucket for built frontend assets.
+- [x] Use Terraform to create a CloudFront distribution.
+- [x] Configure CloudFront Origin Access Control for the S3 origin.
+- [x] Enforce HTTPS viewer access.
+- [x] Configure SPA fallback/error routing to `index.html`.
+- [x] Use the default CloudFront domain; do not add Route 53 or ACM custom-domain work.
+- [x] Build frontend apps with CloudFront-compatible base paths:
   - `/`
   - `/demo-ai-pipeline/`
   - `/demo-datavis/`
   - `/demo-xscan/`
-- [ ] Keep frontend API env values pointed at the existing App Runner URL.
-- [ ] Upload a local build to S3 and test through CloudFront.
+- [x] Keep frontend API env values pointed at the existing App Runner URL.
+- [x] Upload a local build to S3 and test through CloudFront.
 
 Done when:
 
@@ -206,7 +206,18 @@ Plan validation:
   - CloudFront Origin Access Control
   - CloudFront distribution
   - S3 bucket policy for CloudFront reads
-- [ ] Apply reviewed plan.
+- [x] Apply reviewed plan.
+- [x] Upload local CloudFront-targeted build to S3.
+- [x] Create CloudFront invalidation.
+- [x] Add CloudFront route rewrite for subdirectory app indexes.
+- [x] CloudFront URL: `https://d2h3ihm2ddi3lx.cloudfront.net`
+- [x] Verified route headers:
+  - `/` -> `200`, root landing HTML
+  - `/demo-ai-pipeline/` -> `200`, AI pipeline HTML
+  - `/demo-datavis/` -> `200`, datavis HTML
+  - `/demo-xscan/` -> `200`, xscan HTML
+- [x] Verified built frontend assets contain App Runner API URL: `https://qvyq3mdegk.ap-southeast-2.awsapprunner.com`
+- [x] `terraform plan -input=false -no-color` reports no changes after apply.
 
 ---
 

@@ -27,3 +27,8 @@ output "frontend_cloudfront_url" {
   description = "Default HTTPS URL for the CloudFront-hosted frontend."
   value       = "https://${aws_cloudfront_distribution.frontend.domain_name}"
 }
+
+output "frontend_spa_rewrite_function_name" {
+  description = "CloudFront Function that rewrites SPA directory routes to index.html."
+  value       = aws_cloudfront_function.spa_rewrite.name
+}
