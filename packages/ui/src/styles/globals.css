@@ -44,6 +44,7 @@
   --color-brand-green-soft: var(--brand-green-soft);
   --color-brand-cyan: var(--brand-cyan);
   --color-brand-cyan-hover: var(--brand-cyan-hover);
+  --color-brand-wordmark: var(--brand-wordmark);
   --color-popover-foreground: var(--popover-foreground);
   --color-popover: var(--popover);
   --color-card-foreground: var(--card-foreground);
@@ -75,6 +76,7 @@
   --brand-green-soft: oklch(0.943 0.1145 135.11);
   --brand-cyan: oklch(0.66 0.117 211);
   --brand-cyan-hover: oklch(0.58 0.0995 211);
+  --brand-wordmark: oklch(0.387 0 0); /* #444444 */
   --secondary: oklch(0.967 0.001 286.375);
   --secondary-foreground: oklch(0.21 0.006 285.885);
   --muted: oklch(0.96 0.002 17.2);
@@ -165,3 +167,4 @@
     color: var(--placeholder-foreground);
   }
 }
+

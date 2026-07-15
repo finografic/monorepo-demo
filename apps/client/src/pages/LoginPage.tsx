@@ -1,3 +1,4 @@
+import finograficLogoUrl from '@workspace/shared/assets/finografic-logo.png';
 import { Alert, AlertDescription, AlertTitle } from '@workspace/ui/components/alert';
 import { Button } from '@workspace/ui/components/button';
 import { Card, CardContent } from '@workspace/ui/components/card';
@@ -8,8 +9,6 @@ import { useTranslation } from 'react-i18next';
 import { useSearchParams } from 'react-router-dom';
 
 import { useAuth } from '../context/AuthContext';
-
-type Mode = 'signin' | 'signup';
 
 function isSafeRedirectUrl(rawRedirectTo: string | null): string {
   if (typeof window === 'undefined') {
@@ -40,14 +39,12 @@ function isSafeRedirectUrl(rawRedirectTo: string | null): string {
 
 export function LoginPage(): React.JSX.Element {
   const { t } = useTranslation();
-  const { signIn, signUp, isAuthenticated } = useAuth();
+  const { signIn, isAuthenticated } = useAuth();
   const [searchParams] = useSearchParams();
   const redirectTo = isSafeRedirectUrl(searchParams.get('redirectTo'));
 
-  const [mode, setMode] = useState<Mode>('signin');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [name, setName] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -63,69 +60,47 @@ export function LoginPage(): React.JSX.Element {
     setIsLoading(true);
 
     try {
-      if (mode === 'signin') {
-        const result = await signIn(email, password);
-        if (result.error) {
-          setError(result.error);
-          return;
-        }
-        window.location.assign(redirectTo);
-      } else {
-        const result = await signUp(email, password, name);
-        if (result.error) {
-          setError(result.error);
-          return;
-        }
-        const signInResult = await signIn(email, password);
-        if (signInResult.error) {
-          setError('Account created — please sign in.');
-          setMode('signin');
-          return;
-        }
-        window.location.assign(redirectTo);
+      const result = await signIn(email, password);
+      if (result.error) {
+        setError(result.error);
+        return;
       }
+      window.location.assign(redirectTo);
     } finally {
       setIsLoading(false);
     }
   };
 
   return (
-    <div className="flex min-h-dvh items-center justify-center bg-background p-4">
+    <div className="flex flex-1 items-center justify-center bg-background p-4">
       <div className="w-full max-w-sm">
         <div className="mb-8 text-center">
-          <h1 className="text-2xl font-bold text-foreground">{t('app.title', '')}</h1>
+          <div className="flex items-center justify-center gap-3">
+            <img
+              src={finograficLogoUrl}
+              alt=""
+              width={40}
+              height={40}
+              className="size-9 shrink-0 sm:size-10"
+              aria-hidden="true"
+            />
+            <h1 className="text-2xl font-bold text-brand-wordmark">finografic monorepo-demo</h1>
+          </div>
           <p className="mt-1 text-sm text-muted-foreground">
-            {mode === 'signin'
-              ? t('ui.common.signIn', 'Sign in to your account')
-              : t('ui.common.createAccount', 'Create a new account')}
+            {t('ui.common.signIn', 'Sign in to your account')}
           </p>
         </div>
 
         <Card>
-          <CardContent className="p-6">
+          <CardContent className="px-6 pt-4 pb-2">
             <form onSubmit={(e) => void handleSubmit(e)} className="flex flex-col gap-4">
-              {mode === 'signup' ? (
-                <div className="grid gap-1.5">
-                  <Label htmlFor="name">{t('ui.form.name', 'Name')}</Label>
-                  <Input
-                    id="name"
-                    type="text"
-                    required
-                    autoComplete="name"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    placeholder={t('ui.form.namePlaceholder', 'Your full name')}
-                  />
-                </div>
-              ) : null}
-
               <div className="grid gap-1.5">
                 <Label htmlFor="email">{t('ui.form.email', 'Email')}</Label>
                 <Input
                   id="email"
                   type="email"
                   required
-                  autoComplete={mode === 'signin' ? 'email' : 'new-email'}
+                  autoComplete="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="you@example.com"
@@ -138,7 +113,7 @@ export function LoginPage(): React.JSX.Element {
                   id="password"
                   type="password"
                   required
-                  autoComplete={mode === 'signin' ? 'current-password' : 'new-password'}
+                  autoComplete="current-password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
@@ -154,43 +129,20 @@ export function LoginPage(): React.JSX.Element {
               <Button
                 type="submit"
                 disabled={isLoading}
-                className="min-h-11 w-full px-5 text-sm font-semibold"
+                className="min-h-11 w-full bg-brand-cyan px-5 text-sm font-semibold text-white hover:bg-brand-cyan-hover"
               >
-                {isLoading
-                  ? t('ui.common.loading', 'Loading...')
-                  : mode === 'signin'
-                    ? t('ui.buttons.signIn', 'Sign In')
-                    : t('ui.buttons.signUp', 'Create Account')}
+                {isLoading ? t('ui.common.loading', 'Loading...') : t('ui.buttons.signIn', 'Sign In')}
               </Button>
             </form>
 
-            {mode === 'signin' ? (
-              <Alert className="mt-4 p-3 text-sm border-emerald-200 bg-emerald-200 text-emerald-800">
-                <AlertTitle>Demo account</AlertTitle>
-                <AlertDescription className="text-emerald-700">
-                  <span className="font-mono">guest@test.com</span>
-                  <br />
-                  <span className="font-mono">test1234</span>
-                </AlertDescription>
-              </Alert>
-            ) : null}
-
-            <div className="mt-4 text-center text-sm text-muted-foreground">
-              {mode === 'signin'
-                ? t('ui.common.noAccount', "Don't have an account?")
-                : t('ui.common.haveAccount', 'Already have an account?')}{' '}
-              <Button
-                type="button"
-                variant="link"
-                className="h-auto p-0"
-                onClick={() => {
-                  setMode(mode === 'signin' ? 'signup' : 'signin');
-                  setError(null);
-                }}
-              >
-                {mode === 'signin' ? t('ui.buttons.signUp', 'Sign up') : t('ui.buttons.signIn', 'Sign in')}
-              </Button>
-            </div>
+            <Alert className="mt-4 border-brand-green-strong/25 bg-brand-green-soft p-3 text-sm text-brand-green-strong">
+              <AlertTitle className="text-brand-green-strong">Demo account</AlertTitle>
+              <AlertDescription className="text-brand-green-strong/90">
+                <span className="font-mono">guest@test.com</span>
+                <br />
+                <span className="font-mono">test1234</span>
+              </AlertDescription>
+            </Alert>
           </CardContent>
         </Card>
       </div>

@@ -211,7 +211,7 @@ export function LandingPage(): React.JSX.Element {
                 {t('app.badge', 'Built on @finografic/monorepo-starter')}
               </span>
             </div>
-            <ul className="mt-2 flex flex-nowrap items-center justify-center gap-2 overflow-x-auto">
+            <ul className="mt-2 flex flex-wrap items-center justify-center gap-2">
               {CAPABILITY_CHIPS.map((chip) => (
                 <li
                   key={chip}

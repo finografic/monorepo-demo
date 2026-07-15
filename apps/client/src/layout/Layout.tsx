@@ -7,15 +7,17 @@ import { Link, NavLink, Outlet, useMatch, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { DEFAULT_LANGUAGE } from '../i18n/i18n.constants';
 
-function navLinkClass({ isActive }: { isActive: boolean }): string {
+function navLinkClass({ isActive, brandChrome }: { isActive: boolean; brandChrome: boolean }): string {
   return [
     'text-sm font-medium no-underline transition-colors hover:text-foreground',
-    isActive ? 'text-primary' : 'text-muted-foreground',
+    isActive ? (brandChrome ? 'text-brand-cyan' : 'text-primary') : 'text-muted-foreground',
   ].join(' ');
 }
 
 export function Layout(): React.JSX.Element {
   const landingMatch = useMatch({ path: '/', end: true });
+  const loginMatch = useMatch({ path: '/login', end: true });
+  const brandChrome = Boolean(landingMatch || loginMatch);
 
   // NOTE: Autodetection (`localStorage` → `navigator`) still applies on login, dashboard, and admin.
   //       A stale `localStorage.i18nextLng=es-ES` survives browser sessions and overrides navigator —
@@ -39,20 +41,20 @@ export function Layout(): React.JSX.Element {
     <div className="flex min-h-dvh flex-col bg-background">
       <header className="sticky top-0 z-30 flex min-h-14 flex-wrap items-center justify-between gap-3 border-b bg-background/95 px-4 py-2 backdrop-blur supports-[backdrop-filter]:bg-background/75 sm:flex-nowrap sm:px-6">
         <div className="flex min-w-0 items-center gap-4 md:gap-8">
-          <Link to="/" className="shrink-0 text-sm font-bold text-foreground no-underline">
+          <Link to="/" className="shrink-0 text-sm font-bold text-brand-wordmark no-underline">
             monorepo-demo
           </Link>
           <nav className="flex min-w-0 items-center gap-4 md:gap-8">
-            <NavLink to="/" end className={navLinkClass}>
+            <NavLink to="/" end className={(props) => navLinkClass({ ...props, brandChrome })}>
               {t('ui.nav.home', 'Home')}
             </NavLink>
             {isAuthenticated ? (
-              <NavLink to="/dashboard" className={navLinkClass}>
+              <NavLink to="/dashboard" className={(props) => navLinkClass({ ...props, brandChrome })}>
                 Server Health
               </NavLink>
             ) : null}
             {role === 'admin' ? (
-              <NavLink to="/admin" className={navLinkClass}>
+              <NavLink to="/admin" className={(props) => navLinkClass({ ...props, brandChrome })}>
                 {t('ui.nav.adminPanel', 'Admin')}
               </NavLink>
             ) : null}
@@ -70,7 +72,13 @@ export function Layout(): React.JSX.Element {
               </Button>
             </div>
           ) : (
-            <Button asChild size="sm" className="px-4">
+            <Button
+              asChild
+              size="sm"
+              className={['px-4', brandChrome ? 'bg-brand-cyan text-white hover:bg-brand-cyan-hover' : '']
+                .filter(Boolean)
+                .join(' ')}
+            >
               <Link to="/login" className="whitespace-nowrap">
                 {t('ui.buttons.signIn', 'Sign in')}
               </Link>
@@ -79,7 +87,7 @@ export function Layout(): React.JSX.Element {
         </div>
       </header>
 
-      <main className="flex-1">
+      <main className="flex flex-1 flex-col">
         <Outlet />
       </main>
     </div>
