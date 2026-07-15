@@ -107,7 +107,7 @@ Deployability requirement:
   - App Runner service name: `monorepo-demo-server`
   - ECR repository: `monorepo-demo-server`
   - AWS region: `ap-southeast-2`
-- [ ] Confirm billing alert and credits/free plan status.
+- [x] Confirm billing alert and credits/free plan status (`$5` alert configured; AWS credits/free-plan status checked in console).
 - [x] Document rollback rule: `master` remains the known-good deployment baseline until CloudFront + RDS are proven.
 
 Done when:
@@ -147,6 +147,13 @@ Done when:
 
 - Terraform can initialise and validate.
 - No live runtime behaviour has changed.
+
+Validation:
+
+- [x] `terraform fmt -recursive -check`
+- [x] `terraform init -input=false`
+- [x] `terraform validate`
+- [x] `terraform plan -input=false -no-color` showed output-only changes and no real AWS resources.
 
 ---
 
