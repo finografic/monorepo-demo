@@ -17,7 +17,7 @@ Context:
 
 ---
 
-## Interview story
+## Overview
 
 Target narrative:
 
@@ -263,15 +263,15 @@ Deployability requirement:
 - [x] Add local `DATABASE_URL` documentation for PostgreSQL.
 - [x] Add reusable SQLite to PostgreSQL migration notes.
 - [x] Update Drizzle database config for PostgreSQL.
-- [ ] Review schema differences:
+- [x] Review schema differences:
   - timestamps
   - booleans
   - IDs
   - defaults
   - JSON/text fields
   - indexes and constraints
-- [ ] Generate PostgreSQL-compatible migrations.
-- [ ] Update seed flow for PostgreSQL.
+- [x] Generate PostgreSQL-compatible migrations.
+- [x] Update seed flow for PostgreSQL.
 - [ ] Validate local flows:
   - auth/session
   - admin pages

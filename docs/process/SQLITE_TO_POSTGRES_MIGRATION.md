@@ -40,8 +40,11 @@ The Postgres Drizzle config is separate from the active SQLite config:
 
 - active SQLite config: `apps/server/drizzle.config.ts`
 - migration Postgres config: `apps/server/drizzle.postgres.config.ts`
+- active SQLite schemas: `apps/server/src/db/schemas`
+- migration Postgres schemas: `apps/server/src/db/schemas-postgres`
 
-Do not expect `db:postgres:generate` to succeed until the schema files are converted from `sqlite-core` to `pg-core`.
+The side-by-side PostgreSQL schema files allow migration generation and inspection before the runtime adapter is
+switched.
 
 ---
 
@@ -258,6 +261,23 @@ This avoids mixing SQLite and PostgreSQL migration SQL.
 
 This repo uses the side-by-side config approach during migration.
 
+The first generated PostgreSQL migration lives in:
+
+```text
+data/migrations-postgres/0000_shiny_sleepwalker.sql
+```
+
+The generated SQL confirms these conversion decisions:
+
+| SQLite concern            | PostgreSQL migration result                                                   |
+| ------------------------- | ----------------------------------------------------------------------------- |
+| boolean fields            | native `boolean` columns                                                      |
+| timestamp fields          | `timestamp with time zone` columns                                            |
+| translation JSON text     | native `jsonb` columns                                                        |
+| unique emails/keys/tokens | explicit unique constraints                                                   |
+| auth user references      | foreign key constraints from account/session to user                          |
+| text UUID IDs             | kept as `text` for first migration to avoid changing app-level ID assumptions |
+
 ### 8. Update Migration Runner
 
 The current migration runner imports SQLite-specific pieces:
@@ -303,6 +323,21 @@ Watch for:
 - table/column renames
 
 Seed order still matters because auth sessions/accounts reference users.
+
+This repo keeps the seed data shared and adds a PostgreSQL-specific seed runner:
+
+- shared seed data exports: `apps/server/src/db/seeds/seed-data.ts`
+- PostgreSQL adapter: `apps/server/src/db/db.postgres.adapter.ts`
+- PostgreSQL seed runner: `apps/server/src/db/seed-postgres.ts`
+
+Run it with:
+
+```bash
+pnpm --filter @workspace/server db:postgres:seed
+```
+
+Keep shared seed data in a pure data module. Do not import the SQLite seed modules from the PostgreSQL seed runner,
+because those modules import the active SQLite adapter and open SQLite as a side effect.
 
 ### 10. Validate Local App Flows
 

@@ -2,6 +2,7 @@ import { hashPassword } from 'utils/password.utils';
 
 import { db } from '../index';
 import { user } from '../schemas';
+import { userSeedData } from './seed-data';
 
 export async function seed() {
   console.log('  Seeding users...');
@@ -12,22 +13,7 @@ export async function seed() {
     return;
   }
 
-  const usersToCreate = [
-    {
-      email: 'admin@test.com',
-      password: 'test1234',
-      name: 'Admin User',
-      role: 'admin' as const,
-    },
-    {
-      email: 'guest@test.com',
-      password: 'test1234',
-      name: 'Guest User',
-      role: 'user' as const,
-    },
-  ];
-
-  for (const userData of usersToCreate) {
+  for (const userData of userSeedData) {
     const hashedPw = await hashPassword(userData.password);
     const now = new Date();
 

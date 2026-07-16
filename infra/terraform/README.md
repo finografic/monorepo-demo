@@ -4,9 +4,9 @@ Terraform entry points for the AWS portfolio deployment.
 
 ## Environments
 
-| Environment | Path                | Purpose                       |
-| ----------- | ------------------- | ----------------------------- |
-| demo        | `environments/demo` | Interview/demo AWS deployment |
+| Environment | Path                | Purpose             |
+| ----------- | ------------------- | ------------------- |
+| demo        | `environments/demo` | demo AWS deployment |
 
 ## Current scope
 

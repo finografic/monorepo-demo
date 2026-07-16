@@ -260,7 +260,7 @@ aws iam detach-role-policy \
 aws iam delete-role --role-name AppRunnerEcrAccessRole
 ```
 
-## Interview talking points
+## Overview
 
 - Lambda was useful for a small API Gateway/serverless proof.
 - App Runner is a better fit for the full long-lived Node API.

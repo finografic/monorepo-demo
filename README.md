@@ -212,10 +212,12 @@ The Postgres Drizzle config is separate from the active SQLite config:
 
 ```bash
 pnpm --filter @workspace/server db:postgres:generate
+pnpm --filter @workspace/server db:postgres:migrate
+pnpm --filter @workspace/server db:postgres:seed
 pnpm --filter @workspace/server db:postgres:studio
 ```
 
-These commands are migration scaffolding only until the schema files move from `sqlite-core` to `pg-core`.
+These commands use the side-by-side PostgreSQL schema files in `apps/server/src/db/schemas-postgres`.
 
 ## Deployment
 

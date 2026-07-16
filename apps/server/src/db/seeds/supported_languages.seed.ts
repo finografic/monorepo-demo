@@ -1,5 +1,6 @@
 import { db } from '../index';
 import { supported_languages } from '../schemas';
+import { supportedLanguagesSeedData } from './seed-data';
 
 export async function seed() {
   console.log('  Seeding supported_languages...');
@@ -10,29 +11,7 @@ export async function seed() {
     return;
   }
 
-  const inserted = await db
-    .insert(supported_languages)
-    .values([
-      {
-        isoCode: 'en-GB',
-        nativeName: 'English',
-        displayName: 'English (United Kingdom)',
-        flagCode: 'GB',
-        isActive: true,
-        isDefault: true,
-        sortOrder: 1,
-      },
-      {
-        isoCode: 'es-ES',
-        nativeName: 'Español',
-        displayName: 'Spanish (Spain)',
-        flagCode: 'ES',
-        isActive: true,
-        isDefault: false,
-        sortOrder: 2,
-      },
-    ])
-    .returning();
+  const inserted = await db.insert(supported_languages).values(supportedLanguagesSeedData).returning();
 
   console.log(`  ✓ Inserted ${inserted.length} languages`);
 }

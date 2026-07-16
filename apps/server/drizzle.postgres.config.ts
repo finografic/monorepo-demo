@@ -11,7 +11,7 @@ const databaseUrl =
   process.env.DATABASE_URL ?? 'postgresql://monorepo_demo:monorepo_demo@localhost:5433/monorepo_demo';
 
 export default defineConfig({
-  schema: './src/db/schemas/*.schema.ts',
+  schema: './src/db/schemas-postgres/*.pg-schema.ts',
   out: '../../data/migrations-postgres',
   dialect: 'postgresql',
   dbCredentials: {

@@ -2,8 +2,6 @@
 
 📅 2026-07-14
 
-Interview-oriented slice for `monorepo-demo`. **Does not** replace Render or GitHub Pages.
-
 ## Architecture
 
 ```text
@@ -114,7 +112,7 @@ Bundle note: Lambda artifact is **CJS** (`dist-lambda/lambda.js`). An ESM bundle
 
 Creates only: HTTP API, Lambda, IAM execution role, CloudWatch log group (+ ephemeral SAM packaging bucket). No VPC, EC2, RDS, ALB, or NAT.
 
-## Interview talking points
+## Overview
 
 - Shared Hono app factory (`createApp`) with two adapters: Node (`@hono/node-server`) and Lambda (`hono/aws-lambda`)
 - Why the full API is not on Lambda yet (`better-sqlite3`, Auth cookies, SSE)
