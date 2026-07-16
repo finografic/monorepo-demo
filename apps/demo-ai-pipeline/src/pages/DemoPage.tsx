@@ -138,7 +138,7 @@ export function DemoPage() {
             />
           </div>
 
-          <div className="min-h-24 border-t border-border px-4 py-4">
+          <div className="min-h-24 border-t border-border bg-blue-500/20 px-4 py-4">
             <StreamingControls
               status={status}
               hasSelection={!!selectedId}

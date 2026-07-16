@@ -186,13 +186,15 @@ Deployability requirement:
   - `/demo-ai-pipeline/`
   - `/demo-datavis/`
   - `/demo-xscan/`
-- [x] Keep frontend API env values pointed at the existing App Runner URL.
+- [x] Keep monorepo API env values pointed at the existing App Runner URL.
+- [x] Keep xscan API env value pointed at the existing deps-xscan Render API until the scan service is migrated.
 - [x] Upload a local build to S3 and test through CloudFront.
 
 Done when:
 
 - CloudFront can serve the landing page and all three demo apps.
-- Auth, i18n, AI streaming, datavis, and xscan still call the App Runner API correctly.
+- Auth, i18n, AI streaming, and datavis still call the App Runner API correctly.
+- xscan still calls the existing deps-xscan scan API correctly.
 
 Plan validation:
 
@@ -217,6 +219,7 @@ Plan validation:
   - `/demo-datavis/` -> `200`, datavis HTML
   - `/demo-xscan/` -> `200`, xscan HTML
 - [x] Verified built frontend assets contain App Runner API URL: `https://qvyq3mdegk.ap-southeast-2.awsapprunner.com`
+- [x] Demo 3 uses the existing deps-xscan scan API: `https://deps-xscan-api.onrender.com`
 - [x] `terraform plan -input=false -no-color` reports no changes after apply.
 
 ---

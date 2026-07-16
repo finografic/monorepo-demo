@@ -220,6 +220,18 @@ All root scripts delegate to Turborepo and run across all workspaces in dependen
 
 ---
 
+## AWS Scripts
+
+```
+pnpm aws:frontend:build       # local build + assemble pages/
+pnpm aws:frontend:sync        # upload pages/ to S3
+pnpm aws:frontend:invalidate  # invalidate CloudFront
+pnpm aws:frontend:deploy      # build + sync + invalidate
+pnpm aws:frontend:outputs     # show Terraform outputs
+```
+
+---
+
 ## License
 
 MIT — see [LICENSE](LICENSE).

@@ -306,8 +306,8 @@ importers:
   apps/demo-xscan:
     dependencies:
       '@finografic/deps-xscan-demo':
-        specifier: ^0.0.8
-        version: 0.0.8(@date-fns/tz@1.5.0)(@types/react@19.2.17)(date-fns@4.4.0)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(typescript@5.9.3)
+        specifier: ^0.1.1
+        version: 0.1.1(@date-fns/tz@1.5.0)(@types/react@19.2.17)(date-fns@4.4.0)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(typescript@5.9.3)
       '@workspace/shared':
         specifier: workspace:*
         version: link:../../packages/shared
@@ -1539,8 +1539,8 @@ packages:
     cpu: [x64]
     os: [win32]
 
-  '@finografic/deps-xscan-demo@0.0.8':
-    resolution: {integrity: sha512-91L9qkUWmbw9V1vcIORVjxXHMiMCdo3p3rz49hOwuiOC6KD9uuWKjPFC7oEbUPUnuBSuX7UXcBHlTF2BMjRHIg==, tarball: https://npm.pkg.github.com/download/@finografic/deps-xscan-demo/0.0.8/cebc0d29be8a61ad9cc6ba4ceb3e9f581e12c25b}
+  '@finografic/deps-xscan-demo@0.1.1':
+    resolution: {integrity: sha512-mnhGWHIWI/QIjlMH+qVR1Hmgp0FLBxyLJxRWU3t8bXa6m8HcuNTIG/Nwx95IZNk785jlpBC0EAng1m+R+vWLlg==, tarball: https://npm.pkg.github.com/download/@finografic/deps-xscan-demo/0.1.1/f7ef5730f6a81184053189646523995608227d48}
     peerDependencies:
       react: ^19.2.0
       react-dom: ^19.2.0
@@ -7714,7 +7714,7 @@ snapshots:
   '@esbuild/win32-x64@0.28.1':
     optional: true
 
-  '@finografic/deps-xscan-demo@0.0.8(@date-fns/tz@1.5.0)(@types/react@19.2.17)(date-fns@4.4.0)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(typescript@5.9.3)':
+  '@finografic/deps-xscan-demo@0.1.1(@date-fns/tz@1.5.0)(@types/react@19.2.17)(date-fns@4.4.0)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(typescript@5.9.3)':
     dependencies:
       '@base-ui/react': 1.6.0(@date-fns/tz@1.5.0)(@types/react@19.2.17)(date-fns@4.4.0)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       '@xterm/addon-fit': 0.10.0(@xterm/xterm@5.5.0)
