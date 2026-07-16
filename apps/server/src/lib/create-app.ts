@@ -25,7 +25,7 @@ export function createApp(): Hono<AppBindings> {
     const status: ContentfulStatusCode =
       'status' in err && typeof err.status === 'number'
         ? (err.status as ContentfulStatusCode)
-        : (StatusCodes.INTERNAL_SERVER_ERROR as ContentfulStatusCode);
+        : StatusCodes.INTERNAL_SERVER_ERROR;
     c.var.logger?.error({ err }, err.message);
     return c.json({ error: 'INTERNAL_ERROR', message: err.message }, status);
   });

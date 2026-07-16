@@ -148,7 +148,7 @@ export function TrafficHeatmap() {
 
   const handleGridBlur = useCallback(
     (e: React.FocusEvent<HTMLDivElement>) => {
-      if (gridRef.current?.contains(e.relatedTarget as Node)) return;
+      if (gridRef.current?.contains(e.relatedTarget)) return;
       hideTooltip();
     },
     [hideTooltip],

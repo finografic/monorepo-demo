@@ -23,7 +23,7 @@ async function updateTranslation({
   });
 
   if (!res.ok) throw new Error(`HTTP ${res.status}`);
-  return (await res.json()) as TranslationRow;
+  return await res.json();
 }
 
 export function useUpdateTranslation() {

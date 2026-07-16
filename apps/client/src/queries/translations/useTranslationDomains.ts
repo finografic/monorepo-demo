@@ -18,7 +18,7 @@ async function fetchTranslationDomain(domain: TranslationDomain): Promise<Transl
   });
 
   if (!res.ok) throw new Error(`HTTP ${res.status}`);
-  return (await res.json()) as TranslationRow[];
+  return await res.json();
 }
 
 export function useTranslationDomains(domain: TranslationDomain) {

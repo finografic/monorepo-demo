@@ -28,7 +28,7 @@ export function getHighlighter(): Promise<Highlighter> {
 export function highlightCode(highlighter: Highlighter, code: string, lang: string, isDark: boolean): string {
   const theme = isDark ? 'vitesse-dark' : 'vitesse-light';
   const supportedLangs = highlighter.getLoadedLanguages();
-  const resolvedLang = supportedLangs.includes(lang as never) ? lang : 'text';
+  const resolvedLang = supportedLangs.includes(lang) ? lang : 'text';
 
   return highlighter.codeToHtml(code, { lang: resolvedLang, theme });
 }

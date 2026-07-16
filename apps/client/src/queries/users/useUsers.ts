@@ -18,7 +18,7 @@ export interface UserRow {
 async function fetchUsers(): Promise<UserRow[]> {
   const res = await api.users.$get();
   if (!res.ok) throw new Error(`HTTP ${res.status}`);
-  return (await res.json()) as UserRow[];
+  return await res.json();
 }
 
 export function useUsers() {
