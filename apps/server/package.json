@@ -44,7 +44,7 @@
     "db:studio": "drizzle-kit studio --config ./drizzle.config.ts",
     "db:postgres:generate": "drizzle-kit generate --config ./drizzle.postgres.config.ts",
     "db:postgres:migrate": "drizzle-kit migrate --config ./drizzle.postgres.config.ts",
-    "db:postgres:seed": "DATABASE_URL=${DATABASE_URL:-postgresql://monorepo_demo:monorepo_demo@localhost:5433/monorepo_demo} tsx src/db/seed-postgres.ts",
+    "db:postgres:seed": "DB_DIALECT=postgres DATABASE_URL=${DATABASE_URL:-postgresql://monorepo_demo:monorepo_demo@localhost:5433/monorepo_demo} tsx src/db/seed-postgres.ts",
     "db:postgres:studio": "drizzle-kit studio --config ./drizzle.postgres.config.ts",
     "db:migrations:generate": "drizzle-kit generate --config ./drizzle.config.ts",
     "db:migrations:auth": "tsx src/db/utils/seed.ts user",

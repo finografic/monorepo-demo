@@ -33,8 +33,8 @@ Local connection string:
 DATABASE_URL=postgresql://monorepo_demo:monorepo_demo@localhost:5433/monorepo_demo
 ```
 
-Important: the Docker database exists for migration work, but the app is not using it until the adapter, schemas, and
-migrations are converted.
+Important: SQLite remains the default runtime path. The app can use the local PostgreSQL database only when started
+with `DB_DIALECT=postgres` and a valid `DATABASE_URL`.
 
 The Postgres Drizzle config is separate from the active SQLite config:
 
@@ -43,8 +43,8 @@ The Postgres Drizzle config is separate from the active SQLite config:
 - active SQLite schemas: `apps/server/src/db/schemas`
 - migration Postgres schemas: `apps/server/src/db/schemas-postgres`
 
-The side-by-side PostgreSQL schema files allow migration generation and inspection before the runtime adapter is
-switched.
+The side-by-side PostgreSQL schema files allow migration generation, inspection, and explicit runtime switching before
+the deployed app is cut over.
 
 ---
 
@@ -339,16 +339,15 @@ pnpm --filter @workspace/server db:postgres:seed
 Keep shared seed data in a pure data module. Do not import the SQLite seed modules from the PostgreSQL seed runner,
 because those modules import the active SQLite adapter and open SQLite as a side effect.
 
-### 10. Validate Local App Flows
+### 10. Switch Runtime Locally and Validate App Flows
 
-Minimum local validation after PostgreSQL cutover:
+Minimum local validation after enabling the PostgreSQL runtime path:
 
 ```bash
 pnpm db:postgres:up
-pnpm --filter @workspace/server db:migrations:generate
-pnpm --filter @workspace/server db:migrations:run
-pnpm --filter @workspace/server db:setup
-pnpm dev
+pnpm --filter @workspace/server db:postgres:migrate
+pnpm --filter @workspace/server db:postgres:seed
+DB_DIALECT=postgres DATABASE_URL=postgresql://monorepo_demo:monorepo_demo@localhost:5433/monorepo_demo pnpm --filter @workspace/server dev
 ```
 
 Then test:
@@ -360,6 +359,10 @@ Then test:
 - datavis page
 - xscan page
 - admin/user routes if exposed
+
+This repo keeps SQLite as the default by exporting a dialect-aware `db` barrel from `apps/server/src/db/index.ts`.
+Runtime route code imports `db` and table objects from `db`; validation schemas can still come from the SQLite schema
+module while the PostgreSQL table objects are selected at runtime.
 
 ### 11. AWS RDS Cutover
 
@@ -389,6 +392,8 @@ Only after local PostgreSQL works:
 - Current migration reset logic is deeply SQLite-specific and should not be reused.
 - Current App Runner deployment bakes a SQLite DB into the image during build; RDS cutover should remove that
   bootstrap pattern from the deployed start path.
+- Keep inactive database adapters out of the runtime import path. Importing a PostgreSQL adapter while SQLite is active
+  can fail if `DATABASE_URL` is intentionally absent.
 
 ---
 

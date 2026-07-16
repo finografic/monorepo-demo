@@ -1,6 +1,5 @@
 import { authHandler } from '@hono/auth-js';
-import { db } from 'db';
-import { user } from 'db/schemas';
+import { db, user } from 'db';
 import { eq } from 'drizzle-orm';
 import { env } from 'env.server';
 import { describeRoute } from 'hono-openapi';

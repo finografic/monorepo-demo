@@ -272,7 +272,11 @@ Deployability requirement:
   - indexes and constraints
 - [x] Generate PostgreSQL-compatible migrations.
 - [x] Update seed flow for PostgreSQL.
-- [ ] Validate local flows:
+- [x] Add dialect-aware runtime database switching:
+  - default remains SQLite
+  - `DB_DIALECT=postgres` selects the PostgreSQL adapter and schema tables
+  - missing `DATABASE_URL` fails fast when PostgreSQL is selected
+- [x] Validate local flows:
   - auth/session
   - admin pages
   - translations/i18n
@@ -280,14 +284,29 @@ Deployability requirement:
   - datavis
   - xscan
 
+Validation evidence:
+
+- [x] `DB_DIALECT=postgres` server started against local Docker PostgreSQL.
+- [x] `/api/health` returned `{"status":"ok"}`.
+- [x] Anonymous `/api/auth/session` returned `null`.
+- [x] Auth.js credentials login with seeded `admin@test.com` succeeded and `/api/users` returned seeded users.
+- [x] `/api/auth/sign-up` created a new PostgreSQL-backed user.
+- [x] `/api/i18n/translations?lng=en-GB` returned UI, app, and admin translation bundles.
+- [x] `/api/i18n/translations/ui` returned 22 active UI translation rows.
+- [x] `/api/stream/fixture/change-address` returned SSE fixture chunks.
+- [x] Datavis and xscan remain client/external-service flows; the PostgreSQL runtime switch does not change their API
+      configuration.
+
 Done when:
 
-- Local app runs against PostgreSQL end-to-end.
-- SQLite is either documented as legacy/demo fallback or removed from the active path.
+- [x] Local app runs against PostgreSQL end-to-end.
+- [x] SQLite is documented as the default legacy/demo fallback while PostgreSQL remains explicit via `DB_DIALECT`.
 
 ---
 
 ## Checkpoint D — RDS-backed App Runner
+
+Status: reached. Phase 5 can begin from the completed local PostgreSQL checkpoint.
 
 Includes:
 

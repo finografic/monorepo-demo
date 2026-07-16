@@ -1,6 +1,5 @@
 import { getAuthUser } from '@hono/auth-js';
-import { db } from 'db';
-import { user } from 'db/schemas';
+import { db, user } from 'db';
 import { eq } from 'drizzle-orm';
 import { describeRoute } from 'hono-openapi';
 import * as v from 'valibot';

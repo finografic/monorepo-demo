@@ -116,6 +116,15 @@ const DEMOS: DemoCallout[] = [
 
 const FEATURES = [
   {
+    key: 'stack',
+    Icon: Zap,
+    titleKey: 'app.features.stack.title',
+    titleDefault: 'Modern Stack',
+    descKey: 'app.features.stack.desc',
+    descDefault:
+      'Hono + Drizzle ORM server, deployed to AWS. Vite 8, React 19, React Router v7, Tanstack Query + Hono RPC client.',
+  },
+  {
     key: 'auth',
     Icon: ShieldCheck,
     titleKey: 'app.features.auth.title',
@@ -123,14 +132,6 @@ const FEATURES = [
     descKey: 'app.features.auth.desc',
     descDefault:
       'Credentials provider with JWT strategy, role-based access control, and secure cookie sessions.',
-  },
-  {
-    key: 'i18n',
-    Icon: Globe,
-    titleKey: 'app.features.i18n.title',
-    titleDefault: 'i18n - DB-backed',
-    descKey: 'app.features.i18n.desc',
-    descDefault: 'Server-side translation tables with en-GB and es-ES, served via i18next HTTP backend.',
   },
   {
     key: 'design',
@@ -141,13 +142,12 @@ const FEATURES = [
     descDefault: 'shadcn components with Tailwind 4 tokens, recipes, and owned source components.',
   },
   {
-    key: 'stack',
-    Icon: Zap,
-    titleKey: 'app.features.stack.title',
-    titleDefault: 'Modern Stack',
-    descKey: 'app.features.stack.desc',
-    descDefault:
-      'Hono + Drizzle ORM server, deployed to AWS. Vite 8, React 19, React Router v7, Tanstack Query + Hono RPC client.',
+    key: 'i18n',
+    Icon: Globe,
+    titleKey: 'app.features.i18n.title',
+    titleDefault: 'i18n - DB-backed',
+    descKey: 'app.features.i18n.desc',
+    descDefault: 'Server-side translation tables with en-GB and es-ES, served via i18next HTTP backend.',
   },
 ];
 

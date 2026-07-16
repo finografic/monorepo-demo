@@ -1,13 +1,11 @@
 import Credentials from '@auth/core/providers/credentials';
-import { db } from 'db';
+import { db, user } from 'db';
 import { eq } from 'drizzle-orm';
 import { env } from 'env.server';
 import type { AuthConfig } from '@hono/auth-js';
 
 import { runtimeAuthSecret } from 'lib/auth-secret.runtime';
 import { verifyPassword } from 'utils/password.utils';
-
-import { user } from '../db/schemas';
 
 export function getAuthConfig(): AuthConfig {
   return {

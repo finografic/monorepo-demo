@@ -1,12 +1,5 @@
-import { db } from 'db';
-import {
-  translationAdminSchemas,
-  translationAppSchemas,
-  translationUiSchemas,
-  translations_admin,
-  translations_app,
-  translations_ui,
-} from 'db/schemas';
+import { db, translations_admin, translations_app, translations_ui } from 'db';
+import { translationAdminSchemas, translationAppSchemas, translationUiSchemas } from 'db/schemas';
 import { eq } from 'drizzle-orm';
 import { describeRoute } from 'hono-openapi';
 import * as v from 'valibot';
