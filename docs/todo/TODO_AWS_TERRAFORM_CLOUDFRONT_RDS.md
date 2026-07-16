@@ -233,8 +233,8 @@ Plan validation:
 - [x] Preserve GitHub Pages workflow temporarily as fallback.
 - [x] Document required GitHub Actions variables/secrets.
 - [x] Add Terraform-managed GitHub Actions OIDC deploy role.
-- [ ] Configure GitHub `aws-cloudfront` environment variable `AWS_GITHUB_ACTIONS_ROLE_ARN`.
-- [ ] Run the manual workflow once and verify CloudFront after invalidation.
+- [x] Configure GitHub `aws-cloudfront` environment variable `AWS_GITHUB_ACTIONS_ROLE_ARN`.
+- [x] Run the manual workflow once and verify CloudFront after invalidation.
 
 Done when:
 
