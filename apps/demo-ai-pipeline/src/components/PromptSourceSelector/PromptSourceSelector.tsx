@@ -22,7 +22,8 @@ const STREAM_MODES: readonly StreamMode[] = ['live', 'fixture'];
 export function PromptSourceSelector({ mode, disabled = false, onModeChange }: PromptSourceSelectorProps) {
   return (
     <div className={disabled ? 'opacity-60 space-y-1.5' : 'space-y-1.5'}>
-      <p className="text-sm font-semibold tracking-wide text-primary">Prompt Source</p>
+      <p className="text-sm font-semibold tracking-wide text-primary mb-0">Prompt Source</p>
+      <p className="text-xs leading-5 font-medium text-muted-foreground/75 mb-2">{MODE_DESCRIPTIONS[mode]}</p>
       <div className="flex overflow-hidden rounded-md border border-border text-sm font-medium">
         {STREAM_MODES.map((streamMode) => (
           <Button
@@ -42,7 +43,6 @@ export function PromptSourceSelector({ mode, disabled = false, onModeChange }: P
           </Button>
         ))}
       </div>
-      <p className="text-xs leading-5 font-medium text-muted-foreground/75 pt-2">{MODE_DESCRIPTIONS[mode]}</p>
     </div>
   );
 }

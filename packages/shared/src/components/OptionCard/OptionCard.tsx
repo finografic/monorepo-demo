@@ -45,8 +45,8 @@ export function OptionCard({
         'rounded-lg border-2 p-4 cursor-pointer transition-all select-none outline-none',
         'focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1',
         selected
-          ? 'border-primary bg-primary/5 shadow-sm'
-          : 'border-border hover:border-primary/40 hover:bg-accent',
+          ? 'border-primary bg-primary/5 shadow-sm bg-white'
+          : 'border-border hover:border-primary/40 hover:bg-accent bg-white',
         disabled ? 'opacity-50 cursor-default pointer-events-none' : '',
       ]
         .filter(Boolean)

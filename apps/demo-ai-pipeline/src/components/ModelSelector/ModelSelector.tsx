@@ -21,6 +21,12 @@ export function ModelSelector({
       <label htmlFor="live-model" className="text-sm font-medium tracking-wider text-primary">
         Live LLM model
       </label>
+      {selectedModel ? (
+        <p className="text-xs leading-5 font-medium text-muted-foreground/75 mb-2">
+          {selectedModel.description}
+          {selectedModel.isReasoning ? ' Reasoning model: may take longer to begin streaming.' : ''}
+        </p>
+      ) : null}
       <NativeSelect
         id="live-model"
         value={selectedModelId}
@@ -34,12 +40,6 @@ export function ModelSelector({
           </NativeSelectOption>
         ))}
       </NativeSelect>
-      {selectedModel ? (
-        <p className="text-xs leading-5 font-medium text-muted-foreground/75 pt-2">
-          {selectedModel.description}
-          {selectedModel.isReasoning ? ' Reasoning model: may take longer to begin streaming.' : ''}
-        </p>
-      ) : null}
     </div>
   );
 }

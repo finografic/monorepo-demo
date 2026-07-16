@@ -127,7 +127,7 @@ export function DemoPage() {
       onMobileSidebarOpenChange={setIsMobileSidebarOpen}
       sidebar={
         <>
-          <div className="min-h-0 flex-1 overflow-y-auto px-4 py-4 md:py-5">
+          <div className="min-h-0 flex-1 overflow-y-auto px-4 py-4 md:py-5 bg-gray-200 [scrollbar-color:bg-gray-200] [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-track]:bg-gray-200 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-gray-400/40">
             <PromptSelector
               prompts={PROMPTS}
               selectedId={selectedId}
@@ -138,7 +138,7 @@ export function DemoPage() {
             />
           </div>
 
-          <div className="min-h-24 border-t border-border bg-blue-500/20 px-4 py-4">
+          <div className="min-h-24 border-t-2 border-gray-200  px-4 py-4">
             <StreamingControls
               status={status}
               hasSelection={!!selectedId}
