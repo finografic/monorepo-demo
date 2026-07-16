@@ -6,6 +6,8 @@ import * as v from 'valibot';
 const ServerEnvSchema = v.pipe(
   v.object({
     DB_NAME: v.optional(v.string(), 'monorepo-demo.sqlite.db'),
+    DB_DIALECT: v.optional(v.picklist(['sqlite', 'postgres']), 'sqlite'),
+    DATABASE_URL: v.optional(v.pipe(v.string(), v.url())),
     AUTH_SECRET: v.pipe(v.string(), v.minLength(16)),
     AUTH_URL: v.optional(v.string()),
     AUTH_COOKIE_PREFIX: v.optional(v.string(), 'monorepo-demo'),
@@ -57,6 +59,8 @@ const ServerEnvSchema = v.pipe(
 
 const envServerValidated = v.parse(ServerEnvSchema, {
   DB_NAME: process.env.DB_NAME,
+  DB_DIALECT: process.env.DB_DIALECT,
+  DATABASE_URL: process.env.DATABASE_URL,
   AUTH_SECRET: process.env.AUTH_SECRET,
   AUTH_URL: process.env.AUTH_URL,
   AUTH_COOKIE_PREFIX: process.env.AUTH_COOKIE_PREFIX,

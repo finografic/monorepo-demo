@@ -7,8 +7,8 @@ This repo is a TypeScript-first portfolio project showing frontend engineering p
 accessible UI, protected routes, streaming AI output, transport data visualisation, terminal-style tooling, and
 production-minded API/auth boundaries.
 
-The static demo apps are designed for GitHub Pages, while authenticated API features run through a Node service such
-as Render.
+The static demo apps are designed for GitHub Pages or AWS CloudFront, while authenticated API features run through a
+hosted Node service such as AWS App Runner or Render.
 
 ---
 
@@ -21,7 +21,7 @@ as Render.
 | Styling       | Tailwind 4 + shadcn components in `@workspace/ui`                 |
 | i18n          | i18next + i18next-http-backend + react-i18next                    |
 | Server        | Hono, `@hono/node-server`                                         |
-| Database      | Drizzle ORM, better-sqlite3                                       |
+| Database      | Drizzle ORM, better-sqlite3; PostgreSQL migration in progress     |
 | Auth          | Auth.js (`@auth/core` + `@hono/auth-js`)                          |
 | API docs      | hono-openapi + Scalar UI (`@scalar/hono-api-reference`)           |
 | Logging       | Pino (via `hono-pino`)                                            |
@@ -165,7 +165,7 @@ monorepo-demo/
 
 ## Getting Started
 
-**Requirements:** Node ≥ 22.17.1, pnpm ≥ 10.20.0
+**Requirements:** Node 24.16.x, pnpm ≥ 10.20.0, Docker for local PostgreSQL experiments
 
 ```bash
 # Install dependencies
@@ -191,6 +191,32 @@ Default local ports:
 | Dependency Scan Terminal | `http://localhost:3003`                     |
 | API reference            | `http://localhost:<API_PORT>/api/reference` |
 
+### Local PostgreSQL
+
+SQLite remains the active default while the PostgreSQL migration is in progress. The local PostgreSQL container is
+available for migration work without changing the running app yet.
+
+```bash
+pnpm db:postgres:up
+pnpm db:postgres:psql
+pnpm db:postgres:down
+```
+
+Connection string for the local container:
+
+```bash
+DATABASE_URL=postgresql://monorepo_demo:monorepo_demo@localhost:5433/monorepo_demo
+```
+
+The Postgres Drizzle config is separate from the active SQLite config:
+
+```bash
+pnpm --filter @workspace/server db:postgres:generate
+pnpm --filter @workspace/server db:postgres:studio
+```
+
+These commands are migration scaffolding only until the schema files move from `sqlite-core` to `pg-core`.
+
 ## Deployment
 
 The portfolio deployment target is GitHub Pages for static Vite apps plus a hosted Node API for auth, live LLM
@@ -200,23 +226,26 @@ streaming, and scan execution. See [Portfolio Deployment](/docs/process/PORTFOLI
 
 ## Scripts
 
-All root scripts delegate to Turborepo and run across all workspaces in dependency order.
+All root scripts delegate to Moon and run across all workspaces in dependency order.
 
-| Script               | Description                              |
-| :------------------- | :--------------------------------------- |
-| `pnpm dev`           | Start all apps in parallel watch mode    |
-| `pnpm build`         | Build all packages and apps              |
-| `pnpm typecheck`     | Run `tsc --noEmit` across all workspaces |
-| `pnpm lint`          | oxlint across all workspaces             |
-| `pnpm lint:fix`      | oxlint with auto-fix                     |
-| `pnpm lint:ci`       | oxlint quiet mode (for CI pipelines)     |
-| `pnpm lint:md`       | Markdown linting                         |
-| `pnpm format:check`  | oxfmt dry-run check                      |
-| `pnpm format:fix`    | oxfmt in-place formatting                |
-| `pnpm test`          | Vitest across all workspaces             |
-| `pnpm clean`         | Delete all build artefacts               |
-| `pnpm syncpack:lint` | Check for cross-workspace version drift  |
-| `pnpm syncpack:fix`  | Fix mismatched dependency versions       |
+| Script                  | Description                              |
+| :---------------------- | :--------------------------------------- |
+| `pnpm dev`              | Start all apps in parallel watch mode    |
+| `pnpm build`            | Build all packages and apps              |
+| `pnpm typecheck`        | Run `tsc --noEmit` across all workspaces |
+| `pnpm lint`             | oxlint across all workspaces             |
+| `pnpm lint:fix`         | oxlint with auto-fix                     |
+| `pnpm lint:ci`          | oxlint quiet mode (for CI pipelines)     |
+| `pnpm lint:md`          | Markdown linting                         |
+| `pnpm format:check`     | oxfmt dry-run check                      |
+| `pnpm format:fix`       | oxfmt in-place formatting                |
+| `pnpm test`             | Vitest across all workspaces             |
+| `pnpm clean`            | Delete all build artefacts               |
+| `pnpm db:postgres:up`   | Start local PostgreSQL in Docker         |
+| `pnpm db:postgres:psql` | Open `psql` in the local PostgreSQL DB   |
+| `pnpm db:postgres:down` | Stop local PostgreSQL                    |
+| `pnpm syncpack:lint`    | Check for cross-workspace version drift  |
+| `pnpm syncpack:fix`     | Fix mismatched dependency versions       |
 
 ---
 

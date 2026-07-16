@@ -259,9 +259,10 @@ Deployability requirement:
 
 ## Phase 4 — Local PostgreSQL migration
 
-- [ ] Add local PostgreSQL setup, preferably Docker Compose.
-- [ ] Add local `DATABASE_URL` documentation for PostgreSQL.
-- [ ] Update Drizzle database config for PostgreSQL.
+- [x] Add local PostgreSQL setup, preferably Docker Compose.
+- [x] Add local `DATABASE_URL` documentation for PostgreSQL.
+- [x] Add reusable SQLite to PostgreSQL migration notes.
+- [x] Update Drizzle database config for PostgreSQL.
 - [ ] Review schema differences:
   - timestamps
   - booleans

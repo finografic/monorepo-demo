@@ -1,0 +1,21 @@
+services:
+  postgres:
+    image: postgres:17-alpine
+    container_name: monorepo-demo-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: monorepo_demo
+      POSTGRES_USER: monorepo_demo
+      POSTGRES_PASSWORD: monorepo_demo
+    ports:
+      - '5433:5432'
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U monorepo_demo -d monorepo_demo']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  postgres-data:

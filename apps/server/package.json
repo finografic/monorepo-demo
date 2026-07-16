@@ -42,6 +42,8 @@
     "db:drop": "rm -rf ../../data/*.sqlite.db ../../data/migrations",
     "db:create": "drizzle-kit push --config ./drizzle.config.ts",
     "db:studio": "drizzle-kit studio --config ./drizzle.config.ts",
+    "db:postgres:generate": "drizzle-kit generate --config ./drizzle.postgres.config.ts",
+    "db:postgres:studio": "drizzle-kit studio --config ./drizzle.postgres.config.ts",
     "db:migrations:generate": "drizzle-kit generate --config ./drizzle.config.ts",
     "db:migrations:auth": "tsx src/db/utils/seed.ts user",
     "db:migrations:seed": "tsx src/db/utils/seed.ts",
@@ -68,6 +70,7 @@
     "openai": "^6.45.0",
     "picocolors": "^1.1.1",
     "pino": "^10.3.1",
+    "postgres": "^3.4.9",
     "valibot": "^1.2.0"
   },
   "devDependencies": {
