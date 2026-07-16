@@ -7,6 +7,8 @@ dist/
 dist-lambda/
 .aws-sam/
 build/
+# Only the repo-root CloudFront assemble output — NOT apps/*/src/pages/
+/pages/
 
 # Terraform
 **/.terraform/
@@ -142,3 +144,4 @@ yarn-error.log*
 # Icon manager runtime output
 lucide-manager.config.json
 packages/icons/.icons-server-runtime/
+
