@@ -47,3 +47,32 @@ Checkpoint B creates the first AWS resources:
 - CloudFront Origin Access Control
 - CloudFront distribution
 - S3 bucket policy for CloudFront reads
+
+## GitHub Actions CloudFront deploy
+
+The manual workflow `.github/workflows/deploy-aws-frontend.yml` builds the same
+CloudFront-targeted frontend bundle as local deploys, syncs `pages/` to S3, and
+invalidates CloudFront.
+
+Required repository configuration:
+
+- Environment: `aws-cloudfront`
+- Repository secret: `NPM_TOKEN`
+- Environment variable: `AWS_GITHUB_ACTIONS_ROLE_ARN`
+
+After applying Terraform, copy the output into that GitHub environment variable:
+
+```bash
+terraform output github_actions_role_arn
+```
+
+The AWS role should be assumable by GitHub Actions through OIDC and scoped to
+this repository. It needs only the permissions required to deploy the static
+frontend:
+
+- `s3:ListBucket` on `arn:aws:s3:::monorepo-demo-demo-frontend`
+- `s3:GetObject`, `s3:PutObject`, and `s3:DeleteObject` on `arn:aws:s3:::monorepo-demo-demo-frontend/*`
+- `cloudfront:CreateInvalidation` on distribution `ERCVOSB81GPS9`
+
+Keep the existing GitHub Pages workflow enabled until this workflow has been run
+and verified.

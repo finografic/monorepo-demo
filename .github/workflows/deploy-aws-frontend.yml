@@ -1,0 +1,55 @@
+name: Deploy AWS Frontend
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write
+  packages: read
+
+concurrency:
+  group: aws-frontend
+  cancel-in-progress: false
+
+env:
+  AWS_REGION: ap-southeast-2
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: aws-cloudfront
+      url: https://d2h3ihm2ddi3lx.cloudfront.net
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup toolchain
+        uses: moonrepo/setup-toolchain@v0
+        with:
+          auto-install: true
+
+      - name: Configure GitHub Packages registry
+        run: |
+          npm config set @finografic:registry https://npm.pkg.github.com
+          npm config set //npm.pkg.github.com/:_authToken ${{ secrets.NPM_TOKEN }}
+
+      - name: Install deps
+        run: pnpm install --frozen-lockfile
+
+      - name: Build CloudFront frontend
+        run: pnpm aws:frontend:build
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-region: ${{ env.AWS_REGION }}
+          role-to-assume: ${{ vars.AWS_GITHUB_ACTIONS_ROLE_ARN }}
+
+      - name: Upload frontend assets
+        run: pnpm aws:frontend:sync
+
+      - name: Invalidate CloudFront cache
+        run: pnpm aws:frontend:invalidate

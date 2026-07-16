@@ -226,12 +226,15 @@ Plan validation:
 
 ## Phase 3 — CloudFront CI/CD
 
-- [ ] Add or update GitHub Actions workflow for S3 + CloudFront deployment.
-- [ ] Upload built assets to S3.
-- [ ] Invalidate CloudFront after deployment.
-- [ ] Keep workflow manual-first with `workflow_dispatch` until proven.
-- [ ] Preserve GitHub Pages workflow temporarily as fallback.
-- [ ] Document required GitHub Actions variables/secrets.
+- [x] Add or update GitHub Actions workflow for S3 + CloudFront deployment.
+- [x] Upload built assets to S3.
+- [x] Invalidate CloudFront after deployment.
+- [x] Keep workflow manual-first with `workflow_dispatch` until proven.
+- [x] Preserve GitHub Pages workflow temporarily as fallback.
+- [x] Document required GitHub Actions variables/secrets.
+- [x] Add Terraform-managed GitHub Actions OIDC deploy role.
+- [ ] Configure GitHub `aws-cloudfront` environment variable `AWS_GITHUB_ACTIONS_ROLE_ARN`.
+- [ ] Run the manual workflow once and verify CloudFront after invalidation.
 
 Done when:
 
@@ -391,6 +394,9 @@ Done when:
 - [ ] Update repo description/topics if useful.
 - [ ] Update roadmap and mark completed AWS migration slices.
 - [ ] Add final smoke-test checklist.
+- [ ] Track non-blocking Demo 3 browser warning in `@finografic/deps-xscan-demo`:
+  - invalid HTML `pattern` regular expression for GitHub repository URL input
+  - deployed scan flow still works; fix later in the external xscan demo package
 
 Done when:
 

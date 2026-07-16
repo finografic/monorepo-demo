@@ -56,3 +56,25 @@ variable "app_runner_api_base_url" {
     error_message = "app_runner_api_base_url must be an HTTPS URL."
   }
 }
+
+variable "github_repository" {
+  description = "GitHub repository allowed to assume the frontend deployment role."
+  type        = string
+  default     = "finografic/monorepo-demo"
+
+  validation {
+    condition     = can(regex("^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$", var.github_repository))
+    error_message = "github_repository must use owner/repo format."
+  }
+}
+
+variable "github_actions_environment" {
+  description = "GitHub Actions environment allowed to assume the frontend deployment role."
+  type        = string
+  default     = "aws-cloudfront"
+
+  validation {
+    condition     = can(regex("^[A-Za-z0-9_.-]+$", var.github_actions_environment))
+    error_message = "github_actions_environment must contain only letters, numbers, dots, underscores, and hyphens."
+  }
+}

@@ -32,3 +32,8 @@ output "frontend_spa_rewrite_function_name" {
   description = "CloudFront Function that rewrites SPA directory routes to index.html."
   value       = aws_cloudfront_function.spa_rewrite.name
 }
+
+output "github_actions_role_arn" {
+  description = "IAM role ARN for GitHub Actions OIDC frontend deployments."
+  value       = aws_iam_role.github_actions_frontend_deploy.arn
+}
