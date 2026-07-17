@@ -516,7 +516,7 @@ Deployability requirement:
   - [ ] admin pages
   - [x] translations/i18n
   - [x] AI pipeline fixture streaming
-  - [ ] AI live streaming if enabled
+  - [x] AI live streaming if enabled
   - [x] datavis
   - [x] xscan
 - [x] Tighten CloudFront API error handling:

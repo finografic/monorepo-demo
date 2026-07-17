@@ -56,12 +56,17 @@ AUTH_COOKIE_SAME_SITE=none
 Optional live AI variables:
 
 ```bash
+LLM_MODE=hosted
 OPENCODE_API_KEY=...
 OPENCODE_BASE_URL=...
 OPENCODE_MODEL=...
 ```
 
 Keep all real values outside source control.
+
+Live AI streaming on EC2 uses OpenCode Go hosted mode. If these values are
+missing, the server falls back to local LM Studio mode, which does not work on
+the EC2 host unless an OpenAI-compatible local server is also running there.
 
 RDS requires encrypted PostgreSQL connections. Include `sslmode=require` in the
 runtime `DATABASE_URL`.
@@ -123,3 +128,4 @@ AWS smoke evidence:
 - Public API health: `http://ec2-54-252-64-116.ap-southeast-2.compute.amazonaws.com:4000/api/health`.
 - Public auth/session: `200` with unauthenticated `null` session.
 - Public i18n bundle returned `ui`, `app`, and `admin` resources.
+- Hosted LLM smoke from EC2 returned `ok` with model `qwen3.7-plus`.

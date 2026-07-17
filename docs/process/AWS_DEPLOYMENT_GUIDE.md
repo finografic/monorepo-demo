@@ -93,6 +93,15 @@ IAM, or other infrastructure changes.
 curl https://d2h3ihm2ddi3lx.cloudfront.net/api/health
 ```
 
+Live AI streaming requires hosted LLM runtime variables on EC2:
+
+```bash
+LLM_MODE=hosted
+OPENCODE_API_KEY=...
+OPENCODE_BASE_URL=https://opencode.ai/zen/go/v1
+OPENCODE_MODEL=qwen3.7-plus
+```
+
 Terraform is required only when the server change also needs EC2, security
 group, IAM, CloudFront origin behaviour, or RDS infrastructure changes.
 
