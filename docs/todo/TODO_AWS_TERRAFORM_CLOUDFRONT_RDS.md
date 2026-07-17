@@ -519,9 +519,10 @@ Deployability requirement:
   - [ ] AI live streaming if enabled
   - [x] datavis
   - [x] xscan
-- [ ] Tighten CloudFront API error handling:
-  - invalid `/api/*` responses can still be converted to SPA `index.html` by distribution-level custom error responses;
-  - valid API routes work, including `/api/health`, auth/session, i18n, and fixture streaming.
+- [x] Tighten CloudFront API error handling:
+  - removed distribution-level `403/404 -> /index.html` custom error responses;
+  - kept SPA route support through the existing viewer-request rewrite function;
+  - verified JSON API errors for invalid `/api/*` routes.
 
 Done when:
 
@@ -539,6 +540,7 @@ Done when:
   - backend: EC2
   - database: RDS PostgreSQL
   - IaC: Terraform
+  - deployment trigger guide: push-to-master vs manual AWS deploy vs Terraform apply
 - [ ] Document rollback:
   - CloudFront/frontend can point back to App Runner while it remains available.
   - App Runner can remain as a temporary backend fallback.
