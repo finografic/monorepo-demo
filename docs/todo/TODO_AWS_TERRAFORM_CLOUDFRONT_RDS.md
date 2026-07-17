@@ -6,15 +6,13 @@
 >
 > **Goal:** migrate the portfolio deployment from GitHub Pages and SQLite toward a low-cost AWS shape with Terraform-managed infrastructure, S3 + CloudFront frontend hosting, a small EC2 API server, and RDS PostgreSQL.
 >
-> **Positioning:** keep the current App Runner deployment as the working backend baseline until the EC2 API path is proven. Replace GitHub Pages only after the S3 + CloudFront path is proven. Replace SQLite only after local PostgreSQL, RDS, and the EC2 API are proven.
+> **Positioning:** AWS now has one canonical demo path: CloudFront/S3 frontend, CloudFront `/api/*` to the EC2 API, and RDS PostgreSQL.
 
 Context:
 
 - [DONE — AWS Lambda + API Gateway Demo](./DONE_AWS_LAMBDA_DEMO.md)
-- [TODO — AWS Full Server App Runner Demo](./TODO_AWS_FULL_SERVER_APP_RUNNER.md)
-- [AWS App Runner Full Server Demo](../process/AWS_APP_RUNNER_FULL_SERVER.md)
 - [Portfolio Deployment](../process/PORTFOLIO_DEPLOYMENT.md)
-- [Deferred App Runner/RDS plan](./DEFERRED_AWS_TERRAFORM_CLOUDFRONT_RDS.md)
+- [Deferred production-readiness plan](./DEFERRED_AWS_TERRAFORM_CLOUDFRONT_RDS.md)
 
 ---
 
@@ -44,8 +42,7 @@ The aim is to show pragmatic full-stack AWS delivery:
 ## Constraints
 
 - Keep `master` deployable while this work is in progress.
-- Keep the existing App Runner backend live until a replacement step is proven.
-- Keep GitHub Pages as a fallback until CloudFront is proven.
+- Keep GitHub Pages only as a legacy static fallback until it is intentionally removed.
 - Do not introduce a custom domain in this slice.
 - Use the default CloudFront distribution domain, for example `https://d111111abcdef8.cloudfront.net`.
 - Prefer Terraform over AWS CDK for broader IaC job-market alignment.
@@ -87,7 +84,6 @@ Includes:
 Deployability requirement:
 
 - Existing GitHub Pages frontend still works.
-- Existing App Runner API still works.
 - No database migration has started.
 - No AWS frontend cutover has happened.
 
@@ -95,14 +91,11 @@ Deployability requirement:
 
 ## Phase 0 — Baseline and safety
 
-- [x] Confirm current App Runner API is healthy.
 - [x] Confirm current GitHub Pages frontend is healthy.
 - [x] Record current public URLs:
   - GitHub Pages frontend: `https://finografic.github.io/monorepo-demo/`
-  - App Runner API: `https://qvyq3mdegk.ap-southeast-2.awsapprunner.com`
   - Render API if still retained as fallback
 - [x] Record current AWS resource identifiers:
-  - App Runner service name: `monorepo-demo-server`
   - ECR repository: `monorepo-demo-server`
   - AWS region: `ap-southeast-2`
 - [x] Confirm billing alert and credits/free plan status (`$5` alert configured; AWS credits/free-plan status checked in console).
@@ -165,7 +158,7 @@ Includes:
 Deployability requirement:
 
 - CloudFront serves the full portfolio frontend.
-- The frontend still calls the existing App Runner API.
+- The frontend can be built and served from S3/CloudFront.
 - GitHub Pages remains available as a fallback.
 - No database migration has started.
 
@@ -184,14 +177,14 @@ Deployability requirement:
   - `/demo-ai-pipeline/`
   - `/demo-datavis/`
   - `/demo-xscan/`
-- [x] Keep monorepo API env values pointed at the existing App Runner URL.
+- [x] Keep monorepo API env values explicit during the parallel frontend hosting phase.
 - [x] Keep xscan API env value pointed at the existing deps-xscan Render API until the scan service is migrated.
 - [x] Upload a local build to S3 and test through CloudFront.
 
 Done when:
 
 - CloudFront can serve the landing page and all three demo apps.
-- Auth, i18n, AI streaming, and datavis still call the App Runner API correctly.
+- Auth, i18n, AI streaming, and datavis still call the configured API correctly.
 - xscan still calls the existing deps-xscan scan API correctly.
 
 Plan validation:
@@ -216,7 +209,7 @@ Plan validation:
   - `/demo-ai-pipeline/` -> `200`, AI pipeline HTML
   - `/demo-datavis/` -> `200`, datavis HTML
   - `/demo-xscan/` -> `200`, xscan HTML
-- [x] Verified built frontend assets contain App Runner API URL: `https://qvyq3mdegk.ap-southeast-2.awsapprunner.com`
+- [x] Verified built frontend assets contain the configured API URL for the parallel frontend hosting phase.
 - [x] Demo 3 uses the existing deps-xscan scan API: `https://deps-xscan-api.onrender.com`
 - [x] `terraform plan -input=false -no-color` reports no changes after apply.
 
@@ -250,7 +243,6 @@ Includes:
 Deployability requirement:
 
 - Local development can run on PostgreSQL.
-- Deployed App Runner can remain on the existing SQLite-backed image until RDS is ready.
 - No AWS database cutover has happened.
 
 ---
@@ -314,7 +306,7 @@ Deployability requirement:
 
 - RDS PostgreSQL exists in AWS.
 - RDS uses the smallest practical pay-as-you-go/free-credit-friendly shape.
-- No App Runner, EC2, or frontend runtime cutover has happened yet.
+- No EC2 or frontend runtime cutover has happened yet.
 
 ---
 
@@ -348,7 +340,6 @@ Done when:
 
 - RDS PostgreSQL is applied and reachable from EC2 over SSL.
 - RDS contains the migrated schema and seed data.
-- The deployed App Runner service still remains the rollback backend.
 
 Plan evidence:
 
@@ -378,7 +369,6 @@ Deployability requirement:
 - EC2 can receive public API calls.
 - EC2 can connect privately to RDS PostgreSQL.
 - EC2 can make outbound internet calls without NAT Gateway.
-- App Runner remains available as rollback until EC2 is proven.
 
 ---
 
@@ -478,7 +468,6 @@ Done when:
 
 - EC2 is the working AWS API backend.
 - EC2 uses RDS PostgreSQL.
-- App Runner is still available as rollback.
 
 ---
 
@@ -493,7 +482,7 @@ Deployability requirement:
 
 - CloudFront frontend and demo apps call the EC2 API.
 - EC2 API works against RDS PostgreSQL.
-- App Runner is no longer required for the primary demo path.
+- CloudFront/S3 + EC2 + RDS is the only canonical AWS deployment path.
 
 ---
 
@@ -507,13 +496,13 @@ Deployability requirement:
   - `AUTH_COOKIE_SECURE=true`
   - `AUTH_COOKIE_SAME_SITE=none`
 - [x] Build CloudFront-targeted frontend assets.
-- [x] Verify built assets do not contain App Runner or direct EC2 API URLs.
+- [x] Verify built assets use same-origin API calls and do not contain direct EC2 API URLs.
 - [x] Sync assets to S3.
 - [x] Invalidate CloudFront.
 - [ ] Smoke test CloudFront -> EC2 -> RDS:
   - [x] landing page
   - [x] login/session
-  - [ ] admin pages
+  - [x] admin pages
   - [x] translations/i18n
   - [x] AI pipeline fixture streaming
   - [x] AI live streaming if enabled
@@ -542,8 +531,9 @@ Done when:
   - IaC: Terraform
   - deployment trigger guide: push-to-master vs manual AWS deploy vs Terraform apply
 - [ ] Document rollback:
-  - CloudFront/frontend can point back to App Runner while it remains available.
-  - App Runner can remain as a temporary backend fallback.
+  - restore a previous CloudFront/S3 frontend build;
+  - restart the EC2 API container with the previous committed server build;
+  - restore RDS from a deliberate backup/export if one has been taken.
 - [ ] Document teardown for paid resources:
   - EC2 instance
   - EBS volume
@@ -558,7 +548,6 @@ Done when:
   - finding server logs;
   - confirming AI streaming failures.
 - [ ] Decide whether to keep, disable, or archive the GitHub Pages workflow.
-- [ ] Decide whether to stop or delete App Runner after EC2 is stable.
 - [ ] Update roadmap and mark completed AWS migration slices.
 - [ ] Track non-blocking Demo 3 browser warning in `@finografic/deps-xscan-demo`:
   - invalid HTML `pattern` regular expression for GitHub repository URL input
@@ -574,7 +563,7 @@ Done when:
 
 ## Deferred Optional Upgrades
 
-The previous App Runner/RDS and broader production-readiness plan is preserved in:
+The previous broader production-readiness plan is preserved in:
 
 ```text
 docs/todo/DEFERRED_AWS_TERRAFORM_CLOUDFRONT_RDS.md
@@ -583,7 +572,6 @@ docs/todo/DEFERRED_AWS_TERRAFORM_CLOUDFRONT_RDS.md
 Deferred unless explicitly approved:
 
 - NAT Gateway
-- App Runner VPC connector path
 - Secrets Manager / SSM migration
 - WAF
 - Route 53 / custom domain / ACM

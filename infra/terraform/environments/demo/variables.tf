@@ -58,17 +58,6 @@ variable "cloudfront_api_origin_request_policy_id" {
   default     = "216adef6-5c7f-47e4-b989-5492eafa07d3"
 }
 
-variable "app_runner_api_base_url" {
-  description = "Existing App Runner API base URL used by frontend builds during Checkpoint B."
-  type        = string
-  default     = "https://qvyq3mdegk.ap-southeast-2.awsapprunner.com"
-
-  validation {
-    condition     = can(regex("^https://", var.app_runner_api_base_url))
-    error_message = "app_runner_api_base_url must be an HTTPS URL."
-  }
-}
-
 variable "github_repository" {
   description = "GitHub repository allowed to assume the frontend deployment role."
   type        = string
@@ -160,7 +149,7 @@ variable "rds_ingress_cidr_blocks" {
 }
 
 variable "rds_ingress_security_group_ids" {
-  description = "Security group IDs allowed to connect to PostgreSQL, such as a future App Runner VPC connector security group."
+  description = "Security group IDs allowed to connect to PostgreSQL. The EC2 API security group is granted separately."
   type        = list(string)
   default     = []
 }

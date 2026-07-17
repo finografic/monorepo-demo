@@ -7,8 +7,8 @@ This repo is a TypeScript-first portfolio project showing frontend engineering p
 accessible UI, protected routes, streaming AI output, transport data visualisation, terminal-style tooling, and
 production-minded API/auth boundaries.
 
-The static demo apps are designed for GitHub Pages or AWS CloudFront, while authenticated API features run through a
-hosted Node service such as AWS App Runner or Render.
+The AWS-hosted demo runs the static Vite apps through CloudFront/S3, with authenticated API features served by the
+Hono API on EC2 backed by RDS PostgreSQL.
 
 ---
 
@@ -21,7 +21,7 @@ hosted Node service such as AWS App Runner or Render.
 | Styling       | Tailwind 4 + shadcn components in `@workspace/ui`                 |
 | i18n          | i18next + i18next-http-backend + react-i18next                    |
 | Server        | Hono, `@hono/node-server`                                         |
-| Database      | Drizzle ORM, better-sqlite3; PostgreSQL migration in progress     |
+| Database      | Drizzle ORM, PostgreSQL/RDS for AWS, SQLite for local fallback    |
 | Auth          | Auth.js (`@auth/core` + `@hono/auth-js`)                          |
 | API docs      | hono-openapi + Scalar UI (`@scalar/hono-api-reference`)           |
 | Logging       | Pino (via `hono-pino`)                                            |
@@ -193,8 +193,8 @@ Default local ports:
 
 ### Local PostgreSQL
 
-SQLite remains the active default while the PostgreSQL migration is in progress. The local PostgreSQL container is
-available for migration work without changing the running app yet.
+SQLite remains available as the local/demo fallback. PostgreSQL is the AWS database and can also be used locally with
+the Docker Compose helper.
 
 ```bash
 pnpm db:postgres:up
@@ -221,8 +221,8 @@ These commands use the side-by-side PostgreSQL schema files in `apps/server/src/
 
 ## Deployment
 
-The portfolio deployment target is GitHub Pages for static Vite apps plus a hosted Node API for auth, live LLM
-streaming, and scan execution. See [Portfolio Deployment](/docs/process/PORTFOLIO_DEPLOYMENT.md).
+The canonical AWS deployment target is CloudFront/S3 for static Vite apps, EC2 for the Hono/Auth.js API, and RDS
+PostgreSQL for relational data. See [AWS Deployment Guide](/docs/process/AWS_DEPLOYMENT_GUIDE.md).
 
 ---
 

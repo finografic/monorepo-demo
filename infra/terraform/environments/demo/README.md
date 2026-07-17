@@ -9,7 +9,8 @@ This environment will grow in checkpoints:
 1. Terraform foundation with no AWS resources.
 2. S3 + CloudFront frontend hosting.
 3. RDS PostgreSQL.
-4. Secrets/config and observability.
+4. EC2 API server.
+5. Secrets/config and observability.
 
 ## Setup
 
@@ -25,7 +26,6 @@ Review values before planning:
 aws_region              = "ap-southeast-2"
 project_name            = "monorepo-demo"
 environment             = "demo"
-app_runner_api_base_url = "https://qvyq3mdegk.ap-southeast-2.awsapprunner.com"
 
 rds_instance_class              = "db.t4g.micro"
 rds_engine_version              = "17"
@@ -105,16 +105,9 @@ The browser-facing cutover should eventually use CloudFront as the HTTPS entry
 point for API calls. Direct EC2 HTTP is useful for smoke testing, but the
 CloudFront frontend should not call a plain HTTP EC2 URL from the browser.
 
-Before applying RDS, decide the App Runner connectivity path. The cheapest
-default is to avoid NAT Gateway:
-
-- private RDS + App Runner VPC connector only if live external AI calls can be
-  disabled or routed without NAT;
-- temporary public RDS exception only if tightly scoped ingress is acceptable;
-- NAT Gateway only as an explicit paid upgrade.
-
 Do not set `rds_publicly_accessible = true` without explicitly accepting the
-security trade-off.
+security trade-off. The canonical path is private RDS access from the EC2 API
+security group.
 
 ## GitHub Actions CloudFront deploy
 

@@ -371,14 +371,14 @@ Only after local PostgreSQL works:
 1. Create RDS PostgreSQL with Terraform.
 2. Store credentials outside source control.
 3. Produce a deployed `DATABASE_URL`.
-4. Give App Runner network access to RDS.
+4. Give the EC2 API security group private access to RDS.
 5. Run migrations against RDS.
 6. Run seeds against RDS.
-7. Update App Runner env:
+7. Update the EC2 API runtime env:
    - `DB_DIALECT=postgres`
    - `DATABASE_URL=...`
-8. Redeploy App Runner.
-9. Smoke test CloudFront -> App Runner -> RDS.
+8. Restart the EC2 API container.
+9. Smoke test CloudFront -> EC2 -> RDS.
 
 ---
 
@@ -390,8 +390,7 @@ Only after local PostgreSQL works:
 - Current translation tables use JSON stored through SQLite text mode; PostgreSQL should use `jsonb`.
 - Current seed validation uses `sqliteBooleanField`; convert it before expecting PostgreSQL booleans to feel clean.
 - Current migration reset logic is deeply SQLite-specific and should not be reused.
-- Current App Runner deployment bakes a SQLite DB into the image during build; RDS cutover should remove that
-  bootstrap pattern from the deployed start path.
+- The deployed EC2 API should start from committed server code and runtime env, not a baked SQLite image.
 - Keep inactive database adapters out of the runtime import path. Importing a PostgreSQL adapter while SQLite is active
   can fail if `DATABASE_URL` is intentionally absent.
 
@@ -408,6 +407,6 @@ Good commit slices:
 5. PostgreSQL migration/seed runners.
 6. Local PostgreSQL validation fixes.
 7. Terraform RDS resources.
-8. App Runner RDS cutover.
+8. EC2/RDS cutover.
 
 Avoid one giant SQLite-to-RDS commit. It makes rollback, debugging, and interview explanation harder.

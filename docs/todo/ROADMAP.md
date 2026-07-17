@@ -36,7 +36,6 @@ This roadmap is the high-level sequencing plan for the monorepo-demo portfolio a
 
 - [TODO — I18n JSON source of truth](/docs/todo/TODO_I18N.md)
 - [TODO — AI Pipeline Model Selection](/docs/todo/TODO_AI_PIPELINE_MODEL_SELECTION.md)
-- [TODO — AWS Full Server App Runner Demo](/docs/todo/TODO_AWS_FULL_SERVER_APP_RUNNER.md)
 - [TODO — AWS Terraform CloudFront RDS Migration](/docs/todo/TODO_AWS_TERRAFORM_CLOUDFRONT_RDS.md)
 - [TMR Data Sources](/docs/TMR_DATA_SOURCES.md) (reference + optional expansions)
 - [Next Steps](/docs/todo/NEXT_STEPS.md)
@@ -54,16 +53,14 @@ Do not re-open finished phases here.
 
 ---
 
-## 1 — Host the Node API for live demo features
+## 1 — Operate the AWS-hosted Node API for live demo features
 
-GitHub Pages serves static apps only. Live auth, LLM streaming, and xscan execution need a hosted
-`apps/server`.
+CloudFront/S3 serves the frontend and the EC2-hosted `apps/server` handles live auth, LLM streaming, and API features.
 
-- [ ] Deploy `apps/server` per [Portfolio Deployment](/docs/process/PORTFOLIO_DEPLOYMENT.md)
-- [ ] Set `DEMO_API_BASE_URL` and `DEMO_XSCAN_API_BASE_URL` as GitHub Actions repository variables
-- [ ] Configure `CORS_ORIGINS`, `AUTH_COOKIE_SAME_SITE=none`, `AUTH_COOKIE_SECURE=true`
-- [ ] Smoke test sign-in from `https://finografic.github.io/monorepo-demo/` against the hosted API
-- [ ] Smoke test `POST /api/stream/live` with credentials from the AI pipeline demo
+- [x] Deploy `apps/server` on EC2 behind CloudFront `/api/*`.
+- [x] Configure `CORS_ORIGINS`, `AUTH_COOKIE_SAME_SITE=none`, `AUTH_COOKIE_SECURE=true`.
+- [x] Smoke test sign-in, i18n, fixture streaming, and live LLM streaming through CloudFront.
+- [ ] Finish AWS cleanup/docs in [TODO — AWS Terraform CloudFront RDS Migration](/docs/todo/TODO_AWS_TERRAFORM_CLOUDFRONT_RDS.md).
 
 ---
 
@@ -118,15 +115,15 @@ Demo apps have Vitest/Playwright coverage locally; server/starter routes do not 
 
 ## P0 — Active
 
-- Host `apps/server` for cross-origin auth and live demo APIs — see
-  [Portfolio Deployment](/docs/process/PORTFOLIO_DEPLOYMENT.md) and [Next Steps](/docs/todo/NEXT_STEPS.md)
+- Finish AWS cleanup/docs for the CloudFront/S3 + EC2 + RDS deployment path — see
+  [AWS Deployment Guide](/docs/process/AWS_DEPLOYMENT_GUIDE.md) and [Next Steps](/docs/todo/NEXT_STEPS.md)
 - Harden AI pipeline live mode — model catalog, smoke tests, session caps —
   [TODO — AI Pipeline Model Selection](/docs/todo/TODO_AI_PIPELINE_MODEL_SELECTION.md)
 
 ## P1 — Next up
 
 - End-to-end validation from clean clone (`pnpm dev:all`, auth flow, all three demos)
-- Set GitHub Pages repo variables (`DEMO_API_BASE_URL`, CORS/cookie config on server)
+- Finish end-to-end validation and cost cleanup for the AWS deployment.
 
 ## P2 — Planned
 

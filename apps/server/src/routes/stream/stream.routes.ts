@@ -151,6 +151,8 @@ const streamRouter = createRouter()
 
     return stream(c, async (s) => {
       try {
+        await s.write(': connected\n\n');
+
         const aiStream = await client.chat.completions.create({
           model,
           messages: [{ role: 'user', content: systemPrompt }],
