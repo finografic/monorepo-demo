@@ -499,9 +499,15 @@ Deployability requirement:
 
 ## Phase 8 — Frontend API Cutover
 
-- [ ] Update frontend build configuration to use the EC2 API base URL.
-- [ ] Keep xscan pointed at the current external xscan API unless intentionally migrated.
-- [ ] Build CloudFront-targeted frontend assets.
+- [x] Update frontend build configuration to use same-origin CloudFront API calls.
+- [x] Add CloudFront `/api/*` behavior pointing to the EC2 API origin.
+- [x] Keep xscan pointed at the current external xscan API unless intentionally migrated.
+- [x] Update EC2 runtime auth settings for CloudFront:
+  - `AUTH_URL=https://d2h3ihm2ddi3lx.cloudfront.net`
+  - `AUTH_COOKIE_SECURE=true`
+  - `AUTH_COOKIE_SAME_SITE=none`
+- [x] Build CloudFront-targeted frontend assets.
+- [x] Verify built assets do not contain App Runner or direct EC2 API URLs.
 - [ ] Sync assets to S3.
 - [ ] Invalidate CloudFront.
 - [ ] Smoke test CloudFront -> EC2 -> RDS:

@@ -46,6 +46,18 @@ variable "cloudfront_cache_policy_id" {
   default     = "658327ea-f89d-4fab-a63d-7e88639e58f6"
 }
 
+variable "cloudfront_api_cache_policy_id" {
+  description = "Managed CloudFront cache policy ID for API requests. Defaults to AWS Managed-CachingDisabled."
+  type        = string
+  default     = "4135ea2d-6df8-44a3-9df3-4b5a84be39ad"
+}
+
+variable "cloudfront_api_origin_request_policy_id" {
+  description = "Managed CloudFront origin request policy ID for API requests. Defaults to AWS Managed-AllViewer."
+  type        = string
+  default     = "216adef6-5c7f-47e4-b989-5492eafa07d3"
+}
+
 variable "app_runner_api_base_url" {
   description = "Existing App Runner API base URL used by frontend builds during Checkpoint B."
   type        = string
