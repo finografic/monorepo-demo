@@ -10,7 +10,11 @@ Terraform entry points for the AWS portfolio deployment.
 
 ## Current scope
 
-Checkpoint A only creates the Terraform foundation. It does not create or change AWS resources yet.
+The demo environment currently manages:
+
+- S3 + CloudFront frontend hosting.
+- GitHub Actions OIDC for frontend deploys.
+- RDS PostgreSQL plan/configuration for Checkpoint D.
 
 ## AWS Console checkpoints
 

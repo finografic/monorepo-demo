@@ -37,3 +37,29 @@ output "github_actions_role_arn" {
   description = "IAM role ARN for GitHub Actions OIDC frontend deployments."
   value       = aws_iam_role.github_actions_frontend_deploy.arn
 }
+
+output "rds_database_name" {
+  description = "Initial PostgreSQL database name."
+  value       = aws_db_instance.postgres.db_name
+}
+
+output "rds_endpoint" {
+  description = "RDS PostgreSQL endpoint."
+  value       = aws_db_instance.postgres.endpoint
+}
+
+output "rds_port" {
+  description = "RDS PostgreSQL port."
+  value       = aws_db_instance.postgres.port
+}
+
+output "rds_security_group_id" {
+  description = "Security group attached to the RDS PostgreSQL instance."
+  value       = aws_security_group.rds.id
+}
+
+output "rds_master_user_secret_arn" {
+  description = "Secrets Manager secret ARN for the RDS-managed master user password."
+  value       = aws_db_instance.postgres.master_user_secret[0].secret_arn
+  sensitive   = true
+}

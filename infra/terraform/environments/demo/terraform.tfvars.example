@@ -3,3 +3,12 @@ project_name = "monorepo-demo"
 environment  = "demo"
 
 app_runner_api_base_url = "https://qvyq3mdegk.ap-southeast-2.awsapprunner.com"
+
+rds_database_name = "monorepo_demo"
+rds_master_username = "monorepo_demo"
+rds_instance_class = "db.t4g.micro"
+rds_allocated_storage_gb = 20
+rds_max_allocated_storage_gb = 100
+rds_publicly_accessible = false
+rds_ingress_cidr_blocks = []
+rds_ingress_security_group_ids = []

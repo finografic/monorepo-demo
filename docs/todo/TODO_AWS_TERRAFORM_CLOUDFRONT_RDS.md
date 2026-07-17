@@ -323,12 +323,18 @@ Deployability requirement:
 ## Phase 5 — RDS PostgreSQL
 
 - [ ] Use Terraform to create RDS PostgreSQL.
-- [ ] Add DB subnet group and security group.
-- [ ] Decide network shape:
-  - simplest secure demo path, or
-  - private RDS + App Runner VPC connector.
-- [ ] Account for public outbound needs from the API, especially hosted AI provider calls.
-- [ ] Store database credentials outside source control.
+  - [x] Add reviewable Terraform config.
+  - [x] Validate Terraform config.
+  - [x] Generate a no-apply Terraform plan.
+  - [ ] Apply reviewed Terraform plan.
+- [x] Add DB subnet group and security group.
+- [x] Decide network shape:
+  - private RDS by default
+  - App Runner needs a VPC connector to reach private RDS
+  - VPC-connected App Runner needs NAT or another egress path for hosted AI provider calls
+- [x] Account for public outbound needs from the API, especially hosted AI provider calls.
+- [x] Store database credentials outside source control.
+  - RDS manages the master password in Secrets Manager.
 - [ ] Run migrations against RDS.
 - [ ] Run seeds against RDS.
 - [ ] Update App Runner runtime configuration to use the RDS `DATABASE_URL`.
@@ -343,6 +349,17 @@ Done when:
 
 - The deployed App Runner API uses RDS PostgreSQL.
 - CloudFront frontend can be used as the main demo entry point.
+
+Plan evidence:
+
+- [x] `terraform -chdir=infra/terraform/environments/demo fmt`
+- [x] `terraform -chdir=infra/terraform/environments/demo validate`
+- [x] `terraform -chdir=infra/terraform/environments/demo plan -input=false -no-color`
+- [x] Plan proposes 4 resources to create and no changes/destroys:
+  - RDS PostgreSQL instance
+  - DB parameter group
+  - DB subnet group
+  - RDS security group
 
 ---
 

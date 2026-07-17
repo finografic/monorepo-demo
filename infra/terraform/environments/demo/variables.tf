@@ -78,3 +78,100 @@ variable "github_actions_environment" {
     error_message = "github_actions_environment must contain only letters, numbers, dots, underscores, and hyphens."
   }
 }
+
+variable "rds_database_name" {
+  description = "Initial PostgreSQL database name."
+  type        = string
+  default     = "monorepo_demo"
+
+  validation {
+    condition     = can(regex("^[A-Za-z][A-Za-z0-9_]{0,62}$", var.rds_database_name))
+    error_message = "rds_database_name must start with a letter and contain only letters, numbers, and underscores."
+  }
+}
+
+variable "rds_master_username" {
+  description = "RDS master username. The password is managed by RDS in Secrets Manager."
+  type        = string
+  default     = "monorepo_demo"
+
+  validation {
+    condition     = can(regex("^[A-Za-z][A-Za-z0-9_]{0,62}$", var.rds_master_username))
+    error_message = "rds_master_username must start with a letter and contain only letters, numbers, and underscores."
+  }
+}
+
+variable "rds_instance_class" {
+  description = "RDS instance class for the demo PostgreSQL database."
+  type        = string
+  default     = "db.t4g.micro"
+}
+
+variable "rds_allocated_storage_gb" {
+  description = "Initial RDS storage allocation in GiB."
+  type        = number
+  default     = 20
+
+  validation {
+    condition     = var.rds_allocated_storage_gb >= 20
+    error_message = "rds_allocated_storage_gb must be at least 20."
+  }
+}
+
+variable "rds_max_allocated_storage_gb" {
+  description = "Maximum RDS autoscaled storage allocation in GiB."
+  type        = number
+  default     = 100
+
+  validation {
+    condition     = var.rds_max_allocated_storage_gb >= var.rds_allocated_storage_gb
+    error_message = "rds_max_allocated_storage_gb must be greater than or equal to rds_allocated_storage_gb."
+  }
+}
+
+variable "rds_port" {
+  description = "PostgreSQL listener port."
+  type        = number
+  default     = 5432
+}
+
+variable "rds_publicly_accessible" {
+  description = "Whether the RDS instance receives a public endpoint. Keep false unless accepting a temporary demo exception."
+  type        = bool
+  default     = false
+}
+
+variable "rds_ingress_cidr_blocks" {
+  description = "CIDR blocks allowed to connect to PostgreSQL. Leave empty for private-only access."
+  type        = list(string)
+  default     = []
+}
+
+variable "rds_ingress_security_group_ids" {
+  description = "Security group IDs allowed to connect to PostgreSQL, such as a future App Runner VPC connector security group."
+  type        = list(string)
+  default     = []
+}
+
+variable "rds_backup_retention_days" {
+  description = "RDS backup retention period in days."
+  type        = number
+  default     = 1
+
+  validation {
+    condition     = var.rds_backup_retention_days >= 0 && var.rds_backup_retention_days <= 35
+    error_message = "rds_backup_retention_days must be between 0 and 35."
+  }
+}
+
+variable "rds_deletion_protection" {
+  description = "Whether deletion protection is enabled for the demo database."
+  type        = bool
+  default     = false
+}
+
+variable "rds_skip_final_snapshot" {
+  description = "Whether Terraform should skip a final snapshot when destroying the demo database."
+  type        = bool
+  default     = true
+}
