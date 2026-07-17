@@ -1,16 +1,9 @@
-import type { GenerationStatus, ModelOption, StreamMode } from '@workspace/shared';
+import type { GenerationStatus } from '@workspace/shared';
 import { Button } from '@workspace/ui/components/button';
-import { ModelSelector } from 'components/ModelSelector/ModelSelector';
-import { PromptSourceSelector } from 'components/PromptSourceSelector/PromptSourceSelector';
 
 interface StreamingControlsProps {
   status: GenerationStatus;
   hasSelection: boolean;
-  mode: StreamMode;
-  liveModels: readonly ModelOption[];
-  selectedModelId: string;
-  onModeChange: (mode: StreamMode) => void;
-  onModelChange: (modelId: string) => void;
   onStart: () => void;
   onStop: () => void;
   onClear: () => void;
@@ -19,11 +12,6 @@ interface StreamingControlsProps {
 export function StreamingControls({
   status,
   hasSelection,
-  mode,
-  liveModels,
-  selectedModelId,
-  onModeChange,
-  onModelChange,
   onStart,
   onStop,
   onClear,
@@ -31,19 +19,15 @@ export function StreamingControls({
   const isStreaming = status === 'streaming';
   const hasContent = status !== 'idle';
   const actionButtonClass =
-    'h-auto rounded-md px-4 py-3 text-base font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-30';
-  const secondaryActionClass = `${actionButtonClass} border-2 border-amber-500 text-amber-500 hover:bg-amber-200 hover:border-amber-600 hover:text-amber-600 disabled:border-muted-foreground disabled:bg-transparent disabled:text-muted-foreground`;
+    'h-[40px] rounded-md px-4 text-base font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed';
+  const secondaryActionClass = `${actionButtonClass} border-2 border-amber-500 text-amber-500 hover:bg-amber-200 hover:border-amber-600 hover:text-amber-600 disabled:border-muted-foreground disabled:bg-white disabled:text-muted-foreground`;
 
   return (
-    <div className="space-y-3">
-      <PromptSourceSelector mode={mode} disabled={isStreaming} onModeChange={onModeChange} />
-
-      <ModelSelector
-        models={liveModels}
-        selectedModelId={selectedModelId}
-        disabled={isStreaming || mode !== 'live'}
-        onModelChange={onModelChange}
-      />
+    <div className="flex h-full flex-col justify-between">
+      <div>
+        <p className="text-sm font-semibold tracking-wide text-primary mb-0">Foo Bar</p>
+        <p className="text-xs leading-5 font-medium text-muted-foreground/75 mb-2">Lorem ipsum..</p>
+      </div>
 
       {/* Action buttons */}
       <div className="flex items-stretch gap-2 pt-2">
@@ -52,7 +36,7 @@ export function StreamingControls({
           onClick={onStart}
           disabled={isStreaming || !hasSelection}
           aria-label="Generate response"
-          className={`${actionButtonClass} mr-4 flex-1 bg-green-600 text-primary-foreground hover:bg-green-600 hover:opacity-90`}
+          className={`${actionButtonClass} mr-4 flex-1 border-2 border-green-600 bg-green-600 text-primary-foreground hover:bg-green-600 hover:opacity-90 disabled:border-muted-foreground disabled:bg-white disabled:text-muted-foreground`}
         >
           {isStreaming ? 'Generating…' : 'Generate Markdown'}
         </Button>

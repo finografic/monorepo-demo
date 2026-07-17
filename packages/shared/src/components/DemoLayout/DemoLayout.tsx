@@ -19,6 +19,8 @@ interface DemoLayoutProps {
   header: DemoHeader;
   footer?: ReactNode;
   sidebar?: ReactNode;
+  /** Full-width bar between the sidebar/main row and the footer. */
+  actionBar?: ReactNode;
   sidebarLabel?: string;
   mobileSidebarOpen?: boolean;
   defaultMobileSidebarOpen?: boolean;
@@ -86,6 +88,7 @@ export function DemoLayout({
   header,
   footer,
   sidebar,
+  actionBar,
   sidebarLabel = 'Navigation',
   mobileSidebarOpen,
   defaultMobileSidebarOpen = true,
@@ -197,6 +200,8 @@ export function DemoLayout({
           {children}
         </main>
       </div>
+
+      {actionBar}
 
       {footer != null && (
         <footer className="flex flex-none flex-wrap items-center justify-between gap-x-6 gap-y-1.5 bg-primary px-4 py-3 md:px-6">

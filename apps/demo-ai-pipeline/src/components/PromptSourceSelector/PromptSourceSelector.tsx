@@ -21,10 +21,14 @@ const STREAM_MODES: readonly StreamMode[] = ['live', 'fixture'];
 
 export function PromptSourceSelector({ mode, disabled = false, onModeChange }: PromptSourceSelectorProps) {
   return (
-    <div className={disabled ? 'opacity-60 space-y-1.5' : 'space-y-1.5'}>
-      <p className="text-sm font-semibold tracking-wide text-primary mb-0">Prompt Source</p>
-      <p className="text-xs leading-5 font-medium text-muted-foreground/75 mb-2">{MODE_DESCRIPTIONS[mode]}</p>
-      <div className="flex overflow-hidden rounded-md border border-border text-sm font-medium">
+    <div className={`flex h-full flex-col justify-between${disabled ? ' opacity-60' : ''}`}>
+      <div>
+        <p className="text-sm font-semibold tracking-wide text-primary mb-0">Prompt Source</p>
+        <p className="text-xs leading-5 font-medium text-muted-foreground/75 mb-2">
+          {MODE_DESCRIPTIONS[mode]}
+        </p>
+      </div>
+      <div className="flex h-[40px] overflow-hidden rounded-md border-2 border-muted-foreground bg-white text-sm font-medium">
         {STREAM_MODES.map((streamMode) => (
           <Button
             key={streamMode}
@@ -33,7 +37,7 @@ export function PromptSourceSelector({ mode, disabled = false, onModeChange }: P
             disabled={disabled}
             onClick={() => onModeChange(streamMode)}
             className={[
-              'h-auto flex-1 rounded-none border-0 py-2 text-sm font-medium transition-colors disabled:cursor-not-allowed',
+              'h-auto flex-1 rounded-none border-0 text-sm font-medium transition-colors disabled:cursor-not-allowed',
               mode === streamMode
                 ? 'bg-primary text-primary-foreground'
                 : 'text-muted-foreground hover:bg-accent hover:text-foreground',

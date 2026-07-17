@@ -1,9 +1,12 @@
 import type { StreamMode } from '@workspace/shared';
 import { DEFAULT_LIVE_MODEL_ID, LIVE_MODEL_OPTIONS } from '@workspace/shared';
 import { DemoLayout, StandbyPlaceholder } from '@workspace/shared/components';
+import { Col, Row } from '@workspace/ui/components/grid';
 import { MetricsBar } from 'components/MetricsBar/MetricsBar';
+import { ModelSelector } from 'components/ModelSelector/ModelSelector';
 import { PartialMarkdownGuard } from 'components/PartialMarkdownGuard/PartialMarkdownGuard';
 import { PromptSelector } from 'components/PromptSelector/PromptSelector';
+import { PromptSourceSelector } from 'components/PromptSourceSelector/PromptSourceSelector';
 import { SourceToggle } from 'components/SourceToggle/SourceToggle';
 import { StreamingControls } from 'components/StreamingControls/StreamingControls';
 import { PROMPTS } from 'prompts/index';
@@ -126,35 +129,58 @@ export function DemoPage() {
       mobileSidebarOpen={isMobileSidebarOpen}
       onMobileSidebarOpenChange={setIsMobileSidebarOpen}
       sidebar={
-        <>
-          <div className="min-h-0 flex-1 overflow-y-auto px-4 py-4 md:py-5 bg-gray-200 [scrollbar-color:bg-gray-200] [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-track]:bg-gray-200 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-gray-400/40">
-            <PromptSelector
-              prompts={PROMPTS}
-              selectedId={selectedId}
-              parameterValues={parameterValues}
-              disabled={status === 'streaming'}
-              onSelect={handleSelect}
-              onParameterChange={handleParameterChange}
-            />
-          </div>
-
-          <div className="min-h-24 border-t-2 border-gray-200  px-4 py-4">
+        <div className="min-h-0 flex-1 overflow-y-auto px-4 py-4 md:py-5 bg-gray-200 [scrollbar-color:bg-gray-200] [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-track]:bg-gray-200 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-gray-400/40">
+          <PromptSelector
+            prompts={PROMPTS}
+            selectedId={selectedId}
+            parameterValues={parameterValues}
+            disabled={status === 'streaming'}
+            onSelect={handleSelect}
+            onParameterChange={handleParameterChange}
+          />
+        </div>
+      }
+      sidebarLabel="Prompt selection"
+      actionBar={
+        <div className="flex flex-none flex-col border-t border-border bg-blue-500/20 md:flex-row">
+          <div className="flex flex-none flex-col px-4 py-4 md:w-[30rem] md:border-r md:border-border lg:w-[32rem]">
             <StreamingControls
               status={status}
               hasSelection={!!selectedId}
-              mode={mode}
-              liveModels={LIVE_MODEL_OPTIONS}
-              selectedModelId={selectedModelId}
-              onModeChange={handleModeChange}
-              onModelChange={setSelectedModelId}
               onStart={handleStart}
               onStop={stop}
               onClear={handleClear}
             />
           </div>
-        </>
+
+          <div className="flex min-h-20 flex-1 flex-wrap items-stretch justify-between gap-4 px-4 py-4 md:gap-5 md:px-8">
+            {status === 'idle' ? (
+              <Row className="min-w-0 flex-1">
+                <Col xs={12} md={6} className="flex flex-col">
+                  <PromptSourceSelector mode={mode} onModeChange={handleModeChange} />
+                </Col>
+                <Col xs={12} md={6} className="flex flex-col">
+                  <ModelSelector
+                    models={LIVE_MODEL_OPTIONS}
+                    selectedModelId={selectedModelId}
+                    onModelChange={setSelectedModelId}
+                  />
+                </Col>
+              </Row>
+            ) : (
+              <div className="flex min-w-0 flex-1 basis-full items-center md:basis-auto" aria-live="polite">
+                <MetricsBar status={status} metrics={metrics} progress={progress} />
+              </div>
+            )}
+            {status !== 'idle' ? (
+              <div className="flex items-center">
+                <SourceToggle showRaw={showRaw} onToggle={() => setShowRaw((v) => !v)} />
+              </div>
+            ) : null}
+            {sourceReference ? <SourceAttribution source={sourceReference} /> : null}
+          </div>
+        </div>
       }
-      sidebarLabel="Prompt selection"
       footer={
         <>
           <p className="text-sm text-primary-foreground">Fixture mode · Live OpenAI-compatible API</p>
@@ -174,14 +200,6 @@ export function DemoPage() {
         ) : (
           <StandbyPlaceholder label="Select a prompt and click Generate to begin." />
         )}
-      </div>
-
-      <div className="flex min-h-20 flex-wrap items-center justify-between gap-4 bg-blue-500/20 px-4 py-4 md:gap-5 md:px-8">
-        <div className="min-w-0 flex-1 basis-full md:basis-auto" aria-live="polite">
-          <MetricsBar status={status} metrics={metrics} progress={progress} />
-        </div>
-        <SourceToggle showRaw={showRaw} onToggle={() => setShowRaw((v) => !v)} />
-        {sourceReference ? <SourceAttribution source={sourceReference} /> : null}
       </div>
     </DemoLayout>
   );

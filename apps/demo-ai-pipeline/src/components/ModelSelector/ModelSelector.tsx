@@ -17,22 +17,24 @@ export function ModelSelector({
   const selectedModel = models.find((model) => model.id === selectedModelId);
 
   return (
-    <div className={disabled ? 'opacity-60 space-y-1.5' : 'space-y-1.5'}>
-      <label htmlFor="live-model" className="text-sm font-medium tracking-wider text-primary">
-        Live LLM model
-      </label>
-      {selectedModel ? (
-        <p className="text-xs leading-5 font-medium text-muted-foreground/75 mb-2">
-          {selectedModel.description}
-          {selectedModel.isReasoning ? ' Reasoning model: may take longer to begin streaming.' : ''}
-        </p>
-      ) : null}
+    <div className={`flex h-full flex-col justify-between${disabled ? ' opacity-60' : ''}`}>
+      <div>
+        <label htmlFor="live-model" className="block text-sm font-medium tracking-wider text-primary">
+          Live LLM model
+        </label>
+        {selectedModel ? (
+          <p className="text-xs leading-5 font-medium text-muted-foreground/75 mb-2">
+            {selectedModel.description}
+            {selectedModel.isReasoning ? ' Reasoning model: may take longer to begin streaming.' : ''}
+          </p>
+        ) : null}
+      </div>
       <NativeSelect
         id="live-model"
         value={selectedModelId}
         disabled={disabled}
         onChange={(event) => onModelChange(event.target.value)}
-        className="w-full"
+        className="w-full rounded-lg bg-white [&_select]:h-[40px] [&_select]:border-2 [&_select]:border-muted-foreground"
       >
         {models.map((model) => (
           <NativeSelectOption key={model.id} value={model.id}>
