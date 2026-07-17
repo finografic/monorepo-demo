@@ -508,17 +508,20 @@ Deployability requirement:
   - `AUTH_COOKIE_SAME_SITE=none`
 - [x] Build CloudFront-targeted frontend assets.
 - [x] Verify built assets do not contain App Runner or direct EC2 API URLs.
-- [ ] Sync assets to S3.
-- [ ] Invalidate CloudFront.
+- [x] Sync assets to S3.
+- [x] Invalidate CloudFront.
 - [ ] Smoke test CloudFront -> EC2 -> RDS:
-  - landing page
-  - login/session
-  - admin pages
-  - translations/i18n
-  - AI pipeline fixture streaming
-  - AI live streaming if enabled
-  - datavis
-  - xscan
+  - [x] landing page
+  - [x] login/session
+  - [ ] admin pages
+  - [x] translations/i18n
+  - [x] AI pipeline fixture streaming
+  - [ ] AI live streaming if enabled
+  - [x] datavis
+  - [x] xscan
+- [ ] Tighten CloudFront API error handling:
+  - invalid `/api/*` responses can still be converted to SPA `index.html` by distribution-level custom error responses;
+  - valid API routes work, including `/api/health`, auth/session, i18n, and fixture streaming.
 
 Done when:
 
