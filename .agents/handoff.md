@@ -1,373 +1,161 @@
 # monorepo-demo — Handoff
 
-## Current Objective
+## Current State
 
-This repo has moved from "monorepo starter" into a **portfolio monorepo** for presenting to a prospective TMR employer.
+This repo is a portfolio monorepo demo for showing full-stack frontend/backend work to employers and recruiters.
 
-Two demos are now complete:
+The canonical deployed AWS shape is now:
 
-1. `apps/demo-ai-pipeline` — AI/LLM streaming markdown pipeline (see full notes below)
-2. `apps/demo-datavis` — QLD transport data dashboard (Recharts + D3 + live CKAN API)
+```text
+CloudFront default domain
+  -> S3 static React/Vite frontend
+  -> /api/* CloudFront behavior
+  -> EC2 Hono/Auth.js API
+  -> RDS PostgreSQL
+```
 
-The demo is meant to show:
+Canonical URL:
 
-- streaming AI/LLM UI
-- fixture vs live model generation
-- robust markdown rendering
-- Mermaid diagrams
-- syntax highlighting
-- partial markdown handling
-- basic accessibility discipline
-- TMR-flavoured service/documentation workflows
-- RAG / knowledge graph / GenAI interface language
+```text
+https://d2h3ihm2ddi3lx.cloudfront.net/
+```
 
-The target role is in:
+AWS is now the single active deployment story. Historical App Runner work is archived in `DONE_` docs only, and optional
+production upgrades live in `DEFERRED_` docs.
 
-`.ideas/TMR_Role_Description_Frontend_Developer.md`
-
-Important job-description anchors:
-
-- React, TypeScript, Tailwind, frontend component quality
-- REST APIs and modern data-fetching patterns
-- accessibility testing/remediation to WCAG 2.1/2.2 AA
-- AI / RAG / knowledge graphs / LLM-powered UIs
-- government service delivery, registration and licensing transformation
-
-## Current Branch / Git
+## Git / Working Rules
 
 - Branch: `master`
 - Do **not** commit unless the user explicitly asks.
-- Working tree is intentionally dirty with demo-ai-pipeline changes.
-- `apps/demo-ai-pipeline/src/qld.svg` is untracked and must be included when committing.
+- Use `git status --short` before editing or committing.
+- `.agents/handoff.md` is tracked and should contain stable current truth.
+- `.agents/memory.md` is gitignored and should contain recent session notes only.
 
-Current notable dirty files include:
+## Active Deployment Model
 
-- `apps/demo-ai-pipeline/src/components/MermaidBlock/MermaidBlock.tsx`
-- `apps/demo-ai-pipeline/src/components/MetricsBar/MetricsBar.tsx`
-- `apps/demo-ai-pipeline/src/components/ModelSelector/ModelSelector.tsx`
-- `apps/demo-ai-pipeline/src/components/PromptSelector/PromptSelector.tsx`
-- `apps/demo-ai-pipeline/src/components/SourceToggle/SourceToggle.tsx`
-- `apps/demo-ai-pipeline/src/components/StreamingControls/StreamingControls.tsx`
-- `apps/demo-ai-pipeline/src/pages/DemoPage.tsx`
-- `apps/demo-ai-pipeline/src/prompts/service-finder.prompt.ts`
-- `apps/demo-ai-pipeline/src/fixtures/service-finder-*.fixture.json`
-- `packages/ui/src/styles/globals.css`
-- plus earlier uncommitted fixture/prompt work if not already committed in the active tree
+Use [AWS Deployment Guide](/docs/process/AWS_DEPLOYMENT_GUIDE.md) as the operational source of truth.
 
-Run `git status --short` before continuing.
+Normal deployment paths:
 
-## Recent Completed Work
+- **Frontend code:** build/sync/invalidate S3 + CloudFront.
+- **Server code:** update the EC2 checkout/build and restart `monorepo-demo-api`.
+- **Server runtime env:** update `/opt/monorepo-demo/.env` over SSM and restart `monorepo-demo-api`.
+- **Infrastructure:** run Terraform from `infra/terraform/environments/demo`.
+- **Database schema/data:** run RDS migrations/seeds from EC2 or another approved private path.
 
-### Live/Fixture Model Switching
+The manual GitHub Actions workflow `.github/workflows/deploy-aws-frontend.yml` is still useful: it deploys the AWS
+frontend assets to S3 and invalidates CloudFront. It does not deploy EC2 server code, run database work, or apply
+Terraform.
 
-The demo supports:
+## AWS Resources and Runtime
 
-- Fixture mode: pre-recorded streamed markdown, no API cost
-- Live mode: OpenAI-compatible server provider via OpenCode/hosted model path
-- model selector in the sidebar
-- selected model included in cache key
-- generated markdown cache per prompt/mode/model/parameter selection
+Known current AWS resource identifiers:
 
-Live streaming is natural provider streaming. There is no artificial throttling in Live mode.
-Fixture mode is intentionally chunked with mock streaming delays.
+- CloudFront distribution URL: `https://d2h3ihm2ddi3lx.cloudfront.net`
+- CloudFront distribution ID: `ERCVOSB81GPS9`
+- S3 frontend bucket: `monorepo-demo-demo-frontend`
+- EC2 API instance ID: `i-0805afb8519b94f3d`
+- EC2 API public DNS: `ec2-54-252-64-116.ap-southeast-2.compute.amazonaws.com`
+- EC2 API container: `monorepo-demo-api`
+- EC2 API port: `4000`
+- RDS endpoint: `monorepo-demo-demo-postgres.cvkgiaqoc64i.ap-southeast-2.rds.amazonaws.com:5432`
+- RDS database: `monorepo_demo`
+- AWS region: `ap-southeast-2`
 
-### New 5 TMR-Aligned Fixtures
+EC2 runtime facts:
 
-The primary prompt cards are now:
+- `DB_DIALECT=postgres`
+- `DATABASE_URL` points to RDS PostgreSQL with SSL.
+- Live LLM mode uses the hosted OpenCode-compatible endpoint.
+- `AUTH_URL=https://d2h3ihm2ddi3lx.cloudfront.net`
+- `AUTH_COOKIE_SECURE=true`
+- `AUTH_COOKIE_SAME_SITE=none`
 
-1. Registration Renewal Eligibility
-2. Driver Licence Renewal
-3. Change of Address
-4. Fine Payment Flow
-5. AI Service Finder
+Do not commit AWS credentials, database URLs with passwords, local `.env` files, generated Terraform plans, or SSM
+parameter files containing secrets.
 
-Prompt implementation files were split so `index.ts` is barrel-only:
+## Completed AWS Work
 
-- `apps/demo-ai-pipeline/src/prompts/index.ts`
-- `apps/demo-ai-pipeline/src/prompts/prompts.ts`
-- `apps/demo-ai-pipeline/src/prompts/*.prompt.ts`
+The active AWS migration checklist is [TODO_AWS_TERRAFORM_CLOUDFRONT_RDS.md](/docs/todo/TODO_AWS_TERRAFORM_CLOUDFRONT_RDS.md).
 
-This matches the user preference:
+Current completed checkpoints:
 
-> `index.ts` files should be barrels only, not implementation files.
+- Terraform foundation.
+- S3 + CloudFront frontend.
+- GitHub Actions manual CloudFront deploy role/workflow.
+- Local PostgreSQL migration path.
+- RDS PostgreSQL foundation.
+- EC2 API infrastructure and server deployment.
+- CloudFront `/api/*` cutover to EC2.
+- RDS-backed auth/i18n/admin data path.
+- Live LLM streaming through CloudFront.
+- App Runner active-path cleanup.
 
-### AI Service Finder Variable
+Historical App Runner references are intentionally archived in:
 
-AI Service Finder has a selector for customer need:
+- [DONE_AWS_FULL_SERVER_APP_RUNNER.md](/docs/todo/DONE_AWS_FULL_SERVER_APP_RUNNER.md)
+- [DONE_AWS_APP_RUNNER_FULL_SERVER.md](/docs/todo/DONE_AWS_APP_RUNNER_FULL_SERVER.md)
 
-- Transfer used vehicle
-- Pay a fine
-- Change address
+Do not reintroduce App Runner as an active deployment path unless the user explicitly asks.
 
-Fixture mode maps each option to a separate fixture:
+## Recent Smoke Evidence
 
-- `service-finder-used-vehicle-transfer.fixture.json`
-- `service-finder-fine-payment.fixture.json`
-- `service-finder-change-address.fixture.json`
+These passed after the CloudFront -> EC2 -> RDS cutover:
 
-Live mode appends the selected option text to the live system prompt.
+- CloudFront root returns `200 text/html`.
+- `/login` renders.
+- `/admin` serves the SPA and redirects anonymous users to login.
+- `/demo-ai-pipeline/`, `/demo-datavis/`, and `/demo-xscan/` resolve through CloudFront.
+- `/api/health` returns JSON `{"status":"ok"}`.
+- Invalid `/api/*` routes return JSON `404`, not `index.html`.
+- `/api/i18n/translations?lng=en-GB` returns seeded RDS-backed translation JSON.
+- Fixture streaming returns `text/event-stream`.
+- Live LLM streaming works in the browser after the SSE heartbeat and CloudFront timeout fix.
+- EC2 SSM smoke confirmed `DB_DIALECT=postgres`, a PostgreSQL `DATABASE_URL`, and `monorepo-demo-api` running.
 
-### RAG / Knowledge Graph Context
+Known polish item:
 
-The AI Service Finder prompt and fixture variants were updated to make RAG and source-context ideas explicit.
+- Anonymous protected API responses currently return `401` with an ugly `INTERNAL_ERROR` body. Behavior is correct, but
+  the response envelope can be improved later.
 
-Relevant `.ideas` data-source files scanned:
+## Portfolio Apps
 
-- `.ideas/TMR_DATA_Transportation_CSV.md`
-- `.ideas/TMR_DATA_REST-SOURCES.md`
-- `.ideas/TMR_DATA_Transport-Features-QLD.md`
-- `.ideas/TMR_DATA_QLD-Traffic-GeoJSON.md`
-- `.ideas/TMR_DATA_Road-Crash-Locations.md`
-- `.ideas/TMR_DATA_Traffic-Census.md`
-- `.ideas/TMR_DATA_Datasets.md`
-- `.ideas/API_TMR_DATA_DOCS.md`
+The deployed frontend includes:
 
-Useful source-context themes found:
+- `apps/client` — landing, auth/login, dashboard/admin shell.
+- `apps/demo-ai-pipeline` — protected AI markdown streaming demo with fixture and live modes.
+- `apps/demo-datavis` — protected transport data dashboard.
+- `apps/demo-xscan` — protected dependency scan demo; still uses the external deps-xscan API unless intentionally
+  migrated.
 
-- Transport customer service centres
-- Customer service centre wait times
-- Q-Ride providers
-- BoatSafe training organisations
-- Registration call-centre enquiries
-- Non-generic registration enquiries
-- Registration renewals by channel
-- Transport features Queensland REST / ArcGIS source
-- QLDTraffic GeoJSON/API notes
-- Road crash locations Queensland
-- Queensland Open Data / CKAN catalogue metadata
+The AI pipeline prompt set is TMR/transport-flavoured and includes:
 
-The demo is still mock-data only. Do not build a full RAG backend unless explicitly asked.
+- Registration Renewal Eligibility
+- Driver Licence Renewal
+- Change of Address
+- Fine Payment Flow
+- AI Service Finder
 
-### Visual / UX Polish
+## Cost Guardrails
 
-Recent UI changes:
+Keep this demo cheap and pay-as-you-go:
 
-- QLD Government SVG logo centered in standby state
-- standby text below logo in primary blue
-- centered spinner while streaming before the first chunk arrives
-- wider sidebar
-- larger prompt cards
-- larger tags/badges
-- taller footer to allow larger metadata
-- larger controls/selects/toggle labels
-- single-line `text` fenced code blocks render as compact pills instead of full black code boxes
+- No NAT Gateway.
+- No load balancer.
+- No WAF.
+- No custom domain/Route 53/ACM unless explicitly approved.
+- No ECS/Fargate unless explicitly approved.
+- No Secrets Manager unless explicitly accepted as a paid upgrade.
+- RDS remains small: `db.t4g.micro`, 20 GiB storage, no automated backups by default.
+- EC2 remains small: `t3.micro`, public subnet, direct outbound internet.
+- User has a `$5` AWS budget alert and expects very low organic traffic.
 
-Theme update:
+## Current Follow-Ups
 
-- `packages/ui/src/styles/globals.css`
-- `--primary` now uses logo blue in OKLCH:
+Highest-value next work:
 
-```css
---primary: oklch(0.489 0.161 254.944);
-```
-
-This approximates `#005EB8`.
-
-### Mermaid
-
-Mermaid labels were restored earlier.
-
-Current Mermaid setup:
-
-- `htmlLabels: false`
-- custom theme/styles in:
-  - `apps/demo-ai-pipeline/src/components/MermaidBlock/mermaid.theme.ts`
-  - `apps/demo-ai-pipeline/src/components/MermaidBlock/mermaid.styles.ts`
-- `MermaidBlock` now gives wrapper `role="img"`
-- label varies by diagram type:
-  - Mermaid sequence diagram
-  - Mermaid flowchart diagram
-  - Mermaid graph diagram
-- inner SVG gets `aria-hidden="true"` and `focusable="false"`
-
-This is a pragmatic accessibility improvement, not a complete screen-reader diagram description.
-
-## Accessibility Status
-
-User specifically asked to at least:
-
-- fix 2 axe Serious errors
-- ensure buttons are keyboard navigable
-- ensure Mermaid has aria labels if needed
-
-Known axe serious error from screenshot:
-
-- color contrast on `.bg-purple-500` Mermaid flowchart badge
-- fixed by changing badge palette in `PromptSelector.tsx`
-
-Button/control status:
-
-- prompt cards are keyboard selectable via Enter/Space and arrow navigation
-- mode buttons are native buttons
-- Generate/Stop/Clear are native buttons with `aria-label`
-- Source toggle uses shadcn `Switch` + visible `Label`
-- model and parameter selects have visible labels
-
-Still worth doing next:
-
-- run axe again in the browser
-- run a quick keyboard-only pass:
-  - Tab through sidebar
-  - arrow through prompt list
-  - Enter/Space selects prompt
-  - Tab to Fixture/Live, model select, Generate, Stop, Clear, Raw markdown
-- run Lighthouse accessibility if time permits
-
-Do not over-invest here unless the user asks. The goal is “defensible rough demo”, not a full day of accessibility remediation.
-
-## Remaining Work Before Calling Demo "Done"
-
-Highest priority:
-
-1. Re-run axe and confirm the two serious contrast issues are gone.
-2. Browser smoke all five prompts in Fixture mode.
-3. Browser smoke AI Service Finder selector variants.
-4. Browser smoke Live mode once with Qwen/Qwen3.7 Plus if API env is available.
-5. Check keyboard navigation quickly.
-6. Optionally add a small visible disclaimer in the AI Service Finder output/prompt language:
-   “AI-assisted draft, verify against official services.”
-
-Nice-to-have:
-
-- Add/adjust QLD/TMR details in Registration Renewal and Driver Licence Renewal fixtures:
-  - licence renewal notice about 6 weeks before expiry
-  - e-notices
-  - online renewal limits
-  - photo/signature capture
-  - 21-day delivery
-  - 90-day contact window
-  - direct debit/card payment branch
-  - service centre fallback
-- Improve footer metadata presentation further.
-- Fix remaining existing lint warnings:
-  - `src/main.tsx` unassigned CSS import warning
-  - `MarkdownRenderer` react-perf new array warnings
-
-## Validation Recently Run
-
-During this work, these passed at different points:
-
-- `corepack pnpm --filter @workspace/demo-ai-pipeline typecheck`
-- `corepack pnpm --filter @workspace/demo-ai-pipeline lint`
-- `corepack pnpm --filter @workspace/demo-ai-pipeline test`
-- `corepack pnpm --filter @workspace/demo-ai-pipeline build`
-- `corepack pnpm typecheck`
-
-After any new edits, run at least:
-
-```sh
-corepack pnpm --filter @workspace/demo-ai-pipeline typecheck
-corepack pnpm --filter @workspace/demo-ai-pipeline lint
-```
-
-Lint is expected to pass with existing warnings only unless they are fixed.
-
-## Important Project Rules
-
-- Do not commit unless explicitly asked.
-- Use `corepack pnpm ...`.
-- Use `:` in npm script names.
-- Keep `index.ts` files barrel-only.
-- Do not publish/release.
-- Do not convert this into a full backend/RAG/data integration without explicit instruction.
-
-## Demo Positioning
-
-Best way to describe the AI Markdown Pipeline:
-
-> A React/TypeScript streaming AI interface that renders partial LLM output into safe markdown, diagrams, tables and code blocks, with fixture/live modes, provider/model selection, cached generations, and TMR-flavoured service-documentation prompts.
-
-Best way to frame RAG:
-
-> The demo does not implement real retrieval yet, but the AI Service Finder fixture demonstrates the interface contract and UX pattern for RAG-style source context, confidence flags, stale-data warnings, knowledge graph relationships, and human review for transactional advice.
-
----
-
-## demo-datavis — QLD Transport Data Dashboard
-
-**Status: complete base demo, ready to present.**
-
-Port: `3002` — `corepack pnpm --filter @workspace/demo-datavis dev`
-
-### Stack
-
-- Recharts (bar, area, dual-line charts)
-- D3 (d3-scale + d3-scale-chromatic — heatmap colour scale)
-- Static mock fixtures inspired by Queensland Open Data
-- One live CKAN API call (no auth required)
-
-### 6 Chart Views
-
-| Card                                       | Chart type           | Library          | Data                          |
-| ------------------------------------------ | -------------------- | ---------------- | ----------------------------- |
-| Service Centre Wait Times                  | Grouped bar          | Recharts         | Mock (8 QLD centres)          |
-| Registration Call Centre — Daily Enquiries | Area chart           | Recharts         | Mock (May 2026)               |
-| Traffic Volume — Hour × Day Heatmap        | SVG heatmap          | D3 colour scale  | Mock (7×24 grid)              |
-| Translink Monthly Performance              | Dual-line (2 y-axes) | Recharts         | Mock (Jan–Dec 2025)           |
-| Traffic Census — Road Network              | Horizontal bar       | Recharts         | Mock (top 10 roads)           |
-| Live: QLD Open Data Catalogue              | Dataset list         | fetch → CKAN API | **Live** from data.qld.gov.au |
-
-### Layout
-
-Exact mirror of demo-ai-pipeline: left sidebar with keyboard-navigable chart cards, main pane renders selected chart, footer shows data source attribution.
-
-### Accessibility
-
-- `role="img"` + `aria-labelledby` on every chart wrapper
-- sr-only `<table>` inside each chart (screen reader data fallback)
-- Keyboard navigation on sidebar cards (arrow keys + Enter/Space)
-- `isAnimationActive={false}` on all Recharts elements (respects reduced-motion intent)
-- Live panel uses `aria-live="polite"` on tooltip and `role="status"` on loading spinner
-
-### Validation
-
-- Typecheck: clean
-- Lint: one expected warning (CSS unassigned import in main.tsx — same pattern as demo-ai-pipeline)
-- Browser smoke: all 6 views confirmed working
-
-### Plan doc
-
-`docs/todo/DONE_DEMO_DATAVIS.md`
-
----
-
-## User Preferences
-
-- Direct, practical responses.
-- Avoid over-building.
-- Polish enough to present, not perfect.
-- Accessibility matters because the job description says it in bold, but time is limited.
-- TMR alignment matters more than generic technical examples.
-- Demo can use mock data; factual accuracy is not critical.
-- Any real QLD/TMR data should be used as flavour/source context, not treated as authoritative production logic.
-
----
-
-## Current State — 2026-07-01
-
-Portfolio GitHub Pages deployment is live and includes all three demos:
-
-- `/demo-ai-pipeline/`
-- `/demo-datavis/`
-- `/demo-xscan/`
-
-`apps/demo-xscan` is now a thin wrapper around published `@finografic/deps-xscan-demo`; the scanner UI/source lives in
-`@finografic-deps-xscan/demo`.
-
-Required GitHub Actions repository variables for Pages:
-
-GitHub repo -> Settings -> Secrets and variables -> Actions -> Variables tab -> Repository variables
-
-| Variable                  | Value                                    |
-| ------------------------- | ---------------------------------------- |
-| `DEMO_API_BASE_URL`       | `https://monorepo-demo-api.onrender.com` |
-| `DEMO_XSCAN_API_BASE_URL` | `https://deps-xscan-api.onrender.com`    |
-
-`VITE_AUTH_API_BASE_URL` uses `DEMO_API_BASE_URL`; xscan scan requests use `DEMO_XSCAN_API_BASE_URL`.
-
-Root database scripts are intentionally minimal:
-
-- `db:reset` delegates to `@workspace/server db:reset`
-- `db:studio` delegates to `@workspace/server db:studio`
-
-Granular DB scripts live in `apps/server/package.json`.
+1. Finish Phase 9 documentation/cleanup in `TODO_AWS_TERRAFORM_CLOUDFRONT_RDS.md`.
+2. Add rollback, teardown, and cost-control notes to the AWS docs.
+3. Decide whether to keep or archive the legacy GitHub Pages workflow.
+4. Decide whether any old AWS resources outside Terraform should be stopped/deleted.
+5. Polish protected-route error envelopes for anonymous API calls.
