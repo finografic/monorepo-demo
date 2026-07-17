@@ -29,22 +29,6 @@ await esbuild.build({
     types: srcAlias('types'),
     utils: srcAlias('utils'),
   },
-  plugins: [
-    {
-      name: 'reject-better-sqlite3',
-      setup(build) {
-        build.onResolve({ filter: /^better-sqlite3$/ }, () => {
-          return {
-            errors: [
-              {
-                text: 'better-sqlite3 must not be bundled into the Lambda artifact',
-              },
-            ],
-          };
-        });
-      },
-    },
-  ],
 });
 
 await writeFile(

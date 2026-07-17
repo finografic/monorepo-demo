@@ -1,10 +1,10 @@
-import { integer, sqliteTable, text } from 'drizzle-orm/sqlite-core';
+import { pgTable, text, timestamp } from 'drizzle-orm/pg-core';
 
-export const verification = sqliteTable('auth_verification', {
+export const verification = pgTable('auth_verification', {
   id: text('id').primaryKey(),
   identifier: text('identifier').notNull(),
   value: text('value').notNull(),
-  expiresAt: integer('expiresAt', { mode: 'timestamp' }).notNull(),
-  createdAt: integer('createdAt', { mode: 'timestamp' }),
-  updatedAt: integer('updatedAt', { mode: 'timestamp' }),
+  expiresAt: timestamp('expiresAt', { withTimezone: true }).notNull(),
+  createdAt: timestamp('createdAt', { withTimezone: true }),
+  updatedAt: timestamp('updatedAt', { withTimezone: true }),
 });

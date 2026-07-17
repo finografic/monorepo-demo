@@ -18,7 +18,7 @@ const translationPatchSchema = v.union([
 type TranslationPatch = v.InferOutput<typeof translationPatchSchema>;
 
 function normalisePatch(patch: {
-  isActive?: 0 | 1 | undefined;
+  isActive?: boolean | undefined;
   key?: string | undefined;
   translations?: Record<string, string> | undefined;
 }) {
@@ -26,7 +26,7 @@ function normalisePatch(patch: {
   return {
     ...rest,
     updatedAt: new Date(),
-    ...(isActive !== undefined ? { isActive: isActive === 1 } : {}),
+    ...(isActive !== undefined ? { isActive } : {}),
   };
 }
 

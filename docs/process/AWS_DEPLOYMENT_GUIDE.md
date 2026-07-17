@@ -165,9 +165,9 @@ group, IAM, CloudFront origin behaviour, or RDS infrastructure changes.
 - Run the PostgreSQL seed command against RDS after deployment.
 - Review whether the seed operation is idempotent before running it on live demo data.
 
-**Local SQLite data changes:**
+**Local database data changes:**
 
-- Local SQLite database contents are not deployed to AWS.
+- Local PostgreSQL database contents are not deployed to AWS.
 - AWS uses RDS PostgreSQL as the primary database.
 
 Terraform is required only for RDS infrastructure changes, not normal table

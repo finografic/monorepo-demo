@@ -1,12 +1,10 @@
-import path from 'node:path';
 import { env as envShared } from '@workspace/config/env';
-import { paths } from '@workspace/config/paths';
 import * as v from 'valibot';
+
+const DEFAULT_LOCAL_DATABASE_URL = 'postgresql://monorepo_demo:monorepo_demo@localhost:5433/monorepo_demo';
 
 const ServerEnvSchema = v.pipe(
   v.object({
-    DB_NAME: v.optional(v.string(), 'monorepo-demo.sqlite.db'),
-    DB_DIALECT: v.optional(v.picklist(['sqlite', 'postgres']), 'sqlite'),
     DATABASE_URL: v.optional(v.pipe(v.string(), v.url())),
     AUTH_SECRET: v.pipe(v.string(), v.minLength(16)),
     AUTH_URL: v.optional(v.string()),
@@ -39,9 +37,15 @@ const ServerEnvSchema = v.pipe(
       .map((origin) => origin.trim())
       .filter(Boolean);
 
+    const databaseUrl = raw.DATABASE_URL ?? DEFAULT_LOCAL_DATABASE_URL;
+
+    if (!raw.DATABASE_URL && envShared.NODE_ENV === 'production') {
+      throw new Error('DATABASE_URL is required in production.');
+    }
+
     return {
       ...raw,
-      DB_PATH: process.env.DB_PATH ?? path.resolve(paths.data.dir, raw.DB_NAME),
+      DATABASE_URL: databaseUrl,
       CORS_ORIGINS: corsOrigins,
       COOKIES: {
         COOKIE_PREFIX: prefix,
@@ -58,8 +62,6 @@ const ServerEnvSchema = v.pipe(
 );
 
 const envServerValidated = v.parse(ServerEnvSchema, {
-  DB_NAME: process.env.DB_NAME,
-  DB_DIALECT: process.env.DB_DIALECT,
   DATABASE_URL: process.env.DATABASE_URL,
   AUTH_SECRET: process.env.AUTH_SECRET,
   AUTH_URL: process.env.AUTH_URL,

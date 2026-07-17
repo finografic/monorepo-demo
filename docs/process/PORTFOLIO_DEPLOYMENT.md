@@ -58,14 +58,13 @@ Build command:
 corepack enable && pnpm install --frozen-lockfile && pnpm --filter @workspace/server build
 ```
 
-Start command:
+Legacy Render start command:
 
 ```sh
-pnpm --filter @workspace/server render:start
+pnpm --filter @workspace/server start
 ```
 
-The Render start command runs a non-interactive SQLite bootstrap before starting the API. It creates or updates the
-schema, seeds missing demo data, and then starts the built Hono server.
+Render is no longer the canonical deployment target. The active AWS path uses EC2 plus RDS PostgreSQL.
 
 | Variable                                     | Notes                                                                            |
 | -------------------------------------------- | -------------------------------------------------------------------------------- |
@@ -75,8 +74,7 @@ schema, seeds missing demo data, and then starts the built Hono server.
 | `CORS_ORIGINS`                               | Comma-separated browser origins allowed to send credentials                      |
 | `AUTH_COOKIE_SAME_SITE`                      | `none` for GitHub Pages to Render auth cookies                                   |
 | `AUTH_COOKIE_SECURE`                         | `true` for HTTPS deployments                                                     |
-| `DB_NAME`                                    | `monorepo-demo.sqlite.db`                                                        |
-| `DB_PATH`                                    | Optional persistent SQLite path, if using a Render disk                          |
+| `DATABASE_URL`                               | PostgreSQL connection string                                                     |
 | `OPENAI_API_KEY` or compatible provider vars | Only if AI Pipeline live mode is enabled                                         |
 
 Recommended `CORS_ORIGINS` for the published Pages site:

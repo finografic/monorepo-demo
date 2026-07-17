@@ -87,7 +87,6 @@ const config = {
         'vite',
         'vitest',
         // database
-        '@types/better-sqlite3',
         'drizzle-kit',
         'drizzle-orm',
         // server

@@ -1,30 +1,23 @@
-import { integer, sqliteTable, text } from 'drizzle-orm/sqlite-core';
+import { boolean, jsonb, pgTable, text, timestamp } from 'drizzle-orm/pg-core';
 import { createInsertSchema, createSelectSchema } from 'drizzle-valibot';
 import * as v from 'valibot';
 
-import { sqliteBooleanField } from 'lib/valibot.utils';
-
-export const translations_app = sqliteTable('translations_app', {
+export const translations_app = pgTable('translations_app', {
   id: text('id')
     .primaryKey()
     .$defaultFn(() => crypto.randomUUID()),
   key: text('key').notNull().unique(),
-  translations: text('translations', { mode: 'json' })
-    .$type<Record<string, string>>()
-    .notNull()
-    .default({ 'en-GB': '' }),
-  isActive: integer('is_active', { mode: 'boolean' }).notNull().default(true),
-  createdAt: integer('created_at', { mode: 'timestamp' }).$defaultFn(() => new Date()),
-  updatedAt: integer('updated_at', { mode: 'timestamp' })
-    .$defaultFn(() => new Date())
-    .$onUpdate(() => new Date()),
+  translations: jsonb('translations').$type<Record<string, string>>().notNull().default({ 'en-GB': '' }),
+  isActive: boolean('is_active').notNull().default(true),
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
+  updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow(),
 });
 
 const insertTranslationAppSchema = v.omit(
   createInsertSchema(translations_app, {
     key: v.pipe(v.string(), v.minLength(1), v.maxLength(255)),
     translations: v.record(v.string(), v.string()),
-    isActive: sqliteBooleanField(),
+    isActive: v.boolean(),
   }),
   ['id', 'createdAt', 'updatedAt'],
 );

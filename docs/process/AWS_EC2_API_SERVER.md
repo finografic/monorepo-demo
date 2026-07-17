@@ -22,7 +22,7 @@ Use the EC2-specific Dockerfile:
 pnpm aws:ec2:docker:build
 ```
 
-This image builds the server only. It does not bootstrap SQLite during image
+This image builds the server only. It does not bootstrap a local database during image
 build.
 
 Local smoke run:
@@ -44,7 +44,6 @@ Required runtime variables:
 ```bash
 NODE_ENV=production
 PORT=4000
-DB_DIALECT=postgres
 DATABASE_URL=postgresql://...
 AUTH_SECRET=replace-with-secret
 CORS_ORIGINS=https://d2h3ihm2ddi3lx.cloudfront.net
@@ -105,7 +104,6 @@ Local image validation:
 pnpm aws:ec2:docker:build
 docker run --rm --platform linux/amd64 -p 4100:4000 \
   -e NODE_ENV=production \
-  -e DB_DIALECT=postgres \
   -e DATABASE_URL=postgresql://monorepo_demo:monorepo_demo@host.docker.internal:5433/monorepo_demo \
   -e AUTH_SECRET=ec2-api-smoke-secret \
   -e CORS_ORIGINS=http://localhost:3000,http://localhost:4100 \

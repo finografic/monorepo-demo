@@ -1,5 +1,6 @@
 import pc from 'picocolors';
 
+import { closePostgres } from './db.postgres.adapter';
 import { seed as seedSupportedLanguages } from './seeds/supported_languages.seed';
 import { seed as seedTranslationsAdmin } from './seeds/translations_admin.seed';
 import { seed as seedTranslationsApp } from './seeds/translations_app.seed';
@@ -22,7 +23,11 @@ async function main(): Promise<void> {
   console.log('');
 }
 
-main().catch((err) => {
-  console.error(pc.red('Seed failed:'), err);
-  process.exit(1);
-});
+main()
+  .catch((err) => {
+    console.error(pc.red('Seed failed:'), err);
+    process.exitCode = 1;
+  })
+  .finally(async () => {
+    await closePostgres();
+  });

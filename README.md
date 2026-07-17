@@ -21,7 +21,7 @@ Hono API on EC2 backed by RDS PostgreSQL.
 | Styling       | Tailwind 4 + shadcn components in `@workspace/ui`                 |
 | i18n          | i18next + i18next-http-backend + react-i18next                    |
 | Server        | Hono, `@hono/node-server`                                         |
-| Database      | Drizzle ORM, PostgreSQL/RDS for AWS, SQLite for local fallback    |
+| Database      | Drizzle ORM, PostgreSQL locally and on AWS/RDS                    |
 | Auth          | Auth.js (`@auth/core` + `@hono/auth-js`)                          |
 | API docs      | hono-openapi + Scalar UI (`@scalar/hono-api-reference`)           |
 | Logging       | Pino (via `hono-pino`)                                            |
@@ -193,14 +193,13 @@ Default local ports:
 
 ### Local PostgreSQL
 
-SQLite remains available as the local/demo fallback. PostgreSQL is the AWS database and can also be used locally with
-the Docker Compose helper.
+PostgreSQL is the only database runtime. Local development uses the Docker Compose helper.
 
 ```bash
-pnpm db:postgres:up
-pnpm db:postgres:setup
-pnpm db:postgres:psql
-pnpm db:postgres:down
+pnpm db:up
+pnpm db:setup
+pnpm db:psql
+pnpm db:down
 ```
 
 Connection string for the local container:
@@ -209,16 +208,16 @@ Connection string for the local container:
 DATABASE_URL=postgresql://monorepo_demo:monorepo_demo@localhost:5433/monorepo_demo
 ```
 
-The Postgres Drizzle config is separate from the active SQLite config:
+The Drizzle config points at the PostgreSQL schema:
 
 ```bash
-pnpm --filter @workspace/server db:postgres:generate
-pnpm --filter @workspace/server db:postgres:migrate
-pnpm --filter @workspace/server db:postgres:seed
-pnpm --filter @workspace/server db:postgres:studio
+pnpm db:generate
+pnpm db:migrate
+pnpm db:seed
+pnpm db:studio
 ```
 
-These commands use the side-by-side PostgreSQL schema files in `apps/server/src/db/schemas-postgres`.
+These commands use the PostgreSQL schema files in `apps/server/src/db/schemas`.
 
 ## Deployment
 
@@ -231,30 +230,28 @@ PostgreSQL for relational data. See [AWS Deployment Guide](/docs/process/AWS_DEP
 
 All root scripts delegate to Moon and run across all workspaces in dependency order.
 
-| Script                    | Description                                         |
-| :------------------------ | :-------------------------------------------------- |
-| `pnpm dev`                | Start main client + API using current env           |
-| `pnpm dev:all`            | Start client, API, and demos using current env      |
-| `pnpm dev:postgres`       | Start local PostgreSQL, then main client + API      |
-| `pnpm dev:all:postgres`   | Start local PostgreSQL, then client, API, and demos |
-| `pnpm build`              | Build all packages and apps                         |
-| `pnpm typecheck`          | Run `tsc --noEmit` across all workspaces            |
-| `pnpm lint`               | oxlint across all workspaces                        |
-| `pnpm lint:fix`           | oxlint with auto-fix                                |
-| `pnpm lint:ci`            | oxlint quiet mode (for CI pipelines)                |
-| `pnpm lint:md`            | Markdown linting                                    |
-| `pnpm format:check`       | oxfmt dry-run check                                 |
-| `pnpm format:fix`         | oxfmt in-place formatting                           |
-| `pnpm test`               | Vitest across all workspaces                        |
-| `pnpm clean`              | Delete all build artefacts                          |
-| `pnpm db:postgres:up`     | Start local PostgreSQL in Docker                    |
-| `pnpm db:postgres:setup`  | Start, migrate, and seed local PostgreSQL           |
-| `pnpm db:postgres:reset`  | Drop local PostgreSQL volume, then setup DB         |
-| `pnpm db:postgres:psql`   | Open `psql` in the local PostgreSQL DB              |
-| `pnpm db:postgres:studio` | Open Drizzle Studio for local PostgreSQL            |
-| `pnpm db:postgres:down`   | Stop local PostgreSQL                               |
-| `pnpm syncpack:lint`      | Check for cross-workspace version drift             |
-| `pnpm syncpack:fix`       | Fix mismatched dependency versions                  |
+| Script               | Description                                         |
+| :------------------- | :-------------------------------------------------- |
+| `pnpm dev`           | Start local PostgreSQL, then main client + API      |
+| `pnpm dev:all`       | Start local PostgreSQL, then client, API, and demos |
+| `pnpm build`         | Build all packages and apps                         |
+| `pnpm typecheck`     | Run `tsc --noEmit` across all workspaces            |
+| `pnpm lint`          | oxlint across all workspaces                        |
+| `pnpm lint:fix`      | oxlint with auto-fix                                |
+| `pnpm lint:ci`       | oxlint quiet mode (for CI pipelines)                |
+| `pnpm lint:md`       | Markdown linting                                    |
+| `pnpm format:check`  | oxfmt dry-run check                                 |
+| `pnpm format:fix`    | oxfmt in-place formatting                           |
+| `pnpm test`          | Vitest across all workspaces                        |
+| `pnpm clean`         | Delete all build artefacts                          |
+| `pnpm db:up`         | Start local PostgreSQL in Docker                    |
+| `pnpm db:setup`      | Start, migrate, and seed local PostgreSQL           |
+| `pnpm db:reset`      | Drop local PostgreSQL volume, then setup DB         |
+| `pnpm db:psql`       | Open `psql` in the local PostgreSQL DB              |
+| `pnpm db:studio`     | Open Drizzle Studio for local PostgreSQL            |
+| `pnpm db:down`       | Stop local PostgreSQL                               |
+| `pnpm syncpack:lint` | Check for cross-workspace version drift             |
+| `pnpm syncpack:fix`  | Fix mismatched dependency versions                  |
 
 ---
 

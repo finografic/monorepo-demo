@@ -1,8 +1,8 @@
-import { integer, sqliteTable, text } from 'drizzle-orm/sqlite-core';
+import { pgTable, text, timestamp } from 'drizzle-orm/pg-core';
 
 import { user } from './auth-user.schema';
 
-export const account = sqliteTable('auth_account', {
+export const account = pgTable('auth_account', {
   id: text('id').primaryKey(),
   accountId: text('accountId').notNull(),
   providerId: text('providerId').notNull(),
@@ -12,10 +12,10 @@ export const account = sqliteTable('auth_account', {
   accessToken: text('accessToken'),
   refreshToken: text('refreshToken'),
   idToken: text('idToken'),
-  accessTokenExpiresAt: integer('accessTokenExpiresAt', { mode: 'timestamp' }),
-  refreshTokenExpiresAt: integer('refreshTokenExpiresAt', { mode: 'timestamp' }),
+  accessTokenExpiresAt: timestamp('accessTokenExpiresAt', { withTimezone: true }),
+  refreshTokenExpiresAt: timestamp('refreshTokenExpiresAt', { withTimezone: true }),
   scope: text('scope'),
   password: text('password'),
-  createdAt: integer('createdAt', { mode: 'timestamp' }).notNull(),
-  updatedAt: integer('updatedAt', { mode: 'timestamp' }).notNull(),
+  createdAt: timestamp('createdAt', { withTimezone: true }).notNull(),
+  updatedAt: timestamp('updatedAt', { withTimezone: true }).notNull(),
 });

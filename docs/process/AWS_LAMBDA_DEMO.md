@@ -19,7 +19,7 @@ CloudWatch Logs
 
 Source:
 
-- `apps/server/src/lambda-app.ts` — minimal Hono (no Auth.js / SQLite / SSE)
+- `apps/server/src/lambda-app.ts` — minimal Hono (no Auth.js / database / SSE)
 - `apps/server/src/lambda.ts` — `export const handler = handle(app)`
 - `apps/server/infra/aws-demo/` — SAM template + `samconfig.toml`
 
@@ -115,7 +115,7 @@ Creates only: HTTP API, Lambda, IAM execution role, CloudWatch log group (+ ephe
 ## Overview
 
 - Shared Hono app factory (`createApp`) with two adapters: Node (`@hono/node-server`) and Lambda (`hono/aws-lambda`)
-- Why the full API is not on Lambda yet (`better-sqlite3`, Auth cookies, SSE)
+- Why the full API is not on Lambda yet (Auth cookies, SSE, database runtime)
 - HTTP API vs Function URL (routing, CORS, throttling, auth options)
-- Bundle isolation (esbuild rejects `better-sqlite3`)
+- Bundle isolation for the minimal Lambda demo
 - Teardown and budget awareness

@@ -39,7 +39,7 @@ Resources:
       FunctionName: monorepo-demo-aws-api
       CodeUri: ../../dist-lambda/
       Handler: lambda.handler
-      Description: Minimal Hono GET /health and GET /api/aws-demo (no Auth/SQLite)
+      Description: Minimal Hono GET /health and GET /api/aws-demo (no Auth/database)
       Events:
         ProxyAny:
           Type: HttpApi

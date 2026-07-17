@@ -4,7 +4,7 @@
 >
 > **Branch:** `feat/aws-terraform-cloudfront-rds`
 >
-> **Goal:** migrate the portfolio deployment from GitHub Pages and SQLite toward a low-cost AWS shape with Terraform-managed infrastructure, S3 + CloudFront frontend hosting, a small EC2 API server, and RDS PostgreSQL.
+> **Goal:** migrate the portfolio deployment from GitHub Pages toward a low-cost AWS shape with Terraform-managed infrastructure, S3 + CloudFront frontend hosting, a small EC2 API server, and RDS PostgreSQL.
 >
 > **Positioning:** AWS now has one canonical demo path: CloudFront/S3 frontend, CloudFront `/api/*` to the EC2 API, and RDS PostgreSQL.
 
@@ -251,7 +251,7 @@ Deployability requirement:
 
 - [x] Add local PostgreSQL setup, preferably Docker Compose.
 - [x] Add local `DATABASE_URL` documentation for PostgreSQL.
-- [x] Add reusable SQLite to PostgreSQL migration notes.
+- [x] Archive reusable database migration notes.
 - [x] Update Drizzle database config for PostgreSQL.
 - [x] Review schema differences:
   - timestamps
@@ -262,10 +262,9 @@ Deployability requirement:
   - indexes and constraints
 - [x] Generate PostgreSQL-compatible migrations.
 - [x] Update seed flow for PostgreSQL.
-- [x] Add dialect-aware runtime database switching:
-  - default remains SQLite
-  - `DB_DIALECT=postgres` selects the PostgreSQL adapter and schema tables
-  - missing `DATABASE_URL` fails fast when PostgreSQL is selected
+- [x] Remove dialect-aware runtime database switching after PostgreSQL cutover:
+  - PostgreSQL is the only runtime database
+  - missing production `DATABASE_URL` fails fast
 - [x] Validate local flows:
   - auth/session
   - admin pages
@@ -276,7 +275,7 @@ Deployability requirement:
 
 Validation evidence:
 
-- [x] `DB_DIALECT=postgres` server started against local Docker PostgreSQL.
+- [x] Server started against local Docker PostgreSQL.
 - [x] `/api/health` returned `{"status":"ok"}`.
 - [x] Anonymous `/api/auth/session` returned `null`.
 - [x] Auth.js credentials login with seeded `admin@test.com` succeeded and `/api/users` returned seeded users.
@@ -290,7 +289,7 @@ Validation evidence:
 Done when:
 
 - [x] Local app runs against PostgreSQL end-to-end.
-- [x] SQLite is documented as the default legacy/demo fallback while PostgreSQL remains explicit via `DB_DIALECT`.
+- [x] PostgreSQL is documented as the only active database runtime.
 
 ---
 
@@ -436,7 +435,6 @@ Plan evidence:
   - Root Docker scripts added for local build/run smoke checks.
   - Local `linux/amd64` image build completed.
 - [x] Configure EC2 runtime env outside source control:
-  - `DB_DIALECT=postgres`
   - `DATABASE_URL`
   - `AUTH_SECRET`
   - `CORS_ORIGINS`

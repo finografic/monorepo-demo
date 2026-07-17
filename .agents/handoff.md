@@ -64,7 +64,6 @@ Known current AWS resource identifiers:
 
 EC2 runtime facts:
 
-- `DB_DIALECT=postgres`
 - `DATABASE_URL` points to RDS PostgreSQL with SSL.
 - Live LLM mode uses the hosted OpenCode-compatible endpoint.
 - `AUTH_URL=https://d2h3ihm2ddi3lx.cloudfront.net`
@@ -111,7 +110,7 @@ These passed after the CloudFront -> EC2 -> RDS cutover:
 - `/api/i18n/translations?lng=en-GB` returns seeded RDS-backed translation JSON.
 - Fixture streaming returns `text/event-stream`.
 - Live LLM streaming works in the browser after the SSE heartbeat and CloudFront timeout fix.
-- EC2 SSM smoke confirmed `DB_DIALECT=postgres`, a PostgreSQL `DATABASE_URL`, and `monorepo-demo-api` running.
+- EC2 SSM smoke confirmed a PostgreSQL `DATABASE_URL` and `monorepo-demo-api` running.
 
 Known polish item:
 

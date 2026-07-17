@@ -7,7 +7,7 @@ import * as healthRoutes from './routes/health/health.routes';
 
 /**
  * Minimal Hono app for AWS Lambda.
- * Intentionally does not import `app.ts` (Auth.js, SQLite, SSE).
+ * Intentionally does not import `app.ts` (Auth.js, database access, SSE).
  */
 const app = createApp();
 
