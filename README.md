@@ -174,11 +174,11 @@ pnpm install
 # Copy and populate environment files
 cp apps/server/.env.example apps/server/.env
 
-# Start the main client and API
-pnpm dev
+# Start the main client and API against local PostgreSQL
+pnpm dev:postgres
 
-# Start the main client, API, and all demo apps
-pnpm dev:all
+# Start the main client, API, and all demo apps against local PostgreSQL
+pnpm dev:all:postgres
 ```
 
 Default local ports:
@@ -198,6 +198,7 @@ the Docker Compose helper.
 
 ```bash
 pnpm db:postgres:up
+pnpm db:postgres:setup
 pnpm db:postgres:psql
 pnpm db:postgres:down
 ```
@@ -230,35 +231,52 @@ PostgreSQL for relational data. See [AWS Deployment Guide](/docs/process/AWS_DEP
 
 All root scripts delegate to Moon and run across all workspaces in dependency order.
 
-| Script                  | Description                              |
-| :---------------------- | :--------------------------------------- |
-| `pnpm dev`              | Start all apps in parallel watch mode    |
-| `pnpm build`            | Build all packages and apps              |
-| `pnpm typecheck`        | Run `tsc --noEmit` across all workspaces |
-| `pnpm lint`             | oxlint across all workspaces             |
-| `pnpm lint:fix`         | oxlint with auto-fix                     |
-| `pnpm lint:ci`          | oxlint quiet mode (for CI pipelines)     |
-| `pnpm lint:md`          | Markdown linting                         |
-| `pnpm format:check`     | oxfmt dry-run check                      |
-| `pnpm format:fix`       | oxfmt in-place formatting                |
-| `pnpm test`             | Vitest across all workspaces             |
-| `pnpm clean`            | Delete all build artefacts               |
-| `pnpm db:postgres:up`   | Start local PostgreSQL in Docker         |
-| `pnpm db:postgres:psql` | Open `psql` in the local PostgreSQL DB   |
-| `pnpm db:postgres:down` | Stop local PostgreSQL                    |
-| `pnpm syncpack:lint`    | Check for cross-workspace version drift  |
-| `pnpm syncpack:fix`     | Fix mismatched dependency versions       |
+| Script                    | Description                                         |
+| :------------------------ | :-------------------------------------------------- |
+| `pnpm dev`                | Start main client + API using current env           |
+| `pnpm dev:all`            | Start client, API, and demos using current env      |
+| `pnpm dev:postgres`       | Start local PostgreSQL, then main client + API      |
+| `pnpm dev:all:postgres`   | Start local PostgreSQL, then client, API, and demos |
+| `pnpm build`              | Build all packages and apps                         |
+| `pnpm typecheck`          | Run `tsc --noEmit` across all workspaces            |
+| `pnpm lint`               | oxlint across all workspaces                        |
+| `pnpm lint:fix`           | oxlint with auto-fix                                |
+| `pnpm lint:ci`            | oxlint quiet mode (for CI pipelines)                |
+| `pnpm lint:md`            | Markdown linting                                    |
+| `pnpm format:check`       | oxfmt dry-run check                                 |
+| `pnpm format:fix`         | oxfmt in-place formatting                           |
+| `pnpm test`               | Vitest across all workspaces                        |
+| `pnpm clean`              | Delete all build artefacts                          |
+| `pnpm db:postgres:up`     | Start local PostgreSQL in Docker                    |
+| `pnpm db:postgres:setup`  | Start, migrate, and seed local PostgreSQL           |
+| `pnpm db:postgres:reset`  | Drop local PostgreSQL volume, then setup DB         |
+| `pnpm db:postgres:psql`   | Open `psql` in the local PostgreSQL DB              |
+| `pnpm db:postgres:studio` | Open Drizzle Studio for local PostgreSQL            |
+| `pnpm db:postgres:down`   | Stop local PostgreSQL                               |
+| `pnpm syncpack:lint`      | Check for cross-workspace version drift             |
+| `pnpm syncpack:fix`       | Fix mismatched dependency versions                  |
 
 ---
 
 ## AWS Scripts
+
+Frontend deploy:
 
 ```
 pnpm aws:frontend:build       # local build + assemble pages/
 pnpm aws:frontend:sync        # upload pages/ to S3
 pnpm aws:frontend:invalidate  # invalidate CloudFront
 pnpm aws:frontend:deploy      # build + sync + invalidate
-pnpm aws:frontend:outputs     # show Terraform outputs
+```
+
+Infrastructure and EC2 helpers:
+
+```bash
+pnpm aws:infra:outputs        # show Terraform outputs
+pnpm aws:infra:plan           # create infra/terraform/environments/demo/tfplan
+pnpm aws:infra:apply          # apply infra/terraform/environments/demo/tfplan
+pnpm aws:ec2:docker:build     # build EC2 API image locally
+pnpm aws:ec2:docker:run       # run EC2 API image locally with .env.ec2-api.local
 ```
 
 ---
