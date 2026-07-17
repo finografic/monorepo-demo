@@ -340,13 +340,13 @@ Deployability requirement:
   - `rds_database_name`
   - `rds_port`
   - `rds_security_group_id`
-- [ ] Run migrations against RDS.
-- [ ] Run seeds against RDS.
-- [ ] Verify RDS row counts.
+- [x] Run migrations against RDS.
+- [x] Run seeds against RDS.
+- [x] Verify RDS row counts.
 
 Done when:
 
-- RDS PostgreSQL is applied and reachable from an approved AWS path.
+- RDS PostgreSQL is applied and reachable from EC2 over SSL.
 - RDS contains the migrated schema and seed data.
 - The deployed App Runner service still remains the rollback backend.
 
@@ -384,12 +384,12 @@ Deployability requirement:
 
 ## Phase 6 — EC2 API Infrastructure
 
-- [ ] Add Terraform for one small EC2 API instance.
+- [x] Add Terraform for one small EC2 API instance.
   - [x] Add reviewable Terraform config.
   - [x] Validate Terraform config.
   - [x] Generate a no-apply Terraform plan.
   - [x] Apply reviewed Terraform plan.
-- [ ] Choose the cheapest practical instance type for the demo.
+- [x] Choose the cheapest practical instance type for the demo.
   - [x] Default to `t3.micro` for x86 compatibility with the existing server Docker build path.
   - Avoid Auto Scaling Groups, load balancers, and ECS/Fargate for this slice.
 - [x] Add an EC2 security group:
@@ -398,9 +398,10 @@ Deployability requirement:
   - allow outbound internet from EC2;
   - allow EC2 -> RDS on `5432`.
 - [x] Add an RDS ingress rule allowing only the EC2 security group.
-- [ ] Decide deployment style:
-  - Docker on EC2 using the existing server image; or
-  - Node/pnpm on EC2 using the built server artifact.
+- [x] Decide deployment style:
+  - mounted repo built with pnpm inside `node:24-bookworm-slim`;
+  - API runs as a restartable Docker container on EC2;
+  - full custom image build remains available but was too heavy for the first `t3.micro` deploy.
 - [x] Add minimal instance bootstrap:
   - install runtime dependencies;
   - create app directory;
@@ -419,7 +420,7 @@ Plan evidence:
 - [x] `terraform -chdir=infra/terraform/environments/demo fmt`
 - [x] `terraform -chdir=infra/terraform/environments/demo validate`
 - [x] `terraform -chdir=infra/terraform/environments/demo plan -input=false -no-color`
-- [x] Plan proposes 10 resources to create and no changes/destroys:
+- [x] Initial EC2/RDS plan proposed 10 resources to create and no changes/destroys:
   - Terraform random password (no AWS resource or monthly charge)
   - RDS PostgreSQL instance
   - DB parameter group
@@ -430,6 +431,11 @@ Plan evidence:
   - EC2 outbound rule
   - EC2 API ingress rule
   - RDS ingress from EC2 security group
+- [x] Follow-up SSM plan proposed 3 IAM resources and one in-place EC2 profile update:
+  - EC2 IAM role
+  - SSM managed policy attachment
+  - EC2 instance profile
+  - in-place `iam_instance_profile` update on the EC2 instance
 
 ---
 
@@ -447,16 +453,20 @@ Plan evidence:
   - AI provider keys if live streaming remains enabled
   - Runtime env documented in `docs/process/AWS_EC2_API_SERVER.md`.
 - [x] Use SSM Session Manager for EC2 administration.
-- [ ] Start the Hono API on EC2.
-- [ ] Verify EC2 -> RDS connectivity.
-- [ ] Run or re-run migrations/seeds from an approved path if not completed in Phase 5.
+- [x] Start the Hono API on EC2.
+- [x] Verify EC2 -> RDS connectivity.
+- [x] Run or re-run migrations/seeds from an approved path if not completed in Phase 5.
 - [ ] Smoke test EC2 API directly:
-  - `/api/health`
-  - auth/session
-  - admin/users
-  - translations/i18n
-  - AI fixture stream
-  - AI live stream if provider keys are configured
+  - [x] `/api/health`
+  - [x] auth/session
+  - [ ] admin/users
+  - [x] translations/i18n
+  - [ ] AI fixture stream
+  - [ ] AI live stream if provider keys are configured
+- [x] Verify RDS-backed seed data:
+  - 2 users
+  - 2 supported languages
+  - 53 translation rows
 - [ ] Decide whether Demo 3 continues to use the external xscan API for now.
 
 Validation evidence:
