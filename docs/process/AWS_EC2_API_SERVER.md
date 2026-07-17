@@ -68,6 +68,9 @@ Keep all real values outside source control.
 Phase 6 provisions the host and security groups. Phase 7 deploys the API
 container.
 
+The EC2 host uses AWS Systems Manager Session Manager for administration. Keep
+SSH closed unless there is a temporary, explicit reason to open it.
+
 The minimal manual deployment path is:
 
 1. Build the EC2 API image locally.

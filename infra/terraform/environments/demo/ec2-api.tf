@@ -56,9 +56,37 @@ resource "aws_vpc_security_group_ingress_rule" "rds_api" {
   to_port                      = var.rds_port
 }
 
+data "aws_iam_policy_document" "api_assume_role" {
+  statement {
+    actions = ["sts:AssumeRole"]
+
+    principals {
+      type        = "Service"
+      identifiers = ["ec2.amazonaws.com"]
+    }
+  }
+}
+
+resource "aws_iam_role" "api" {
+  name               = "${local.name_prefix}-api"
+  assume_role_policy = data.aws_iam_policy_document.api_assume_role.json
+  description        = "Allows SSM Session Manager access for the ${local.name_prefix} EC2 API host."
+}
+
+resource "aws_iam_role_policy_attachment" "api_ssm" {
+  role       = aws_iam_role.api.name
+  policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
+}
+
+resource "aws_iam_instance_profile" "api" {
+  name = "${local.name_prefix}-api"
+  role = aws_iam_role.api.name
+}
+
 resource "aws_instance" "api" {
   ami                         = data.aws_ami.amazon_linux_2023.id
   associate_public_ip_address = true
+  iam_instance_profile        = aws_iam_instance_profile.api.name
   instance_type               = var.ec2_instance_type
   key_name                    = var.ec2_key_name
   subnet_id                   = local.default_subnet_ids[0]

@@ -324,7 +324,7 @@ Deployability requirement:
   - [x] Add reviewable Terraform config.
   - [x] Validate Terraform config.
   - [x] Generate a no-apply Terraform plan.
-  - [ ] Apply reviewed Terraform plan.
+  - [x] Apply reviewed Terraform plan.
 - [x] Add DB subnet group and security group.
 - [x] Keep the database private by default.
 - [x] Leave NAT Gateway out of the plan.
@@ -335,7 +335,7 @@ Deployability requirement:
   - no storage autoscaling
   - no automated backups by default
   - no deletion protection by default
-- [ ] Capture Terraform outputs after apply:
+- [x] Capture Terraform outputs after apply:
   - `rds_endpoint`
   - `rds_database_name`
   - `rds_port`
@@ -388,7 +388,7 @@ Deployability requirement:
   - [x] Add reviewable Terraform config.
   - [x] Validate Terraform config.
   - [x] Generate a no-apply Terraform plan.
-  - [ ] Apply reviewed Terraform plan.
+  - [x] Apply reviewed Terraform plan.
 - [ ] Choose the cheapest practical instance type for the demo.
   - [x] Default to `t3.micro` for x86 compatibility with the existing server Docker build path.
   - Avoid Auto Scaling Groups, load balancers, and ECS/Fargate for this slice.
@@ -405,6 +405,7 @@ Deployability requirement:
   - install runtime dependencies;
   - create app directory;
   - leave actual app env/service setup for Phase 7.
+- [x] Add SSM Session Manager access for administration without opening SSH.
 - [x] Keep NAT Gateway, ALB, WAF, Route 53, ACM, ECS/Fargate, and Secrets Manager out of this slice.
 - [x] Generate and review a no-apply Terraform plan.
 
@@ -445,6 +446,7 @@ Plan evidence:
   - `CORS_ORIGINS`
   - AI provider keys if live streaming remains enabled
   - Runtime env documented in `docs/process/AWS_EC2_API_SERVER.md`.
+- [x] Use SSM Session Manager for EC2 administration.
 - [ ] Start the Hono API on EC2.
 - [ ] Verify EC2 -> RDS connectivity.
 - [ ] Run or re-run migrations/seeds from an approved path if not completed in Phase 5.
