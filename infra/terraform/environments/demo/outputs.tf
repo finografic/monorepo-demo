@@ -59,7 +59,7 @@ output "rds_security_group_id" {
 }
 
 output "rds_master_user_secret_arn" {
-  description = "Secrets Manager secret ARN for the RDS-managed master user password."
-  value       = aws_db_instance.postgres.master_user_secret[0].secret_arn
+  description = "Secrets Manager secret ARN for the RDS-managed master user password, when enabled."
+  value       = try(aws_db_instance.postgres.master_user_secret[0].secret_arn, null)
   sensitive   = true
 }

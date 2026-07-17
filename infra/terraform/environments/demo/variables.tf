@@ -91,7 +91,7 @@ variable "rds_database_name" {
 }
 
 variable "rds_master_username" {
-  description = "RDS master username. The password is managed by RDS in Secrets Manager."
+  description = "RDS master username."
   type        = string
   default     = "monorepo_demo"
 
@@ -99,6 +99,12 @@ variable "rds_master_username" {
     condition     = can(regex("^[A-Za-z][A-Za-z0-9_]{0,62}$", var.rds_master_username))
     error_message = "rds_master_username must start with a letter and contain only letters, numbers, and underscores."
   }
+}
+
+variable "rds_manage_master_user_password" {
+  description = "Whether RDS stores the master password in Secrets Manager. Costs extra per secret, so this is opt-in."
+  type        = bool
+  default     = false
 }
 
 variable "rds_instance_class" {
@@ -115,17 +121,6 @@ variable "rds_allocated_storage_gb" {
   validation {
     condition     = var.rds_allocated_storage_gb >= 20
     error_message = "rds_allocated_storage_gb must be at least 20."
-  }
-}
-
-variable "rds_max_allocated_storage_gb" {
-  description = "Maximum RDS autoscaled storage allocation in GiB."
-  type        = number
-  default     = 100
-
-  validation {
-    condition     = var.rds_max_allocated_storage_gb >= var.rds_allocated_storage_gb
-    error_message = "rds_max_allocated_storage_gb must be greater than or equal to rds_allocated_storage_gb."
   }
 }
 
@@ -156,7 +151,7 @@ variable "rds_ingress_security_group_ids" {
 variable "rds_backup_retention_days" {
   description = "RDS backup retention period in days."
   type        = number
-  default     = 1
+  default     = 0
 
   validation {
     condition     = var.rds_backup_retention_days >= 0 && var.rds_backup_retention_days <= 35

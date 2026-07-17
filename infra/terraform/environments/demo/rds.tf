@@ -47,22 +47,27 @@ resource "aws_db_parameter_group" "postgres" {
   family      = "postgres17"
 }
 
+resource "random_password" "rds_master" {
+  length  = 32
+  special = false
+}
+
 resource "aws_db_instance" "postgres" {
   identifier = local.rds_identifier
 
   engine         = "postgres"
   instance_class = var.rds_instance_class
 
-  allocated_storage     = var.rds_allocated_storage_gb
-  max_allocated_storage = var.rds_max_allocated_storage_gb
-  storage_encrypted     = true
-  storage_type          = "gp3"
+  allocated_storage = var.rds_allocated_storage_gb
+  storage_encrypted = true
+  storage_type      = "gp2"
 
   db_name  = var.rds_database_name
   username = var.rds_master_username
+  password = var.rds_manage_master_user_password ? null : random_password.rds_master.result
   port     = var.rds_port
 
-  manage_master_user_password = true
+  manage_master_user_password = var.rds_manage_master_user_password
 
   db_subnet_group_name   = aws_db_subnet_group.postgres.name
   vpc_security_group_ids = [aws_security_group.rds.id]

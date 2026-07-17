@@ -26,6 +26,11 @@ aws_region              = "ap-southeast-2"
 project_name            = "monorepo-demo"
 environment             = "demo"
 app_runner_api_base_url = "https://qvyq3mdegk.ap-southeast-2.awsapprunner.com"
+
+rds_instance_class              = "db.t4g.micro"
+rds_allocated_storage_gb        = 20
+rds_backup_retention_days       = 0
+rds_manage_master_user_password = false
 ```
 
 ## Commands
@@ -53,7 +58,7 @@ Checkpoint D adds the RDS foundation:
 - RDS PostgreSQL instance
 - DB subnet group using the default VPC subnets
 - RDS security group with no inbound access by default
-- RDS-managed master user password in Secrets Manager
+- Terraform-generated master password in ignored local state by default
 
 The database is private by default:
 
@@ -63,10 +68,28 @@ rds_ingress_cidr_blocks = []
 rds_ingress_security_group_ids = []
 ```
 
-Before applying RDS, decide the App Runner connectivity path:
+## Cost guardrails
 
-- private RDS + App Runner VPC connector + NAT for public provider calls, or
-- a temporary public RDS exception with tightly scoped ingress.
+This environment is for a very low-traffic portfolio demo and should stay on the
+lowest practical pay-as-you-go footprint:
+
+- keep RDS at `db.t4g.micro`;
+- keep RDS storage fixed at 20 GiB;
+- use `gp2` RDS storage to stay aligned with the RDS free-tier storage shape;
+- keep automated backups disabled by default with `rds_backup_retention_days = 0`;
+- keep `rds_manage_master_user_password = false` by default to avoid the
+  recurring Secrets Manager per-secret charge;
+- do not add NAT Gateway by default;
+- do not add custom domains, ACM, WAF, Route 53, ECS/Fargate, or load balancers
+  unless explicitly accepted as paid upgrades.
+
+Before applying RDS, decide the App Runner connectivity path. The cheapest
+default is to avoid NAT Gateway:
+
+- private RDS + App Runner VPC connector only if live external AI calls can be
+  disabled or routed without NAT;
+- temporary public RDS exception only if tightly scoped ingress is acceptable;
+- NAT Gateway only as an explicit paid upgrade.
 
 Do not set `rds_publicly_accessible = true` without explicitly accepting the
 security trade-off.
@@ -113,4 +136,6 @@ terraform output rds_master_user_secret_arn
 ```
 
 `rds_master_user_secret_arn` is sensitive and points to the RDS-managed Secrets
-Manager secret. Do not copy resolved database credentials into source control.
+Manager secret only when `rds_manage_master_user_password = true`. By default,
+the generated master password is stored in ignored local Terraform state. Do not
+copy resolved database credentials into source control.

@@ -16,6 +16,18 @@ The demo environment currently manages:
 - GitHub Actions OIDC for frontend deploys.
 - RDS PostgreSQL plan/configuration for Checkpoint D.
 
+## Cost posture
+
+This is an intro AWS portfolio demo, not a production traffic workload. Defaults
+must prefer the smallest pay-as-you-go shape:
+
+- use free-tier/credit-friendly resource sizes where possible;
+- avoid NAT Gateway unless explicitly approved;
+- avoid always-on load balancers, ECS/Fargate, WAF, Route 53, and custom-domain
+  infrastructure unless explicitly approved;
+- keep paid secrets/config services opt-in;
+- keep teardown paths documented before applying paid resources.
+
 ## AWS Console checkpoints
 
 No AWS Console setup is required for Checkpoint A beyond having an AWS account, credentials configured locally, and budget alerts already in place.

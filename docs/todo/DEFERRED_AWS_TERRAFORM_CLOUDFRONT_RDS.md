@@ -1,12 +1,15 @@
-# TODO — AWS Terraform CloudFront RDS Migration
+# DEFERRED — AWS Terraform CloudFront RDS Migration
+
+This is the previous App Runner/RDS-oriented plan, preserved before the active TODO was rewritten around the lower-cost
+EC2 API path.
 
 > **Created:** 2026-07-15
 >
 > **Branch:** `feat/aws-terraform-cloudfront-rds`
 >
-> **Goal:** migrate the portfolio deployment from GitHub Pages and SQLite toward a low-cost AWS shape with Terraform-managed infrastructure, S3 + CloudFront frontend hosting, a small EC2 API server, and RDS PostgreSQL.
+> **Goal:** migrate the portfolio deployment toward a more production-like AWS shape with Terraform-managed infrastructure, S3 + CloudFront frontend hosting, App Runner API hosting, RDS PostgreSQL, managed secrets/config, and basic observability.
 >
-> **Positioning:** keep the current App Runner deployment as the working backend baseline until the EC2 API path is proven. Replace GitHub Pages only after the S3 + CloudFront path is proven. Replace SQLite only after local PostgreSQL, RDS, and the EC2 API are proven.
+> **Positioning:** keep the current App Runner deployment as the working backend baseline. Replace GitHub Pages only after the S3 + CloudFront path is proven. Replace SQLite only after local PostgreSQL and RDS are both proven.
 
 Context:
 
@@ -14,7 +17,6 @@ Context:
 - [TODO — AWS Full Server App Runner Demo](./TODO_AWS_FULL_SERVER_APP_RUNNER.md)
 - [AWS App Runner Full Server Demo](../process/AWS_APP_RUNNER_FULL_SERVER.md)
 - [Portfolio Deployment](../process/PORTFOLIO_DEPLOYMENT.md)
-- [Deferred App Runner/RDS plan](./DEFERRED_AWS_TERRAFORM_CLOUDFRONT_RDS.md)
 
 ---
 
@@ -25,8 +27,10 @@ Target narrative:
 ```text
 CloudFront
   -> S3 static React/Vite frontend
-  -> small EC2 Hono/Auth.js API
+  -> AWS App Runner Hono/Auth.js API
   -> RDS PostgreSQL
+  -> Secrets Manager / SSM config
+  -> CloudWatch logs, alarms, and budget guardrails
 ```
 
 The aim is to show pragmatic full-stack AWS delivery:
@@ -34,9 +38,9 @@ The aim is to show pragmatic full-stack AWS delivery:
 - Incremental migration from a working deployment.
 - Terraform-managed infrastructure.
 - Static frontend hosting through S3 + CloudFront.
-- Small AWS-hosted Node API on EC2.
+- Containerised Node API on App Runner.
 - Relational data on PostgreSQL/RDS.
-- Simple server-side config and operational notes.
+- Server-side secrets and operational visibility.
 - Clear rollback points at every publishable checkpoint.
 
 ---
@@ -58,8 +62,7 @@ The aim is to show pragmatic full-stack AWS delivery:
 - Keep RDS within the free-tier/credit-friendly shape by default: `db.t4g.micro`, 20 GiB storage, no storage autoscaling,
   and no automated backups unless explicitly enabled.
 - Keep Secrets Manager opt-in for RDS credentials because it has a recurring per-secret charge.
-- Avoid NAT Gateway, ECS/Fargate, load balancers, WAF, Route 53, custom domains, and Secrets Manager unless explicitly
-  accepted as paid upgrades.
+- Avoid ECS/Fargate until the RDS + CloudFront + Terraform path is complete.
 
 ---
 
@@ -69,11 +72,19 @@ The aim is to show pragmatic full-stack AWS delivery:
 Browser
   -> CloudFront default domain
   -> private S3 bucket with built React/Vite assets
-  -> EC2 public API server
+  -> App Runner public API URL
   -> RDS PostgreSQL
 ```
 
-Optional production-style variants are deferred in `DEFERRED_AWS_TERRAFORM_CLOUDFRONT_RDS.md`.
+Optional later architecture:
+
+```text
+Browser
+  -> CloudFront
+  -> S3 frontend
+  -> ECS Fargate / ALB API
+  -> RDS PostgreSQL
+```
 
 ---
 
@@ -302,23 +313,23 @@ Done when:
 
 ---
 
-## Checkpoint D — RDS PostgreSQL Foundation
+## Checkpoint D — RDS-backed App Runner
 
 Status: reached. Phase 5 can begin from the completed local PostgreSQL checkpoint.
 
 Includes:
 
-- Phase 5 — Low-cost RDS PostgreSQL
+- Phase 5 — RDS PostgreSQL
 
 Deployability requirement:
 
-- RDS PostgreSQL exists in AWS.
-- RDS uses the smallest practical pay-as-you-go/free-credit-friendly shape.
-- No App Runner, EC2, or frontend runtime cutover has happened yet.
+- App Runner API works against RDS PostgreSQL.
+- CloudFront frontend works against the RDS-backed API.
+- SQLite is no longer required for the deployed demo.
 
 ---
 
-## Phase 5 — Low-cost RDS PostgreSQL
+## Phase 5 — RDS PostgreSQL
 
 - [ ] Use Terraform to create RDS PostgreSQL.
   - [x] Add reviewable Terraform config.
@@ -326,33 +337,32 @@ Deployability requirement:
   - [x] Generate a no-apply Terraform plan.
   - [ ] Apply reviewed Terraform plan.
 - [x] Add DB subnet group and security group.
-- [x] Keep the database private by default.
-- [x] Leave NAT Gateway out of the plan.
-- [x] Keep Secrets Manager opt-in instead of default.
-- [x] Keep RDS defaults minimal:
-  - `db.t4g.micro`
-  - 20 GiB `gp2`
-  - no storage autoscaling
-  - no automated backups by default
-  - no deletion protection by default
-- [ ] Capture Terraform outputs after apply:
-  - `rds_endpoint`
-  - `rds_database_name`
-  - `rds_port`
-  - `rds_security_group_id`
+- [x] Decide network shape:
+  - private RDS by default
+  - no NAT Gateway by default
+  - App Runner VPC connector only if live external AI calls are disabled or another low-cost egress path is chosen
+  - temporary public RDS exception remains an explicit reviewed trade-off, not a default
+- [x] Account for public outbound needs from the API, especially hosted AI provider calls.
+- [x] Store database credentials outside source control.
+  - Terraform generates the master password into ignored local state by default.
+  - RDS-managed Secrets Manager password is opt-in because it adds a recurring per-secret cost.
 - [ ] Run migrations against RDS.
 - [ ] Run seeds against RDS.
-- [ ] Verify RDS row counts.
+- [ ] Update App Runner runtime configuration to use the RDS `DATABASE_URL`.
+- [ ] Smoke test deployed flows:
+  - `/api/health`
+  - auth/session
+  - AI live streaming
+  - translations/i18n
+  - xscan execution
 
 Done when:
 
-- RDS PostgreSQL is applied and reachable from an approved AWS path.
-- RDS contains the migrated schema and seed data.
-- The deployed App Runner service still remains the rollback backend.
+- The deployed App Runner API uses RDS PostgreSQL.
+- CloudFront frontend can be used as the main demo entry point.
 
 Plan evidence:
 
-- [x] `terraform -chdir=infra/terraform/environments/demo init -input=false`
 - [x] `terraform -chdir=infra/terraform/environments/demo fmt`
 - [x] `terraform -chdir=infra/terraform/environments/demo validate`
 - [x] `terraform -chdir=infra/terraform/environments/demo plan -input=false -no-color`
@@ -365,184 +375,109 @@ Plan evidence:
 
 ---
 
-## Checkpoint E — Low-cost EC2 API
+## Checkpoint E — Production-readiness polish
 
 Includes:
 
-- Phase 6 — EC2 API infrastructure
-- Phase 7 — EC2 server deployment
+- Phase 6 — Secrets Manager / SSM
+- Phase 7 — Observability
+- Phase 8 — Clean cutover and docs
 
 Deployability requirement:
 
-- One small EC2 instance can run the Hono/Auth.js API.
-- EC2 can receive public API calls.
-- EC2 can connect privately to RDS PostgreSQL.
-- EC2 can make outbound internet calls without NAT Gateway.
-- App Runner remains available as rollback until EC2 is proven.
+- AWS is the canonical deployment path.
+- Secrets/config are managed intentionally.
+- Logs, alarms, and teardown docs are in place.
 
 ---
 
-## Phase 6 — EC2 API Infrastructure
+## Phase 6 — Secrets Manager / SSM
 
-- [ ] Add Terraform for one small EC2 API instance.
-- [ ] Choose the cheapest practical instance type for the demo.
-  - Prefer a free-tier/credit-friendly instance where available.
-  - Avoid Auto Scaling Groups, load balancers, and ECS/Fargate for this slice.
-- [ ] Add an EC2 security group:
-  - allow inbound HTTP/API traffic from the internet for the demo API;
-  - allow SSH only from a scoped local IP, or avoid SSH if using SSM later;
-  - allow outbound internet from EC2;
-  - allow EC2 -> RDS on `5432`.
-- [ ] Add an RDS ingress rule allowing only the EC2 security group.
-- [ ] Decide deployment style:
-  - Docker on EC2 using the existing server image; or
-  - Node/pnpm on EC2 using the built server artifact.
-- [ ] Add minimal instance bootstrap:
-  - install runtime dependencies;
-  - create app directory;
-  - configure env file outside git;
-  - configure systemd service or Docker restart policy.
-- [ ] Keep NAT Gateway, ALB, WAF, Route 53, ACM, ECS/Fargate, and Secrets Manager out of this slice.
-- [ ] Generate and review a no-apply Terraform plan.
-
-Done when:
-
-- Terraform can create the EC2 API host and security group wiring.
-- Plan has no NAT Gateway, load balancer, ECS, WAF, Route 53, or Secrets Manager resources.
-
----
-
-## Phase 7 — EC2 Server Deployment
-
-- [ ] Build or package the server for EC2.
-- [ ] Configure EC2 runtime env outside source control:
-  - `DB_DIALECT=postgres`
+- [ ] Classify runtime values as secret or non-secret config.
+- [ ] Move secret values to Secrets Manager or SSM SecureString:
   - `DATABASE_URL`
   - `AUTH_SECRET`
-  - `CORS_ORIGINS`
-  - AI provider keys if live streaming remains enabled
-- [ ] Start the Hono API on EC2.
-- [ ] Verify EC2 -> RDS connectivity.
-- [ ] Run or re-run migrations/seeds from an approved path if not completed in Phase 5.
-- [ ] Smoke test EC2 API directly:
-  - `/api/health`
-  - auth/session
-  - admin/users
-  - translations/i18n
-  - AI fixture stream
-  - AI live stream if provider keys are configured
-- [ ] Decide whether Demo 3 continues to use the external xscan API for now.
+  - `OPENCODE_API_KEY`
+- [ ] Move non-secret config to SSM Parameter Store where useful.
+- [ ] Update Terraform to manage references without committing secret values.
+- [ ] Update App Runner environment configuration.
+- [ ] Confirm no provider keys are exposed through `VITE_*` variables.
 
 Done when:
 
-- EC2 is the working AWS API backend.
-- EC2 uses RDS PostgreSQL.
-- App Runner is still available as rollback.
+- App Runner starts using managed secret/config references.
+- No sensitive runtime value is stored in source control.
 
 ---
 
-## Checkpoint F — CloudFront Cutover and Cleanup
+## Phase 7 — Observability and cost guardrails
 
-Includes:
-
-- Phase 8 — Frontend API cutover
-- Phase 9 — Documentation, rollback, and cost guardrails
-
-Deployability requirement:
-
-- CloudFront frontend and demo apps call the EC2 API.
-- EC2 API works against RDS PostgreSQL.
-- App Runner is no longer required for the primary demo path.
-
----
-
-## Phase 8 — Frontend API Cutover
-
-- [ ] Update frontend build configuration to use the EC2 API base URL.
-- [ ] Keep xscan pointed at the current external xscan API unless intentionally migrated.
-- [ ] Build CloudFront-targeted frontend assets.
-- [ ] Sync assets to S3.
-- [ ] Invalidate CloudFront.
-- [ ] Smoke test CloudFront -> EC2 -> RDS:
-  - landing page
-  - login/session
-  - admin pages
-  - translations/i18n
-  - AI pipeline fixture streaming
-  - AI live streaming if enabled
-  - datavis
-  - xscan
+- [ ] Configure CloudWatch log retention.
+- [ ] Add basic alarms where practical:
+  - App Runner errors or 5xx indicators
+  - RDS CPU/storage/connections
+  - budget/cost alert
+- [ ] Add a small runbook for:
+  - checking App Runner status
+  - checking CloudFront deployment
+  - checking RDS connectivity
+  - finding API logs
+  - confirming AI streaming failures
+- [ ] Document known cost-bearing resources and teardown commands.
 
 Done when:
 
-- CloudFront is the primary frontend.
-- EC2 is the primary API.
-- RDS PostgreSQL is the primary database.
+- There is a clear observe/debug/rollback story for the AWS deployment.
 
 ---
 
-## Phase 9 — Documentation, Rollback, and Cost Guardrails
+## Phase 8 — Clean cutover and docs
 
 - [ ] Update README architecture section.
 - [ ] Update deployment docs:
   - frontend: S3 + CloudFront
-  - backend: EC2
+  - backend: App Runner
   - database: RDS PostgreSQL
   - IaC: Terraform
-- [ ] Document rollback:
-  - CloudFront/frontend can point back to App Runner while it remains available.
-  - App Runner can remain as a temporary backend fallback.
-- [ ] Document teardown for paid resources:
-  - EC2 instance
-  - EBS volume
-  - RDS instance
-  - CloudFront distribution
-  - S3 bucket contents
-- [ ] Confirm the `$5` AWS budget alert remains configured.
-- [ ] Add a small runbook:
-  - checking EC2 service status;
-  - checking RDS connectivity;
-  - checking CloudFront deployment;
-  - finding server logs;
-  - confirming AI streaming failures.
 - [ ] Decide whether to keep, disable, or archive the GitHub Pages workflow.
-- [ ] Decide whether to stop or delete App Runner after EC2 is stable.
+- [ ] Update repo description/topics if useful.
 - [ ] Update roadmap and mark completed AWS migration slices.
+- [ ] Add final smoke-test checklist.
 - [ ] Track non-blocking Demo 3 browser warning in `@finografic/deps-xscan-demo`:
   - invalid HTML `pattern` regular expression for GitHub repository URL input
   - deployed scan flow still works; fix later in the external xscan demo package
 
 Done when:
 
-- AWS is the canonical deployment path.
-- The retained resources are the minimum practical set for the demo.
-- Optional paid upgrades are documented as deferred, not active requirements.
+- CloudFront is the primary frontend.
+- App Runner is the primary API.
+- RDS PostgreSQL is the primary database.
+- Terraform describes the retained AWS infrastructure.
 
 ---
 
-## Deferred Optional Upgrades
+## Phase 9 — Optional ECS Fargate comparison
 
-The previous App Runner/RDS and broader production-readiness plan is preserved in:
+Only start this after Checkpoint E.
 
-```text
-docs/todo/DEFERRED_AWS_TERRAFORM_CLOUDFRONT_RDS.md
-```
+- [ ] Decide whether ECS/Fargate materially improves interview positioning.
+- [ ] Reuse the existing server Docker image.
+- [ ] Add Terraform for:
+  - ECS cluster
+  - task definition
+  - service
+  - ALB
+  - target group
+  - security groups
+- [ ] Keep App Runner documented as the simpler managed-container option.
 
-Deferred unless explicitly approved:
+Done when:
 
-- NAT Gateway
-- App Runner VPC connector path
-- Secrets Manager / SSM migration
-- WAF
-- Route 53 / custom domain / ACM
-- ALB
-- ECS/Fargate
-- Auto Scaling Groups
-- production-grade observability/alarms beyond the existing budget alert and minimal runbook
+- ECS/Fargate can be discussed as an optional enterprise container path, not a blocker for the main portfolio deployment.
 
 ---
 
-## Recommended Execution Order
+## Recommended execution order
 
 ```text
 Checkpoint A:
@@ -558,8 +493,7 @@ Checkpoint D:
   Phase 5
 
 Checkpoint E:
-  Phase 6 + Phase 7
-
-Checkpoint F:
-  Phase 8 + Phase 9
+  Phase 6 + Phase 7 + Phase 8
 ```
+
+Do not begin Phase 9 until the main AWS path is stable.
