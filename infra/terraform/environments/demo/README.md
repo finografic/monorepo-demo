@@ -28,9 +28,9 @@ environment             = "demo"
 app_runner_api_base_url = "https://qvyq3mdegk.ap-southeast-2.awsapprunner.com"
 
 rds_instance_class              = "db.t4g.micro"
+rds_engine_version              = "17"
 rds_allocated_storage_gb        = 20
 rds_backup_retention_days       = 0
-rds_manage_master_user_password = false
 
 ec2_instance_type           = "t3.micro"
 ec2_root_volume_size_gb     = 8
@@ -82,7 +82,7 @@ lowest practical pay-as-you-go footprint:
 - keep RDS storage fixed at 20 GiB;
 - use `gp2` RDS storage to stay aligned with the RDS free-tier storage shape;
 - keep automated backups disabled by default with `rds_backup_retention_days = 0`;
-- keep `rds_manage_master_user_password = false` by default to avoid the
+- keep RDS credentials in Terraform local state by default to avoid the
   recurring Secrets Manager per-secret charge;
 - do not add NAT Gateway by default;
 - do not add custom domains, ACM, WAF, Route 53, ECS/Fargate, or load balancers
@@ -154,10 +154,7 @@ terraform output rds_endpoint
 terraform output rds_database_name
 terraform output rds_port
 terraform output rds_security_group_id
-terraform output rds_master_user_secret_arn
 ```
 
-`rds_master_user_secret_arn` is sensitive and points to the RDS-managed Secrets
-Manager secret only when `rds_manage_master_user_password = true`. By default,
-the generated master password is stored in ignored local Terraform state. Do not
+The generated master password is stored in ignored local Terraform state. Do not
 copy resolved database credentials into source control.

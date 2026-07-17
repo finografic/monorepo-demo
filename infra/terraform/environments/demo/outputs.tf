@@ -58,12 +58,6 @@ output "rds_security_group_id" {
   value       = aws_security_group.rds.id
 }
 
-output "rds_master_user_secret_arn" {
-  description = "Secrets Manager secret ARN for the RDS-managed master user password, when enabled."
-  value       = try(aws_db_instance.postgres.master_user_secret[0].secret_arn, null)
-  sensitive   = true
-}
-
 output "api_instance_id" {
   description = "EC2 instance ID for the API server."
   value       = aws_instance.api.id

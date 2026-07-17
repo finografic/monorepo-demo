@@ -328,7 +328,7 @@ Deployability requirement:
 - [x] Add DB subnet group and security group.
 - [x] Keep the database private by default.
 - [x] Leave NAT Gateway out of the plan.
-- [x] Keep Secrets Manager opt-in instead of default.
+- [x] Leave Secrets Manager out of the active RDS plan.
 - [x] Keep RDS defaults minimal:
   - `db.t4g.micro`
   - 20 GiB `gp2`

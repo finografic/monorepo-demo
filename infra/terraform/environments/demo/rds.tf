@@ -42,9 +42,9 @@ resource "aws_vpc_security_group_ingress_rule" "rds_security_group" {
 }
 
 resource "aws_db_parameter_group" "postgres" {
-  name        = "${local.name_prefix}-postgres17"
+  name        = "${local.name_prefix}-postgres${local.rds_engine_major}"
   description = "PostgreSQL parameter group for ${local.name_prefix}."
-  family      = "postgres17"
+  family      = "postgres${local.rds_engine_major}"
 }
 
 resource "random_password" "rds_master" {
@@ -56,6 +56,7 @@ resource "aws_db_instance" "postgres" {
   identifier = local.rds_identifier
 
   engine         = "postgres"
+  engine_version = var.rds_engine_version
   instance_class = var.rds_instance_class
 
   allocated_storage = var.rds_allocated_storage_gb
@@ -64,10 +65,8 @@ resource "aws_db_instance" "postgres" {
 
   db_name  = var.rds_database_name
   username = var.rds_master_username
-  password = var.rds_manage_master_user_password ? null : random_password.rds_master.result
+  password = random_password.rds_master.result
   port     = var.rds_port
-
-  manage_master_user_password = var.rds_manage_master_user_password
 
   db_subnet_group_name   = aws_db_subnet_group.postgres.name
   vpc_security_group_ids = [aws_security_group.rds.id]

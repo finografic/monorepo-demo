@@ -101,16 +101,21 @@ variable "rds_master_username" {
   }
 }
 
-variable "rds_manage_master_user_password" {
-  description = "Whether RDS stores the master password in Secrets Manager. Costs extra per secret, so this is opt-in."
-  type        = bool
-  default     = false
-}
-
 variable "rds_instance_class" {
   description = "RDS instance class for the demo PostgreSQL database."
   type        = string
   default     = "db.t4g.micro"
+}
+
+variable "rds_engine_version" {
+  description = "PostgreSQL engine version for the demo database. Pin this so AWS default major-version changes cannot break the parameter group."
+  type        = string
+  default     = "17"
+
+  validation {
+    condition     = can(regex("^[0-9]+(\\.[0-9]+)?$", var.rds_engine_version))
+    error_message = "rds_engine_version must be a major version like 17 or a major.minor version like 17.5."
+  }
 }
 
 variable "rds_allocated_storage_gb" {

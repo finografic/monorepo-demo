@@ -6,8 +6,8 @@ app_runner_api_base_url = "https://qvyq3mdegk.ap-southeast-2.awsapprunner.com"
 
 rds_database_name                 = "monorepo_demo"
 rds_master_username               = "monorepo_demo"
-rds_manage_master_user_password   = false
 rds_instance_class                = "db.t4g.micro"
+rds_engine_version                = "17"
 rds_allocated_storage_gb          = 20
 rds_publicly_accessible           = false
 rds_ingress_cidr_blocks           = []
