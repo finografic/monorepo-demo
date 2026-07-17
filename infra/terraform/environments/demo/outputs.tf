@@ -63,3 +63,28 @@ output "rds_master_user_secret_arn" {
   value       = try(aws_db_instance.postgres.master_user_secret[0].secret_arn, null)
   sensitive   = true
 }
+
+output "api_instance_id" {
+  description = "EC2 instance ID for the API server."
+  value       = aws_instance.api.id
+}
+
+output "api_public_dns" {
+  description = "Public DNS name for the EC2 API server."
+  value       = aws_instance.api.public_dns
+}
+
+output "api_public_ip" {
+  description = "Public IPv4 address for the EC2 API server."
+  value       = aws_instance.api.public_ip
+}
+
+output "api_security_group_id" {
+  description = "Security group attached to the EC2 API server."
+  value       = aws_security_group.api.id
+}
+
+output "api_url" {
+  description = "Direct HTTP URL for the EC2 API server."
+  value       = "http://${aws_instance.api.public_dns}:${var.ec2_api_port}"
+}

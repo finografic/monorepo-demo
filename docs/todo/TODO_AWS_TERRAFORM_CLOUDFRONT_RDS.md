@@ -385,42 +385,66 @@ Deployability requirement:
 ## Phase 6 — EC2 API Infrastructure
 
 - [ ] Add Terraform for one small EC2 API instance.
+  - [x] Add reviewable Terraform config.
+  - [x] Validate Terraform config.
+  - [x] Generate a no-apply Terraform plan.
+  - [ ] Apply reviewed Terraform plan.
 - [ ] Choose the cheapest practical instance type for the demo.
-  - Prefer a free-tier/credit-friendly instance where available.
+  - [x] Default to `t3.micro` for x86 compatibility with the existing server Docker build path.
   - Avoid Auto Scaling Groups, load balancers, and ECS/Fargate for this slice.
-- [ ] Add an EC2 security group:
-  - allow inbound HTTP/API traffic from the internet for the demo API;
-  - allow SSH only from a scoped local IP, or avoid SSH if using SSM later;
+- [x] Add an EC2 security group:
+  - allow inbound HTTP/API traffic on port `4000` for the demo API;
+  - leave SSH closed by default;
   - allow outbound internet from EC2;
   - allow EC2 -> RDS on `5432`.
-- [ ] Add an RDS ingress rule allowing only the EC2 security group.
+- [x] Add an RDS ingress rule allowing only the EC2 security group.
 - [ ] Decide deployment style:
   - Docker on EC2 using the existing server image; or
   - Node/pnpm on EC2 using the built server artifact.
-- [ ] Add minimal instance bootstrap:
+- [x] Add minimal instance bootstrap:
   - install runtime dependencies;
   - create app directory;
-  - configure env file outside git;
-  - configure systemd service or Docker restart policy.
-- [ ] Keep NAT Gateway, ALB, WAF, Route 53, ACM, ECS/Fargate, and Secrets Manager out of this slice.
-- [ ] Generate and review a no-apply Terraform plan.
+  - leave actual app env/service setup for Phase 7.
+- [x] Keep NAT Gateway, ALB, WAF, Route 53, ACM, ECS/Fargate, and Secrets Manager out of this slice.
+- [x] Generate and review a no-apply Terraform plan.
 
 Done when:
 
 - Terraform can create the EC2 API host and security group wiring.
 - Plan has no NAT Gateway, load balancer, ECS, WAF, Route 53, or Secrets Manager resources.
 
+Plan evidence:
+
+- [x] `terraform -chdir=infra/terraform/environments/demo fmt`
+- [x] `terraform -chdir=infra/terraform/environments/demo validate`
+- [x] `terraform -chdir=infra/terraform/environments/demo plan -input=false -no-color`
+- [x] Plan proposes 10 resources to create and no changes/destroys:
+  - Terraform random password (no AWS resource or monthly charge)
+  - RDS PostgreSQL instance
+  - DB parameter group
+  - DB subnet group
+  - RDS security group
+  - EC2 API instance
+  - EC2 API security group
+  - EC2 outbound rule
+  - EC2 API ingress rule
+  - RDS ingress from EC2 security group
+
 ---
 
 ## Phase 7 — EC2 Server Deployment
 
-- [ ] Build or package the server for EC2.
-- [ ] Configure EC2 runtime env outside source control:
+- [x] Build or package the server for EC2.
+  - EC2-specific Dockerfile added at `apps/server/Dockerfile.ec2-api`.
+  - Root Docker scripts added for local build/run smoke checks.
+  - Local `linux/amd64` image build completed.
+- [x] Configure EC2 runtime env outside source control:
   - `DB_DIALECT=postgres`
   - `DATABASE_URL`
   - `AUTH_SECRET`
   - `CORS_ORIGINS`
   - AI provider keys if live streaming remains enabled
+  - Runtime env documented in `docs/process/AWS_EC2_API_SERVER.md`.
 - [ ] Start the Hono API on EC2.
 - [ ] Verify EC2 -> RDS connectivity.
 - [ ] Run or re-run migrations/seeds from an approved path if not completed in Phase 5.
@@ -432,6 +456,11 @@ Done when:
   - AI fixture stream
   - AI live stream if provider keys are configured
 - [ ] Decide whether Demo 3 continues to use the external xscan API for now.
+
+Validation evidence:
+
+- [x] `pnpm aws:ec2:docker:build`
+- [x] Local container smoke against Docker PostgreSQL returned `/api/health` status `ok`.
 
 Done when:
 

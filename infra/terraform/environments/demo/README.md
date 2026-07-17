@@ -31,6 +31,11 @@ rds_instance_class              = "db.t4g.micro"
 rds_allocated_storage_gb        = 20
 rds_backup_retention_days       = 0
 rds_manage_master_user_password = false
+
+ec2_instance_type           = "t3.micro"
+ec2_root_volume_size_gb     = 8
+ec2_api_port                = 4000
+ec2_ssh_ingress_cidr_blocks = []
 ```
 
 ## Commands
@@ -82,6 +87,23 @@ lowest practical pay-as-you-go footprint:
 - do not add NAT Gateway by default;
 - do not add custom domains, ACM, WAF, Route 53, ECS/Fargate, or load balancers
   unless explicitly accepted as paid upgrades.
+- expect one public IPv4 charge while the EC2 API host is running; this is the
+  low-complexity trade-off that avoids NAT Gateway, load balancers, and custom
+  domain infrastructure.
+
+Checkpoint E adds the EC2 API foundation:
+
+- one `t3.micro` EC2 instance;
+- 8 GiB encrypted root volume;
+- Docker installed through user data;
+- API security group with inbound port `4000`;
+- SSH closed by default;
+- outbound internet directly from the public subnet;
+- RDS ingress limited to the EC2 API security group.
+
+The browser-facing cutover should eventually use CloudFront as the HTTPS entry
+point for API calls. Direct EC2 HTTP is useful for smoke testing, but the
+CloudFront frontend should not call a plain HTTP EC2 URL from the browser.
 
 Before applying RDS, decide the App Runner connectivity path. The cheapest
 default is to avoid NAT Gateway:

@@ -11,4 +11,11 @@ rds_instance_class                = "db.t4g.micro"
 rds_allocated_storage_gb          = 20
 rds_publicly_accessible           = false
 rds_ingress_cidr_blocks           = []
-rds_ingress_security_group_ids = []
+rds_ingress_security_group_ids    = []
+
+ec2_instance_type           = "t3.micro"
+ec2_root_volume_size_gb     = 8
+ec2_api_port                = 4000
+ec2_api_ingress_cidr_ipv4   = "0.0.0.0/0"
+ec2_key_name                = null
+ec2_ssh_ingress_cidr_blocks = []

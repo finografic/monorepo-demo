@@ -26,6 +26,7 @@ must prefer the smallest pay-as-you-go shape:
 - avoid always-on load balancers, ECS/Fargate, WAF, Route 53, and custom-domain
   infrastructure unless explicitly approved;
 - keep paid secrets/config services opt-in;
+- use one small public EC2 API host instead of NAT Gateway or a load balancer;
 - keep teardown paths documented before applying paid resources.
 
 ## AWS Console checkpoints

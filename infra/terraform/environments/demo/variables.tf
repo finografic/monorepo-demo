@@ -170,3 +170,45 @@ variable "rds_skip_final_snapshot" {
   type        = bool
   default     = true
 }
+
+variable "ec2_instance_type" {
+  description = "EC2 instance type for the low-cost API server."
+  type        = string
+  default     = "t3.micro"
+}
+
+variable "ec2_root_volume_size_gb" {
+  description = "Root EBS volume size for the EC2 API server."
+  type        = number
+  default     = 8
+
+  validation {
+    condition     = var.ec2_root_volume_size_gb >= 8
+    error_message = "ec2_root_volume_size_gb must be at least 8."
+  }
+}
+
+variable "ec2_api_port" {
+  description = "HTTP port exposed by the EC2 API server."
+  type        = number
+  default     = 4000
+}
+
+variable "ec2_api_ingress_cidr_ipv4" {
+  description = "CIDR allowed to reach the EC2 API port. Keep broad until CloudFront origin hardening is added."
+  type        = string
+  default     = "0.0.0.0/0"
+}
+
+variable "ec2_key_name" {
+  description = "Optional existing EC2 key pair name for SSH. Leave null to avoid SSH key access."
+  type        = string
+  default     = null
+  nullable    = true
+}
+
+variable "ec2_ssh_ingress_cidr_blocks" {
+  description = "CIDR blocks allowed to SSH to EC2. Leave empty by default."
+  type        = list(string)
+  default     = []
+}

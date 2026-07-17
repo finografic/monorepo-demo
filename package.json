@@ -40,6 +40,8 @@
     "aws:frontend:invalidate": "aws cloudfront create-invalidation --distribution-id ERCVOSB81GPS9 --paths '/*'",
     "aws:frontend:deploy": "run-s aws:frontend:build aws:frontend:sync aws:frontend:invalidate",
     "aws:frontend:outputs": "terraform -chdir=infra/terraform/environments/demo output",
+    "aws:ec2:docker:build": "docker build --platform linux/amd64 --secret id=npm_token,env=NPM_TOKEN -f apps/server/Dockerfile.ec2-api -t monorepo-demo-server:ec2-api .",
+    "aws:ec2:docker:run": "docker run --rm --platform linux/amd64 -p 4000:4000 --env-file .env.ec2-api.local -e PORT=4000 monorepo-demo-server:ec2-api",
     "test": "moon run :test",
     "·········· LINTING": "···················································",
     "lint": "moon run :lint",
