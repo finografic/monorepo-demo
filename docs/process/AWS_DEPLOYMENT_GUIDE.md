@@ -7,7 +7,7 @@ for the low-cost AWS demo.
 
 Use this checklist first, then follow the matching detailed section below:
 
-- **Frontend code changed:** run `pnpm aws:frontend:build`, `pnpm aws:frontend:sync`, and `pnpm aws:frontend:invalidate`.
+- **Frontend code changed:** run `pnpm aws:frontend:deploy`.
 - **Terraform infrastructure changed:** run `terraform plan -out=tfplan`, review it, then run `terraform apply tfplan`.
 - **Server runtime env changed:** update EC2 `/opt/monorepo-demo/.env` over SSM and restart `monorepo-demo-api`.
 - **Server code changed:** pull/reset the repo on EC2, install/build, then restart `monorepo-demo-api`.
@@ -41,9 +41,7 @@ AWS frontend deployment currently uses the manual workflow
 `.github/workflows/deploy-aws-frontend.yml`, or the local commands:
 
 ```bash
-pnpm aws:frontend:build
-pnpm aws:frontend:sync
-pnpm aws:frontend:invalidate
+pnpm aws:frontend:deploy
 ```
 
 ## What Requires Terraform Apply
@@ -78,10 +76,11 @@ changes unless the change also modifies AWS resource configuration.
 **Deploy to AWS:**
 
 ```bash
-pnpm aws:frontend:build
-pnpm aws:frontend:sync
-pnpm aws:frontend:invalidate
+pnpm aws:frontend:deploy
 ```
+
+Use `pnpm aws:frontend:build` only when you want to rebuild the local `pages/`
+deployment folder without uploading it.
 
 Terraform is required only if the frontend change also needs CloudFront, S3,
 IAM, or other infrastructure changes.

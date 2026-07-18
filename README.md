@@ -290,10 +290,8 @@ All root scripts delegate to Moon and run across all workspaces in dependency or
 Frontend deploy:
 
 ```
-pnpm aws:frontend:build       # local build + assemble pages/
-pnpm aws:frontend:sync        # upload pages/ to S3
-pnpm aws:frontend:invalidate  # invalidate CloudFront
-pnpm aws:frontend:deploy      # build + sync + invalidate
+pnpm aws:frontend:build   # rebuild local pages/ deployment folder
+pnpm aws:frontend:deploy  # build pages/, sync to S3, invalidate CloudFront
 ```
 
 Infrastructure and EC2 helpers:
