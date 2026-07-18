@@ -64,15 +64,17 @@ export const translationsAppSeedData: Array<{ key: string; translations: Record<
   {
     key: 'app.subtitle',
     translations: {
-      'en-GB': 'Full-stack demo & portfolio pieces',
-      'es-ES': 'Demo full-stack y pieza de portafolio',
+      'en-GB': 'AWS-backed full-stack demo & portfolio pieces',
+      'es-ES': 'Demo full-stack en AWS y piezas de portafolio',
     },
   },
   {
     key: 'app.description',
     translations: {
-      'en-GB': 'A portfolio monorepo demo with Hono, React, Tailwind, and Auth.js.',
-      'es-ES': 'Una demo de monorepo de portafolio con Hono, React, Tailwind y Auth.js.',
+      'en-GB':
+        'An AWS-backed portfolio monorepo with CloudFront/S3, EC2, RDS PostgreSQL, Hono, React, Tailwind, and Auth.js.',
+      'es-ES':
+        'Una demo de monorepo de portafolio en AWS con CloudFront/S3, EC2, RDS PostgreSQL, Hono, React, Tailwind y Auth.js.',
     },
   },
   { key: 'app.pages.home.title', translations: { 'en-GB': 'Welcome', 'es-ES': 'Bienvenido' } },

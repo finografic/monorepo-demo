@@ -19,7 +19,7 @@ export function ModelSelector({
   return (
     <div className={`flex h-full flex-col justify-between${disabled ? ' opacity-60' : ''}`}>
       <div>
-        <label htmlFor="live-model" className="block text-sm font-medium tracking-wider text-primary">
+        <label htmlFor="live-model" className="block text-sm font-semibold tracking-wide text-primary">
           Live LLM model
         </label>
         {selectedModel ? (
@@ -34,7 +34,7 @@ export function ModelSelector({
         value={selectedModelId}
         disabled={disabled}
         onChange={(event) => onModelChange(event.target.value)}
-        className="w-full rounded-lg bg-white [&_select]:h-[40px] [&_select]:border-2 [&_select]:border-muted-foreground"
+        className="w-full rounded-lg bg-white [&_select]:h-[40px] [&_select]:border-muted-foreground [&_select]:py-0 [&_select]:leading-[40px] [&_select]:font-medium"
       >
         {models.map((model) => (
           <NativeSelectOption key={model.id} value={model.id}>

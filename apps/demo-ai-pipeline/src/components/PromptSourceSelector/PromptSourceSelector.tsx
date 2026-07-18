@@ -7,10 +7,12 @@ interface PromptSourceSelectorProps {
   onModeChange: (mode: StreamMode) => void;
 }
 
-const MODE_LABELS: Record<StreamMode, string> = {
+const PROMPT_SOURCE_MODE_LABELS: Record<StreamMode, string> = {
   fixture: 'Mock Fixture',
   live: 'Live LLM API',
 };
+
+export { PROMPT_SOURCE_MODE_LABELS };
 
 const MODE_DESCRIPTIONS: Record<StreamMode, string> = {
   fixture: 'Fixture mode — pre-recorded responses, no API cost',
@@ -28,7 +30,7 @@ export function PromptSourceSelector({ mode, disabled = false, onModeChange }: P
           {MODE_DESCRIPTIONS[mode]}
         </p>
       </div>
-      <div className="flex h-[40px] overflow-hidden rounded-md border-2 border-muted-foreground bg-white text-sm font-medium">
+      <div className="flex h-[40px] overflow-hidden rounded-md border border-muted-foreground bg-white text-sm font-medium">
         {STREAM_MODES.map((streamMode) => (
           <Button
             key={streamMode}
@@ -37,13 +39,13 @@ export function PromptSourceSelector({ mode, disabled = false, onModeChange }: P
             disabled={disabled}
             onClick={() => onModeChange(streamMode)}
             className={[
-              'h-auto flex-1 rounded-none border-0 text-sm font-medium transition-colors disabled:cursor-not-allowed',
+              'h-full min-h-0 flex-1 items-center justify-center rounded-none border-0 pt-0.75 text-sm font-medium transition-colors disabled:cursor-not-allowed',
               mode === streamMode
-                ? 'bg-primary text-primary-foreground'
-                : 'text-muted-foreground hover:bg-accent hover:text-foreground',
+                ? 'bg-primary text-primary-foreground hover:bg-primary hover:text-primary-foreground'
+                : 'text-muted-foreground hover:bg-primary/33 hover:text-foreground',
             ].join(' ')}
           >
-            {MODE_LABELS[streamMode]}
+            {PROMPT_SOURCE_MODE_LABELS[streamMode]}
           </Button>
         ))}
       </div>

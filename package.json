@@ -2,7 +2,7 @@
   "name": "@finografic/monorepo-demo",
   "version": "0.0.1",
   "private": false,
-  "description": "Portfolio monorepo demo with protected React/Vite apps for AI markdown streaming, Queensland TMR data visualisation, and dependency scan tooling, backed by a Hono/Auth.js API.",
+  "description": "Full-stack portfolio monorepo — React/Vite + Hono/Auth.js API with typed RPC (Tanstack Query), deployed on Terraform-managed AWS (CloudFront, S3, EC2, RDS). Demos span AI markdown streaming, Queensland TMR data visualisation, and dependency security scanning.",
   "keywords": [
     "typescript",
     "react",

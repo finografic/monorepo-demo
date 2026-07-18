@@ -1,12 +1,14 @@
 import type { StreamMode } from '@workspace/shared';
 import { DEFAULT_LIVE_MODEL_ID, LIVE_MODEL_OPTIONS } from '@workspace/shared';
 import { DemoLayout, StandbyPlaceholder } from '@workspace/shared/components';
-import { Col, Row } from '@workspace/ui/components/grid';
 import { MetricsBar } from 'components/MetricsBar/MetricsBar';
 import { ModelSelector } from 'components/ModelSelector/ModelSelector';
 import { PartialMarkdownGuard } from 'components/PartialMarkdownGuard/PartialMarkdownGuard';
 import { PromptSelector } from 'components/PromptSelector/PromptSelector';
-import { PromptSourceSelector } from 'components/PromptSourceSelector/PromptSourceSelector';
+import {
+  PromptSourceSelector,
+  PROMPT_SOURCE_MODE_LABELS,
+} from 'components/PromptSourceSelector/PromptSourceSelector';
 import { SourceToggle } from 'components/SourceToggle/SourceToggle';
 import { StreamingControls } from 'components/StreamingControls/StreamingControls';
 import { PROMPTS } from 'prompts/index';
@@ -142,31 +144,33 @@ export function DemoPage() {
       }
       sidebarLabel="Prompt selection"
       actionBar={
-        <div className="flex flex-none flex-col border-t border-border bg-blue-500/20 md:flex-row">
-          <div className="flex flex-none flex-col px-4 py-4 md:w-[30rem] md:border-r md:border-border lg:w-[32rem]">
+        <div className="flex flex-none flex-col border-t !border-blue-500/15 border-border bg-blue-500/20 md:flex-row">
+          <div className="flex flex-none flex-col px-4 py-4 md:w-[30rem] md:border-r border-blue-500/15 lg:w-[32rem]">
             <StreamingControls
               status={status}
               hasSelection={!!selectedId}
+              selectedPromptSourceContext={selectedPrompt?.sourceContext}
+              selectedPromptTitle={selectedPrompt?.title}
               onStart={handleStart}
               onStop={stop}
               onClear={handleClear}
             />
           </div>
 
-          <div className="flex min-h-20 flex-1 flex-wrap items-stretch justify-between gap-4 px-4 py-4 md:gap-5 md:px-8">
+          <div className="flex min-h-20 flex-1 flex-wrap items-stretch justify-between gap-4 px-4 py-4 md:gap-5">
             {status === 'idle' ? (
-              <Row className="min-w-0 flex-1">
-                <Col xs={12} md={6} className="flex flex-col">
+              <div className="flex min-w-0 flex-1 flex-col gap-4 md:flex-row md:gap-5">
+                <div className="flex min-w-0 flex-1 flex-col">
                   <PromptSourceSelector mode={mode} onModeChange={handleModeChange} />
-                </Col>
-                <Col xs={12} md={6} className="flex flex-col">
+                </div>
+                <div className="flex min-w-0 flex-1 flex-col">
                   <ModelSelector
                     models={LIVE_MODEL_OPTIONS}
                     selectedModelId={selectedModelId}
                     onModelChange={setSelectedModelId}
                   />
-                </Col>
-              </Row>
+                </div>
+              </div>
             ) : (
               <div className="flex min-w-0 flex-1 basis-full items-center md:basis-auto" aria-live="polite">
                 <MetricsBar status={status} metrics={metrics} progress={progress} />
@@ -177,13 +181,32 @@ export function DemoPage() {
                 <SourceToggle showRaw={showRaw} onToggle={() => setShowRaw((v) => !v)} />
               </div>
             ) : null}
-            {sourceReference ? <SourceAttribution source={sourceReference} /> : null}
           </div>
         </div>
       }
       footer={
         <>
-          <p className="text-sm text-primary-foreground">Fixture mode · Live OpenAI-compatible API</p>
+          <p className="text-sm text-primary-foreground">
+            {PROMPT_SOURCE_MODE_LABELS[mode]}
+            {sourceReference ? (
+              <>
+                {' · '}
+                <span className="text-primary-foreground/90">
+                  Source:{' '}
+                  <a
+                    href={sourceReference.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="underline underline-offset-2 transition-colors hover:text-primary-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                  >
+                    {sourceReference.label}
+                  </a>
+                  <span aria-hidden="true"> · </span>
+                  {sourceReference.note}
+                </span>
+              </>
+            ) : null}
+          </p>
           <p className="text-sm text-primary-foreground/60">Streaming · Mermaid · Syntax highlighting</p>
         </>
       }
@@ -202,26 +225,6 @@ export function DemoPage() {
         )}
       </div>
     </DemoLayout>
-  );
-}
-
-function SourceAttribution({ source }: { source: SourceReference }) {
-  return (
-    <div className="basis-full text-xs text-muted-foreground">
-      <span className="font-medium">Source:</span>{' '}
-      <a
-        href={source.url}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="rounded underline underline-offset-2 transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-      >
-        {source.label}
-      </a>
-      <span className="mx-2 text-muted-foreground/40" aria-hidden="true">
-        ·
-      </span>
-      <span className="text-muted-foreground/70">{source.note}</span>
-    </div>
   );
 }
 

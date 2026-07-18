@@ -1,14 +1,14 @@
 # @finografic/monorepo-demo
 
 > Portfolio monorepo demo with protected React/Vite apps for AI markdown streaming, Queensland TMR data
-> visualisation, and dependency scan tooling, backed by a Hono/Auth.js API.
+> visualisation, and dependency scan tooling, deployed on Terraform-managed low-cost AWS infrastructure.
 
 This repo is a TypeScript-first portfolio project showing frontend engineering patterns across multiple small apps:
 accessible UI, protected routes, streaming AI output, transport data visualisation, terminal-style tooling, and
 production-minded API/auth boundaries.
 
-The AWS-hosted demo runs the static Vite apps through CloudFront/S3, with authenticated API features served by the
-Hono API on EC2 backed by RDS PostgreSQL.
+The hosted demo is intentionally infrastructure-forward: Terraform manages the AWS shape, static Vite apps run behind
+CloudFront/S3, `/api/*` routes to a Hono/Auth.js API on EC2, and application data lives in RDS PostgreSQL.
 
 ---
 
@@ -31,6 +31,36 @@ Hono API on EC2 backed by RDS PostgreSQL.
 | Git hooks     | Husky + lint-staged + commitlint                                  |
 | Testing       | Vitest                                                            |
 | Deps          | syncpack (cross-workspace version alignment)                      |
+
+---
+
+## AWS Architecture
+
+This project is now a Terraform-managed, low-cost AWS migration demo, moving the portfolio from a GitHub Pages-style
+static deployment to a small but real cloud architecture:
+
+```text
+CloudFront
+├── S3 origin: static Vite apps
+└── /api/* origin: EC2 Hono/Auth.js API
+              └── RDS PostgreSQL
+```
+
+**AWS services used:**
+
+- **CloudFront** for the public HTTPS entry point, SPA fallback handling, and `/api/*` routing.
+- **S3** for static frontend and demo app assets.
+- **EC2** for the Hono API server, Auth.js routes, Server-Sent Events, and hosted LLM runtime integration.
+- **RDS PostgreSQL** for auth, i18n, admin data, and application tables.
+- **Systems Manager** for no-SSH operational updates to the EC2 host.
+- **IAM/OIDC** for scoped GitHub Actions access to the frontend deployment bucket and distribution.
+- **Terraform** for reproducible infrastructure in `infra/terraform/environments/demo`.
+
+The infrastructure deliberately avoids expensive always-on extras such as NAT Gateway, ALB, ECS/Fargate, WAF, Route 53,
+and paid observability services. It is designed for a very low-traffic interview demo where clarity, reproducibility,
+and pay-as-you-go cost control matter more than enterprise scale.
+
+Operational details live in [AWS Deployment Guide](/docs/process/AWS_DEPLOYMENT_GUIDE.md).
 
 ---
 
@@ -165,7 +195,7 @@ monorepo-demo/
 
 ## Getting Started
 
-**Requirements:** Node 24.16.x, pnpm ≥ 10.20.0, Docker for local PostgreSQL experiments
+**Requirements:** Node 24.16.x, pnpm ≥ 10.20.0, Docker for local PostgreSQL
 
 ```bash
 # Install dependencies
@@ -175,10 +205,10 @@ pnpm install
 cp apps/server/.env.example apps/server/.env
 
 # Start the main client and API against local PostgreSQL
-pnpm dev:postgres
+pnpm dev
 
 # Start the main client, API, and all demo apps against local PostgreSQL
-pnpm dev:all:postgres
+pnpm dev:all
 ```
 
 Default local ports:
@@ -280,4 +310,4 @@ pnpm aws:ec2:docker:run       # run EC2 API image locally with .env.ec2-api.loca
 
 ## License
 
-MIT — see [LICENSE](LICENSE).
+MIT © [Justin Rankin](https://github.com/finografic)

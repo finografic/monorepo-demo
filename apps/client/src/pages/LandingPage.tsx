@@ -4,7 +4,7 @@ import finograficLogoUrl from '@workspace/shared/assets/finografic-logo.png';
 import { Button } from '@workspace/ui/components/button';
 import { Card, CardContent } from '@workspace/ui/components/card';
 import { Col, Row } from '@workspace/ui/components/grid';
-import { ArrowRight, Globe, Palette, ShieldCheck, Zap } from 'lucide-react';
+import { ArrowRight, Cloud, GitBranch, Globe, Palette, ShieldCheck, Zap } from 'lucide-react';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -59,7 +59,7 @@ function demoUrl(path: string, localUrl: string, envUrl?: string): string {
 const CAPABILITY_CHIPS = [
   'React + TypeScript',
   'Full-stack Monorepo',
-  'AWS server deployment',
+  'AWS CloudFront / EC2 / RDS',
   'Accessible UI',
   'AI Markdown / LLM UI',
   'Data Visualisation',
@@ -125,13 +125,31 @@ const FEATURES = [
       'Hono + Drizzle ORM server, deployed to AWS. Vite 8, React 19, React Router v7, Tanstack Query + Hono RPC client.',
   },
   {
+    key: 'aws',
+    Icon: Cloud,
+    titleKey: 'app.features.aws.title',
+    titleDefault: 'Terraform + AWS',
+    descKey: 'app.features.aws.desc',
+    descDefault:
+      'Terraform-managed CloudFront/S3 frontend, EC2 Hono API, and RDS PostgreSQL for a low-cost demo footprint.',
+  },
+  {
     key: 'auth',
     Icon: ShieldCheck,
     titleKey: 'app.features.auth.title',
     titleDefault: 'Auth.js + JWT',
     descKey: 'app.features.auth.desc',
     descDefault:
-      'Credentials provider with JWT strategy, role-based access control, and secure cookie sessions.',
+      'Credentials provider with JWT strategy, role-based access control, secure cookies, and RDS-backed users.',
+  },
+  {
+    key: 'deployment',
+    Icon: GitBranch,
+    titleKey: 'app.features.deployment.title',
+    titleDefault: 'Deployment Workflow',
+    descKey: 'app.features.deployment.desc',
+    descDefault:
+      'Manual AWS frontend deploys, Terraform-managed infrastructure, and SSM-based EC2 server updates without opening SSH.',
   },
   {
     key: 'design',
@@ -181,7 +199,7 @@ export function LandingPage(): React.JSX.Element {
           <p className="mx-auto mt-4 max-w-2xl text-base text-muted-foreground sm:text-lg">
             {t(
               'app.subtitle',
-              'Practical React/TypeScript demos showcasing AI UIs, data visualisation, and security-conscious full-stack engineering.',
+              'AWS-backed React/TypeScript portfolio demos showcasing AI UIs, data visualisation, and security-conscious full-stack engineering.',
             )}
           </p>
 
