@@ -10,6 +10,8 @@ import { QueryClientProvider } from './providers/QueryClientProvider/QueryClient
 
 import '@workspace/ui/globals.css';
 
+import './styles/landing-print.css';
+
 setFavicon();
 
 createRoot(document.getElementById('root')!).render(

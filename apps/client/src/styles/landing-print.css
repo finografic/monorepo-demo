@@ -1,0 +1,339 @@
+/* Screen-only chrome for secret print mode (?print or /print) */
+.print-landing-chrome {
+  position: fixed;
+  right: 1rem;
+  bottom: 1rem;
+  z-index: 50;
+}
+
+/* Screen preview for ?print / /print — match button-style links (no underline) */
+body.print-landing .print-landing-root .print-landing-github-link {
+  color: #334155;
+  text-decoration: none;
+}
+
+body.print-landing .print-landing-root .print-landing-demo-link {
+  color: #fff;
+  text-decoration: none;
+}
+
+/* Vertical rhythm — section stack + hero internals (?print screen preview) */
+body.print-landing .print-landing-root {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  padding-top: 8rem;
+}
+
+body.print-landing .print-landing-root .print-landing-live-link {
+  color: #64748b;
+  text-decoration: none;
+}
+
+body.print-landing .print-landing-root > section:first-child > div {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.35rem;
+}
+
+body.print-landing .print-landing-root > section:first-child > div .mt-2,
+body.print-landing .print-landing-root > section:first-child > div .mt-4,
+body.print-landing .print-landing-root > section:first-child > div .mt-8 {
+  margin-top: 0 !important;
+}
+
+/* Hero badges — row gap when chips wrap */
+body.print-landing .print-landing-root > section:first-child > div > div.max-w-6xl:last-child {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+body.print-landing .print-landing-root > section:first-child > div > div.max-w-6xl:last-child ul {
+  margin-top: 0 !important;
+  row-gap: 0.65rem !important;
+  column-gap: 0.5rem !important;
+}
+
+body.print-landing .print-landing-root > section:nth-child(2) > div,
+body.print-landing .print-landing-root > section:nth-child(3) > div {
+  padding-top: 0.25rem !important;
+}
+
+/* Section headings — space before card grids */
+body.print-landing .print-landing-root > section:nth-child(2) > div > h2 {
+  margin-bottom: 1.5rem !important;
+}
+
+body.print-landing .print-landing-root > section:nth-child(3) > div > h2 {
+  margin-bottom: 0.875rem !important;
+}
+
+body.print-landing .print-landing-root > section:nth-child(3) > div > p.text-center {
+  margin-bottom: 1.5rem !important;
+}
+
+@media print {
+  @page {
+    size: A4 portrait;
+    margin: 8mm;
+  }
+
+  html {
+    /* Keep near browser root (16px) — scale via zoom only */
+    font-size: 16px !important;
+  }
+
+  body.print-landing {
+    background: #fff !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+    /* A4 content ~194mm ≈ 734px; design width 1100px → ~0.67 */
+    zoom: 0.68;
+  }
+
+  body.print-landing header,
+  body.print-landing .print-landing-chrome {
+    display: none !important;
+  }
+
+  body.print-landing,
+  body.print-landing #root,
+  body.print-landing main {
+    min-height: 0 !important;
+    height: auto !important;
+    overflow: visible !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  body.print-landing .print-landing-root {
+    background: #fff !important;
+    /* Match browser max-w-6xl layout width so grids/type match screen */
+    width: 1100px !important;
+    max-width: 1100px !important;
+    margin: 0 auto !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 2.25rem !important;
+    padding-top: 8rem !important;
+  }
+
+  body.print-landing .print-landing-root section {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  body.print-landing .print-landing-root .border-b {
+    border-bottom-width: 0 !important;
+  }
+
+  /* Constrain section shells to design width (do not wipe max-width) */
+  body.print-landing .print-landing-root section > div {
+    max-width: 1100px !important;
+    width: 100% !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    padding-top: 0.65rem !important;
+    padding-bottom: 0.65rem !important;
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+  }
+
+  /* Slightly tighter hero / demos vertical padding only */
+  body.print-landing .print-landing-root > section:first-child > div {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    gap: 1.5rem !important;
+    padding-top: 0.75rem !important;
+    padding-bottom: 0.5rem !important;
+  }
+
+  body.print-landing .print-landing-root > section:first-child > div .mt-2,
+  body.print-landing .print-landing-root > section:first-child > div .mt-4,
+  body.print-landing .print-landing-root > section:first-child > div .mt-8 {
+    margin-top: 0 !important;
+  }
+
+  body.print-landing .print-landing-root > section:first-child > div > div.max-w-6xl:last-child {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    gap: 0.75rem !important;
+  }
+
+  body.print-landing .print-landing-root > section:first-child > div > div.max-w-6xl:last-child ul {
+    margin-top: 0 !important;
+    row-gap: 0.65rem !important;
+    column-gap: 0.5rem !important;
+  }
+
+  body.print-landing .print-landing-root > section:last-child > div {
+    padding-bottom: 0.75rem !important;
+  }
+
+  /* Keep type scale close to browser — light tighten only */
+  body.print-landing .print-landing-root h1 {
+    font-size: 2rem !important;
+    line-height: 1.15 !important;
+  }
+
+  body.print-landing .print-landing-root h2 {
+    font-size: 1.35rem !important;
+    margin-bottom: 0.65rem !important;
+  }
+
+  body.print-landing .print-landing-root > section:nth-child(2) > div > h2 {
+    margin-bottom: 1.5rem !important;
+  }
+
+  body.print-landing .print-landing-root > section:nth-child(3) > div > h2 {
+    margin-bottom: 0.875rem !important;
+  }
+
+  body.print-landing .print-landing-root > section:nth-child(3) > div > p.text-center {
+    margin-bottom: 1.5rem !important;
+  }
+
+  body.print-landing .print-landing-root p,
+  body.print-landing .print-landing-root li {
+    line-height: 1.35 !important;
+  }
+
+  body.print-landing .print-landing-root .mb-4,
+  body.print-landing .print-landing-root .mb-5,
+  body.print-landing .print-landing-root .mb-6,
+  body.print-landing .print-landing-root .mb-8 {
+    margin-bottom: 0.55rem !important;
+  }
+
+  body.print-landing .print-landing-root .mt-1 {
+    margin-top: 0.2rem !important;
+  }
+
+  body.print-landing .print-landing-root .mt-2,
+  body.print-landing .print-landing-root .mt-4,
+  body.print-landing .print-landing-root .mt-8 {
+    margin-top: 0.45rem !important;
+  }
+
+  body.print-landing .print-landing-root .gap-1\.5 {
+    gap: 0.35rem !important;
+  }
+
+  body.print-landing .print-landing-root .gap-2,
+  body.print-landing .print-landing-root .gap-3,
+  body.print-landing .print-landing-root .gap-4 {
+    gap: 0.55rem !important;
+  }
+
+  /* Buttons — closer to screen, still compact enough for 1 page */
+  body.print-landing .print-landing-root .min-h-11 {
+    min-height: 2.25rem !important;
+    height: 2.25rem !important;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+    font-size: 0.8125rem !important;
+  }
+
+  body.print-landing .print-landing-root .h-14,
+  body.print-landing .print-landing-root .w-14 {
+    height: 2.75rem !important;
+    width: 2.75rem !important;
+  }
+
+  body.print-landing .print-landing-root .size-8 {
+    width: 1.35rem !important;
+    height: 1.35rem !important;
+  }
+
+  body.print-landing .print-landing-root .size-10 {
+    width: 2rem !important;
+    height: 2rem !important;
+  }
+
+  body.print-landing .print-landing-root .size-12 {
+    width: 2.25rem !important;
+    height: 2.25rem !important;
+  }
+
+  body.print-landing .print-landing-root .p-5 {
+    padding: 0.75rem 0.9rem !important;
+  }
+
+  body.print-landing .print-landing-root .px-5 {
+    padding-left: 0.9rem !important;
+    padding-right: 0.9rem !important;
+  }
+
+  body.print-landing .print-landing-root .py-3 {
+    padding-top: 0.5rem !important;
+    padding-bottom: 0.5rem !important;
+  }
+
+  body.print-landing .print-landing-root .text-sm {
+    font-size: 0.875rem !important;
+  }
+
+  body.print-landing .print-landing-root .text-lg {
+    font-size: 1.05rem !important;
+  }
+
+  body.print-landing .print-landing-root .text-xs {
+    font-size: 0.75rem !important;
+  }
+
+  body.print-landing .print-landing-root .text-base {
+    font-size: 0.95rem !important;
+  }
+
+  body.print-landing .print-landing-root .text-3xl,
+  body.print-landing .print-landing-root .sm\:text-4xl {
+    font-size: 2rem !important;
+  }
+
+  body.print-landing .print-landing-root .sm\:text-lg {
+    font-size: 1.05rem !important;
+  }
+
+  /* Force browser multi-column breakpoints (print width is "wide") */
+  body.print-landing .print-landing-root .grid-row {
+    flex-wrap: wrap !important;
+  }
+
+  body.print-landing .print-landing-root .grid-col-md-6 {
+    flex: 0 0 50% !important;
+    max-width: 50% !important;
+    width: 50% !important;
+  }
+
+  body.print-landing .print-landing-root .grid-col-xl-4 {
+    flex: 0 0 33.333% !important;
+    max-width: 33.333% !important;
+    width: 33.333% !important;
+  }
+
+  /* Hide mobile-only "View portfolio demos" CTA in print */
+  body.print-landing .print-landing-root .md\:hidden {
+    display: none !important;
+  }
+
+  /* Print/PDF external links — styled like buttons, no underline */
+  body.print-landing .print-landing-root .print-landing-github-link {
+    color: #334155 !important;
+    text-decoration: none !important;
+  }
+
+  body.print-landing .print-landing-root .print-landing-demo-link {
+    color: #fff !important;
+    text-decoration: none !important;
+  }
+
+  body.print-landing .print-landing-root .print-landing-live-link {
+    color: #64748b !important;
+    text-decoration: none !important;
+  }
+}

@@ -4,13 +4,35 @@ import finograficLogoUrl from '@workspace/shared/assets/finografic-logo.png';
 import { Button } from '@workspace/ui/components/button';
 import { Card, CardContent } from '@workspace/ui/components/card';
 import { Col, Row } from '@workspace/ui/components/grid';
-import { ArrowRight, Cloud, GitBranch, Globe, Palette, ShieldCheck, Zap } from 'lucide-react';
-import React from 'react';
+import {
+  ArrowRight,
+  Cloud,
+  ExternalLink,
+  GitBranch,
+  Globe,
+  Palette,
+  Printer,
+  ShieldCheck,
+  Zap,
+} from 'lucide-react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useLocation } from 'react-router-dom';
 
 import { DEFAULT_LANGUAGE } from '../i18n/i18n.constants';
+import {
+  awsDemoUrl,
+  awsFrontendOrigin,
+  isPrintMode,
+  PRINT_DOCUMENT_TITLE,
+  PRINT_EXTERNAL_LINK,
+} from '../lib/print-mode';
 
 const GITHUB_URL = 'https://github.com/finografic/monorepo-demo';
+const PRINT_GITHUB_LINK_CLASS =
+  'print-landing-github-link inline-flex min-h-11 items-center justify-center gap-1.5 rounded-md border border-slate-300 bg-white px-5 text-sm font-medium text-slate-700 no-underline';
+const PRINT_DEMO_LINK_CLASS =
+  'print-landing-demo-link mt-2 inline-flex min-h-11 w-full items-center justify-center rounded-md bg-brand-cyan px-5 text-sm font-semibold text-white shadow-sm no-underline';
 const BADGE_LAYOUT =
   'inline-flex shrink-0 items-center whitespace-nowrap rounded-full px-2.5 py-1 text-xs font-medium';
 
@@ -66,53 +88,61 @@ const CAPABILITY_CHIPS = [
   'Security Scanning',
 ] as const;
 
-const DEMOS: DemoCallout[] = [
-  {
-    id: 'ai-pipeline',
-    numberLabel: 'Demo 1:',
-    title: 'AI Markdown Pipeline',
-    description:
-      'LLM-powered markdown generation using public Queensland TMR data, with live streaming, fixture replay, Mermaid diagrams, Shiki code highlighting, and RAG-style service guidance.',
-    tags: [
-      { label: 'LLM UI', color: 'violet' },
-      { label: 'Streaming SSE', color: 'cyan' },
-      { label: 'Mermaid', color: 'indigo' },
-      { label: 'Shiki', color: 'amber' },
-    ],
-    url: demoUrl('demo-ai-pipeline', 'http://localhost:3001', import.meta.env['VITE_DEMO_AI_PIPELINE_URL']),
-    disabledInProduction: false,
-  },
-  {
-    id: 'datavis',
-    numberLabel: 'Demo 2:',
-    title: 'Transport Data Dashboard',
-    description:
-      'Accessible Queensland TMR dashboard with interactive charts, keyboard-friendly views, source links, and live Open Data catalogue integration.',
-    tags: [
-      { label: 'Data visualisation', color: 'sky' },
-      { label: 'Recharts', color: 'blue' },
-      { label: 'D3', color: 'orange' },
-      { label: 'WCAG AA', color: 'emerald' },
-    ],
-    url: demoUrl('demo-datavis', 'http://localhost:3002', import.meta.env['VITE_DEMO_DATAVIS_URL']),
-    disabledInProduction: false,
-  },
-  {
-    id: 'xscan',
-    numberLabel: 'Demo 3:',
-    title: 'Supply-Chain Security Scanner',
-    description:
-      'Browser-based supply-chain security scanner for GitHub repositories, with lockfile dependency-tree analysis, terminal streaming, and structured summaries.',
-    tags: [
-      { label: 'Supply chain', color: 'amber' },
-      { label: 'xterm.js', color: 'slate' },
-      { label: 'Security', color: 'emerald' },
-      { label: 'SSE', color: 'cyan' },
-    ],
-    url: demoUrl('demo-xscan', 'http://localhost:3003', import.meta.env['VITE_DEMO_XSCAN_URL']),
-    disabledInProduction: false,
-  },
-];
+function buildDemos(forceAwsUrls: boolean): DemoCallout[] {
+  return [
+    {
+      id: 'ai-pipeline',
+      numberLabel: 'Demo 1:',
+      title: 'AI Markdown Pipeline',
+      description:
+        'LLM-powered markdown generation using public Queensland TMR data, with live streaming, fixture replay, Mermaid diagrams, Shiki code highlighting, and RAG-style service guidance.',
+      tags: [
+        { label: 'LLM UI', color: 'violet' },
+        { label: 'Streaming SSE', color: 'cyan' },
+        { label: 'Mermaid', color: 'indigo' },
+        { label: 'Shiki', color: 'amber' },
+      ],
+      url: forceAwsUrls
+        ? awsDemoUrl('demo-ai-pipeline')
+        : demoUrl('demo-ai-pipeline', 'http://localhost:3001', import.meta.env['VITE_DEMO_AI_PIPELINE_URL']),
+      disabledInProduction: false,
+    },
+    {
+      id: 'datavis',
+      numberLabel: 'Demo 2:',
+      title: 'Transport Data Dashboard',
+      description:
+        'Accessible Queensland TMR dashboard with interactive charts, keyboard-friendly views, source links, and live Open Data catalogue integration.',
+      tags: [
+        { label: 'Data visualisation', color: 'sky' },
+        { label: 'Recharts', color: 'blue' },
+        { label: 'D3', color: 'orange' },
+        { label: 'WCAG AA', color: 'emerald' },
+      ],
+      url: forceAwsUrls
+        ? awsDemoUrl('demo-datavis')
+        : demoUrl('demo-datavis', 'http://localhost:3002', import.meta.env['VITE_DEMO_DATAVIS_URL']),
+      disabledInProduction: false,
+    },
+    {
+      id: 'xscan',
+      numberLabel: 'Demo 3:',
+      title: 'Supply-Chain Security Scanner',
+      description:
+        'Browser-based supply-chain security scanner for GitHub repositories, with lockfile dependency-tree analysis, terminal streaming, and structured summaries.',
+      tags: [
+        { label: 'Supply chain', color: 'amber' },
+        { label: 'xterm.js', color: 'slate' },
+        { label: 'Security', color: 'emerald' },
+        { label: 'SSE', color: 'cyan' },
+      ],
+      url: forceAwsUrls
+        ? awsDemoUrl('demo-xscan')
+        : demoUrl('demo-xscan', 'http://localhost:3003', import.meta.env['VITE_DEMO_XSCAN_URL']),
+      disabledInProduction: false,
+    },
+  ];
+}
 
 const FEATURES = [
   {
@@ -176,9 +206,87 @@ export function LandingPage(): React.JSX.Element {
   //       until portfolio/demo copy is fully externalised to packages/i18n.
   // TODO: Replace with standard `useTranslation()` after docs/todo/TODO_I18N.md Phase E.
   const { t } = useTranslation(undefined, { lng: DEFAULT_LANGUAGE });
+  const location = useLocation();
+  const printMode = isPrintMode(location.pathname, location.search);
+  const demos = useMemo(() => buildDemos(printMode), [printMode]);
+  const [showPrintButton, setShowPrintButton] = useState(false);
+
+  useEffect(() => {
+    if (!printMode) {
+      document.body.classList.remove('print-landing');
+      setShowPrintButton(false);
+      return;
+    }
+
+    const previousTitle = document.title;
+    document.title = PRINT_DOCUMENT_TITLE;
+    document.body.classList.add('print-landing');
+    setShowPrintButton(false);
+
+    let cancelled = false;
+    let printDialogSeen = false;
+
+    const onBeforePrint = () => {
+      printDialogSeen = true;
+      setShowPrintButton(false);
+    };
+
+    const onAfterPrint = () => {
+      // Keep a manual control available after the dialog closes (blocked auto-print or re-print).
+      if (!cancelled) {
+        setShowPrintButton(true);
+      }
+    };
+
+    window.addEventListener('beforeprint', onBeforePrint);
+    window.addEventListener('afterprint', onAfterPrint);
+
+    const tryPrint = () => {
+      if (cancelled) {
+        return;
+      }
+
+      window.print();
+
+      // If the browser blocked auto-print (no user gesture), surface a button.
+      window.setTimeout(() => {
+        if (!cancelled && !printDialogSeen) {
+          setShowPrintButton(true);
+        }
+      }, 500);
+    };
+
+    // Wait a tick so print CSS / layout settle before opening the dialog.
+    const timer = window.setTimeout(tryPrint, 250);
+
+    return () => {
+      cancelled = true;
+      window.clearTimeout(timer);
+      window.removeEventListener('beforeprint', onBeforePrint);
+      window.removeEventListener('afterprint', onAfterPrint);
+      document.body.classList.remove('print-landing');
+      document.title = previousTitle;
+    };
+  }, [printMode]);
 
   return (
-    <div className="bg-slate-50">
+    <div className={`bg-slate-50${printMode ? ' print-landing-root' : ''}`}>
+      {printMode && showPrintButton ? (
+        <div className="print-landing-chrome">
+          <Button
+            type="button"
+            size="lg"
+            className="min-h-11 gap-1.5 bg-brand-cyan px-5 text-white shadow-lg hover:bg-brand-cyan-hover"
+            onClick={() => {
+              window.print();
+            }}
+          >
+            <Printer className="size-4" aria-hidden="true" />
+            Print / Save as PDF
+          </Button>
+        </div>
+      ) : null}
+
       {/* Hero */}
       <section className="border-b border-slate-200/80 bg-white">
         <div className="mx-auto max-w-6xl px-4 pt-12 pb-6 text-center md:pt-16 md:pb-7">
@@ -194,6 +302,16 @@ export function LandingPage(): React.JSX.Element {
             <h1 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
               finografic monorepo-demo
             </h1>
+            {printMode ? (
+              <a
+                href={`${awsFrontendOrigin()}/`}
+                {...PRINT_EXTERNAL_LINK}
+                aria-label="Open live landing page"
+                className="print-landing-live-link inline-flex shrink-0 items-center text-muted-foreground no-underline"
+              >
+                <ExternalLink className="size-6 sm:size-7" strokeWidth={2} aria-hidden="true" />
+              </a>
+            ) : null}
           </div>
 
           <p className="mx-auto mt-4 max-w-2xl text-base text-muted-foreground sm:text-lg">
@@ -210,17 +328,24 @@ export function LandingPage(): React.JSX.Element {
                 <ArrowRight className="size-4" aria-hidden="true" />
               </a>
             </Button>
-            <Button
-              asChild
-              variant="outline"
-              size="lg"
-              className="min-h-11 gap-1.5 border-slate-300 px-5 text-slate-700"
-            >
-              <a href={GITHUB_URL} target="_blank" rel="noopener noreferrer">
+            {printMode ? (
+              <a href={GITHUB_URL} {...PRINT_EXTERNAL_LINK} className={PRINT_GITHUB_LINK_CLASS}>
                 <GitHubMark />
                 View source on GitHub
               </a>
-            </Button>
+            ) : (
+              <Button
+                asChild
+                variant="outline"
+                size="lg"
+                className="min-h-11 gap-1.5 border-slate-300 px-5 text-slate-700"
+              >
+                <a href={GITHUB_URL} target="_blank" rel="noopener noreferrer">
+                  <GitHubMark />
+                  View source on GitHub
+                </a>
+              </Button>
+            )}
           </div>
 
           <div className="mx-auto mt-8 max-w-6xl">
@@ -284,7 +409,7 @@ export function LandingPage(): React.JSX.Element {
           </p>
 
           <Row align="stretch" gutterWidth={20}>
-            {DEMOS.map((demo: DemoCallout) => {
+            {demos.map((demo: DemoCallout) => {
               const isDisabled = demo.disabledInProduction && import.meta.env.PROD;
 
               return (
@@ -324,6 +449,10 @@ export function LandingPage(): React.JSX.Element {
                         >
                           Open demo
                         </Button>
+                      ) : printMode ? (
+                        <a href={demo.url} {...PRINT_EXTERNAL_LINK} className={PRINT_DEMO_LINK_CLASS}>
+                          Open demo
+                        </a>
                       ) : (
                         <Button
                           asChild

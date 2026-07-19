@@ -3,7 +3,9 @@ set -euo pipefail
 
 rm -rf pages
 
-VITE_API_BASE_URL= VITE_BASE_PATH=/ pnpm --filter @workspace/client build:pages
+AWS_FRONTEND_URL="${VITE_AWS_FRONTEND_URL:-https://d2h3ihm2ddi3lx.cloudfront.net}"
+
+VITE_AWS_FRONTEND_URL="${AWS_FRONTEND_URL}" VITE_API_BASE_URL= VITE_BASE_PATH=/ pnpm --filter @workspace/client build:pages
 VITE_AUTH_API_BASE_URL= VITE_API_BASE_URL= VITE_BASE_PATH=/demo-ai-pipeline/ pnpm --filter @workspace/demo-ai-pipeline build:pages
 VITE_AUTH_API_BASE_URL= VITE_API_BASE_URL= VITE_BASE_PATH=/demo-datavis/ pnpm --filter @workspace/demo-datavis build:pages
 VITE_AUTH_API_BASE_URL= VITE_API_BASE_URL= VITE_DEMO_XSCAN_API_BASE_URL=https://deps-xscan-api.onrender.com VITE_BASE_PATH=/demo-xscan/ pnpm --filter @workspace/demo-xscan build:pages
