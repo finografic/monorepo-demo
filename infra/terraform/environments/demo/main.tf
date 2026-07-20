@@ -79,7 +79,7 @@ resource "aws_cloudfront_distribution" "frontend" {
     custom_origin_config {
       http_port              = var.ec2_api_port
       https_port             = 443
-      origin_read_timeout    = 60
+      origin_read_timeout    = 120
       origin_protocol_policy = "http-only"
       origin_ssl_protocols   = ["TLSv1.2"]
     }

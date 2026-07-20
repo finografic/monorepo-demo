@@ -47,6 +47,7 @@ const LiveBodySchema = v.object({
 });
 
 const LIVE_MAX_TOKENS = 2400;
+const LIVE_STREAM_KEEPALIVE_MS = 15_000;
 
 function getStringDelta(delta: unknown, key: 'content' | 'reasoning_content'): string {
   if (!delta || typeof delta !== 'object') return '';
@@ -150,8 +151,15 @@ const streamRouter = createRouter()
     let estimatedCostUsd: number | undefined;
 
     return stream(c, async (s) => {
+      let keepAliveTimer: ReturnType<typeof setInterval> | undefined;
+
       try {
         await s.write(': connected\n\n');
+        keepAliveTimer = setInterval(() => {
+          void s.write(': keepalive\n\n').catch(() => {
+            if (keepAliveTimer) clearInterval(keepAliveTimer);
+          });
+        }, LIVE_STREAM_KEEPALIVE_MS);
 
         const aiStream = await client.chat.completions.create({
           model,
@@ -227,6 +235,8 @@ const streamRouter = createRouter()
           message: err instanceof Error ? err.message : 'Live generation failed',
         } satisfies StreamChunk);
         await s.write(`data: ${errPayload}\n\n`);
+      } finally {
+        if (keepAliveTimer) clearInterval(keepAliveTimer);
       }
     });
   });

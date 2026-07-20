@@ -6,8 +6,8 @@ import { ModelSelector } from 'components/ModelSelector/ModelSelector';
 import { PartialMarkdownGuard } from 'components/PartialMarkdownGuard/PartialMarkdownGuard';
 import { PromptSelector } from 'components/PromptSelector/PromptSelector';
 import {
-  PromptSourceSelector,
   PROMPT_SOURCE_MODE_LABELS,
+  PromptSourceSelector,
 } from 'components/PromptSourceSelector/PromptSourceSelector';
 import { SourceToggle } from 'components/SourceToggle/SourceToggle';
 import { StreamingControls } from 'components/StreamingControls/StreamingControls';
@@ -187,7 +187,9 @@ export function DemoPage() {
       footer={
         <>
           <p className="text-sm text-primary-foreground">
-            {PROMPT_SOURCE_MODE_LABELS[mode]}
+            {PROMPT_SOURCE_MODE_LABELS[mode]?.startsWith('Live LLM API')
+              ? 'Live API - OpenCode LLM responses may take around 60 seconds.'
+              : PROMPT_SOURCE_MODE_LABELS[mode]}
             {sourceReference ? (
               <>
                 {' · '}
@@ -221,7 +223,10 @@ export function DemoPage() {
         ) : buffer.length ? (
           <PartialMarkdownGuard buffer={buffer} showRaw={showRaw} />
         ) : (
-          <StandbyPlaceholder label="Select a prompt and click Generate to begin." />
+          <StandbyPlaceholder
+            label="Select a prompt and click Generate to begin."
+            hint="Live OpenCode LLM responses may take around 60 seconds."
+          />
         )}
       </div>
     </DemoLayout>
