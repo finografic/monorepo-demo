@@ -69,5 +69,17 @@
       "style": "aligned"
     }
   },
-  "markdown.styles": ["node_modules/@finografic/md-lint/styles/markdown-github-light.css"]
+  "markdown.styles": ["node_modules/@finografic/md-lint/styles/markdown-github-light.css"],
+  "reactTsScss.autoComplete": true,
+  "reactTsScss.definition": true,
+  "reactTsScss.peekProperties": true,
+  "reactTsScss.cssAutoComplete": true,
+  "reactTsScss.cssDefinitions": true,
+  "reactTsScss.diagnostics": true,
+  "reactTsScss.baseDir": "src",
+  "reactTsScss.cssSyntaxColor": true,
+  "reactTsScss.tsCleanUpDefs": true,
+  "reactTsScss.cleanUpDefs": ["*.module.css", "*.module.scss", "*.module.sass", "*.module.less"],
+  "reactTsScss.references": true,
+  "reactTsScss.codelens": false
 }

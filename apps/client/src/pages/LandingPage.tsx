@@ -387,7 +387,9 @@ export function LandingPage(): React.JSX.Element {
                       <feature.Icon className="size-8 text-brand-green-strong" strokeWidth={1.75} />
                     </div>
                     <div>
-                      <p className="font-semibold">{t(feature.titleKey, feature.titleDefault)}</p>
+                      <p className="font-heading font-semibold">
+                        {t(feature.titleKey, feature.titleDefault)}
+                      </p>
                       <p className="mt-1 text-sm text-muted-foreground">
                         {t(feature.descKey, feature.descDefault)}
                       </p>
@@ -417,7 +419,7 @@ export function LandingPage(): React.JSX.Element {
                   <Card className="flex h-full flex-col border-2">
                     <CardContent className="flex flex-1 flex-col gap-3 p-5">
                       <div className="flex flex-wrap items-center gap-2">
-                        <p className="text-lg font-semibold leading-snug text-foreground">
+                        <p className="font-heading text-lg font-semibold leading-snug text-foreground">
                           <span className="text-foreground/40 font-bold">{demo.numberLabel}</span>
                           <br />
                           {demo.title}
