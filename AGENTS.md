@@ -27,6 +27,19 @@ Reference: [`docs/process/PROJECT_MEMORY_MODEL.md`](./docs/process/PROJECT_MEMOR
 - All internal workspace packages use the `@workspace/*` scope (e.g. `@workspace/client`, `@workspace/server`, `@workspace/config`).
 - External published dependencies use their real npm scope (e.g. `@finografic/project-scripts`).
 
+## AWS Deployment Guardrails
+
+- Canonical AWS frontend is S3 + CloudFront at `https://d2h3ihm2ddi3lx.cloudfront.net/`; deploy with `pnpm aws:frontend:deploy`, then verify live HTML and asset URLs with `curl`.
+- Never use `aws s3 sync --delete` for normal hashed frontend asset deploys. Old Vite hashes must remain available because stale browser/CloudFront HTML can reference them briefly.
+- Upload HTML with `Cache-Control: no-cache`, upload hashed JS/CSS/assets with long immutable caching, and invalidate CloudFront after deploys or manual S3 object repair.
+- If CloudFront shows blank pages or asset `403`s, inspect live HTML, requested asset paths, S3 object versions, and CloudFront invalidations before changing Terraform.
+- Do not restore old JS bundles blindly. Old bundles can reintroduce removed API URLs; for stale xscan hashes, prefer repointing old keys to the current bundle content.
+- AWS `demo-xscan` must call same-origin `/api/xscan`, never `https://deps-xscan-api.onrender.com`; check built output in `pages/demo-xscan` and browser DevTools.
+- xscan health route through CloudFront is `/api/xscan/api/health`; scan stream route is `/api/xscan/api/scan?...`.
+- `deps-xscan-api` is a separate EC2 container on host port `4001`, reached by `apps/server` through `XSCAN_API_URL=http://127.0.0.1:4001`; do not expose it publicly.
+- Rebuilding `deps-xscan-api` on EC2 requires a private-package token (`NPM_TOKEN`) for GitHub Packages. Do not print token values in SSM, Docker, logs, docs, or final responses.
+- Incident runbook: `docs/process/AWS_XSCAN_DEPLOYMENT_INCIDENT_REPORT.md`.
+
 ## Rules — Global
 
 Rules are canonical in `.github/instructions/` — see `README.md` there for folder structure.

@@ -8,9 +8,10 @@ REGION="ap-southeast-2"
 pnpm aws:frontend:build
 
 # Content-hashed assets (filenames change on every build) are safe to cache forever.
+# Keep previous hashes in the bucket so stale HTML in a browser or CloudFront edge
+# does not break by referencing an asset deleted by a newer deploy.
 aws s3 sync pages "$BUCKET" \
   --region "$REGION" \
-  --delete \
   --exclude '*.html' \
   --cache-control 'public,max-age=31536000,immutable'
 

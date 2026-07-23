@@ -16,3 +16,4 @@ cp -R apps/demo-ai-pipeline/dist/. pages/demo-ai-pipeline/
 cp -R apps/demo-datavis/dist/. pages/demo-datavis/
 cp -R apps/demo-xscan/dist/. pages/demo-xscan/
 cp pages/index.html pages/404.html
+cp packages/shared/src/assets/favicon.svg pages/favicon.ico
