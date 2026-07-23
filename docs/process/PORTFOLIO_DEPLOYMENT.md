@@ -2,6 +2,21 @@
 
 📅 Jun 29, 2026
 
+> **TEMPORARY (2026-07-23):** GitHub Pages (`https://finografic.github.io/monorepo-demo/`) no
+> longer builds/serves the apps described below. It now publishes a static redirect to the AWS
+> CloudFront deployment (`https://d2h3ihm2ddi3lx.cloudfront.net/`), preserving old shared links,
+> because the Render.com account backing this section is being cancelled.
+>
+> **To revert:** `git revert` the commit that replaced
+> `.github/workflows/deploy-demo-pages.yml` with the redirect-only version — it restores the full
+> build/deploy steps below unchanged. The rest of this doc describes that pre-redirect state and
+> is kept for when/if Pages is reactivated.
+>
+> **Known gap:** the AWS CloudFront deployment's `demo-xscan` app still calls
+> `https://deps-xscan-api.onrender.com` (a separate Render service from the main API) — see
+> `scripts/build-aws-frontend.sh`. If that service is also cancelled, `demo-xscan` will break on
+> the AWS site too; this needs its own fix and is not covered by the Pages redirect.
+
 ## Target Architecture
 
 Use a mixed deployment:

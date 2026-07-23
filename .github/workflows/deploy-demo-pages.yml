@@ -1,101 +1,77 @@
 name: Deploy Demo Pages
 
+# TEMPORARY: this workflow no longer builds the client/demo apps. It publishes a
+# static redirect to the AWS CloudFront deployment, because the Render.com-hosted
+# API this Pages site depended on is being decommissioned. Old links to
+# https://finografic.github.io/monorepo-demo/... keep working by bouncing to the
+# equivalent path on https://d2h3ihm2ddi3lx.cloudfront.net.
+#
+# To revert: `git revert` the commit that introduced this redirect, which restores
+# the previous build-and-deploy steps (client + all three demo apps against Render/
+# App Runner). See docs/process/PORTFOLIO_DEPLOYMENT.md for the full writeup.
+
 on:
   push:
-    branches: [master, feat/aws-lambda-demo]
+    branches: [master]
     paths:
       - '.github/workflows/deploy-demo-pages.yml'
-      - '.moon/**'
-      - 'apps/client/**'
-      - 'apps/demo-ai-pipeline/**'
-      - 'apps/demo-datavis/**'
-      - 'apps/demo-xscan/**'
-      - 'packages/shared/**'
-      - 'packages/ui/**'
-      - 'package.json'
-      - 'pnpm-lock.yaml'
-      - 'pnpm-workspace.yaml'
   workflow_dispatch:
-    inputs:
-      api_base_url:
-        description: 'API base URL for the Pages build'
-        required: false
-        default: 'https://qvyq3mdegk.ap-southeast-2.awsapprunner.com'
-      xscan_api_base_url:
-        description: 'xscan API base URL for the Pages build'
-        required: false
-        default: ''
 
 permissions:
   contents: read
-  id-token: write
-  packages: read
   pages: write
+  id-token: write
 
 concurrency:
   group: pages
   cancel-in-progress: false
 
+env:
+  AWS_FRONTEND_URL: https://d2h3ihm2ddi3lx.cloudfront.net
+
 jobs:
   build:
     runs-on: ubuntu-latest
 
-    env:
-      PAGES_BASE: /${{ github.event.repository.name }}
-      PAGES_API_BASE_URL: ${{ github.event_name == 'workflow_dispatch' && inputs.api_base_url || github.ref_name == 'feat/aws-lambda-demo' && 'https://qvyq3mdegk.ap-southeast-2.awsapprunner.com' || vars.DEMO_API_BASE_URL }}
-      PAGES_XSCAN_API_BASE_URL: ${{ github.event_name == 'workflow_dispatch' && inputs.xscan_api_base_url || vars.DEMO_XSCAN_API_BASE_URL }}
-
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup toolchain
-        uses: moonrepo/setup-toolchain@v0
-        with:
-          auto-install: true
-
-      - name: Configure GitHub Packages registry
+      - name: Build redirect page
         run: |
-          npm config set @finografic:registry https://npm.pkg.github.com
-          npm config set //npm.pkg.github.com/:_authToken ${{ secrets.NPM_TOKEN }}
-
-      - name: Install deps
-        run: pnpm install --frozen-lockfile
-
-      - name: Build portfolio landing page
-        env:
-          VITE_API_BASE_URL: ${{ env.PAGES_API_BASE_URL }}
-          VITE_BASE_PATH: ${{ env.PAGES_BASE }}/
-        run: moon run client:build-pages
-
-      - name: Build AI pipeline demo
-        env:
-          VITE_AUTH_API_BASE_URL: ${{ env.PAGES_API_BASE_URL }}
-          VITE_API_BASE_URL: ${{ env.PAGES_API_BASE_URL }}
-          VITE_BASE_PATH: ${{ env.PAGES_BASE }}/demo-ai-pipeline/
-        run: moon run demo-ai-pipeline:build-pages
-
-      - name: Build data visualisation demo
-        env:
-          VITE_AUTH_API_BASE_URL: ${{ env.PAGES_API_BASE_URL }}
-          VITE_API_BASE_URL: ${{ env.PAGES_API_BASE_URL }}
-          VITE_BASE_PATH: ${{ env.PAGES_BASE }}/demo-datavis/
-        run: moon run demo-datavis:build-pages
-
-      - name: Build xscan demo
-        env:
-          VITE_AUTH_API_BASE_URL: ${{ env.PAGES_API_BASE_URL }}
-          VITE_API_BASE_URL: ${{ env.PAGES_XSCAN_API_BASE_URL }}
-          VITE_BASE_PATH: ${{ env.PAGES_BASE }}/demo-xscan/
-        run: moon run demo-xscan:build-pages
-
-      - name: Assemble Pages artifact
-        run: |
-          mkdir -p pages/demo-ai-pipeline pages/demo-datavis pages/demo-xscan
-          cp -R apps/client/dist/. pages/
-          cp -R apps/demo-ai-pipeline/dist/. pages/demo-ai-pipeline/
-          cp -R apps/demo-datavis/dist/. pages/demo-datavis/
-          cp -R apps/demo-xscan/dist/. pages/demo-xscan/
+          mkdir -p pages
+          cat > pages/index.html <<HTML
+          <!doctype html>
+          <html lang="en">
+            <head>
+              <meta charset="utf-8" />
+              <meta http-equiv="refresh" content="0; url=${AWS_FRONTEND_URL}/" />
+              <title>monorepo-demo has moved</title>
+              <style>
+                body { font-family: system-ui, sans-serif; max-width: 32rem; margin: 4rem auto; padding: 0 1rem; color: #1a1a1a; }
+                a { color: #0b8797; }
+                p.note { color: #666; font-size: 0.9rem; }
+              </style>
+            </head>
+            <body>
+              <h1>This demo has moved</h1>
+              <p>
+                Redirecting to <a id="target" href="${AWS_FRONTEND_URL}/">${AWS_FRONTEND_URL}/</a>&hellip;
+              </p>
+              <p class="note">
+                Temporary redirect: this GitHub Pages site previously called a Render.com-hosted API that
+                has since been decommissioned. Update any bookmarks to the AWS-hosted link above.
+              </p>
+              <script>
+                (function () {
+                  var base = '/${{ github.event.repository.name }}';
+                  var path = window.location.pathname;
+                  var suffix = path.indexOf(base) === 0 ? path.slice(base.length) : '/';
+                  var target = '${AWS_FRONTEND_URL}' + suffix + window.location.search + window.location.hash;
+                  document.getElementById('target').href = target;
+                  window.location.replace(target);
+                })();
+              </script>
+            </body>
+          </html>
+          HTML
           cp pages/index.html pages/404.html
 
       - name: Configure Pages
