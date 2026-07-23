@@ -47,6 +47,16 @@ The manual GitHub Actions workflow `.github/workflows/deploy-aws-frontend.yml` i
 frontend assets to S3 and invalidates CloudFront. It does not deploy EC2 server code, run database work, or apply
 Terraform.
 
+AWS incident/runbook notes:
+
+- [AWS xscan Deployment Incident Report](/docs/process/AWS_XSCAN_DEPLOYMENT_INCIDENT_REPORT.md) documents the
+  2026-07-23 CloudFront stale asset and xscan API incident.
+- `scripts/deploy-aws-frontend.sh` intentionally does **not** use `--delete` for hashed JS/CSS/assets. Do not re-add
+  deletion for normal deploys; stale browser or CloudFront HTML can still reference older Vite hashes.
+- HTML should remain `Cache-Control: no-cache`; hashed assets should remain long-lived immutable.
+- If stale asset keys need repair, prefer repointing old JS keys to current JS content when old bundles may contain
+  removed API origins.
+
 ## AWS Resources and Runtime
 
 Known current AWS resource identifiers:
@@ -58,6 +68,9 @@ Known current AWS resource identifiers:
 - EC2 API public DNS: `ec2-54-252-64-116.ap-southeast-2.compute.amazonaws.com`
 - EC2 API container: `monorepo-demo-api`
 - EC2 API port: `4000`
+- EC2 xscan API container: `deps-xscan-api`
+- EC2 xscan API port: `4001`
+- EC2 xscan proxy base: `/api/xscan/*` -> `http://127.0.0.1:4001`
 - RDS endpoint: `monorepo-demo-demo-postgres.cvkgiaqoc64i.ap-southeast-2.rds.amazonaws.com:5432`
 - RDS database: `monorepo_demo`
 - AWS region: `ap-southeast-2`
@@ -69,6 +82,7 @@ EC2 runtime facts:
 - `AUTH_URL=https://d2h3ihm2ddi3lx.cloudfront.net`
 - `AUTH_COOKIE_SECURE=true`
 - `AUTH_COOKIE_SAME_SITE=none`
+- `XSCAN_API_URL=http://127.0.0.1:4001`
 
 Do not commit AWS credentials, database URLs with passwords, local `.env` files, generated Terraform plans, or SSM
 parameter files containing secrets.
@@ -106,6 +120,8 @@ These passed after the CloudFront -> EC2 -> RDS cutover:
 - `/admin` serves the SPA and redirects anonymous users to login.
 - `/demo-ai-pipeline/`, `/demo-datavis/`, and `/demo-xscan/` resolve through CloudFront.
 - `/api/health` returns JSON `{"status":"ok"}`.
+- `/api/xscan/api/health` returns JSON `{"ok":true}`.
+- `/api/xscan/api/scan?...OWASP/NodeGoat...` streams SSE output and materializes the repo from `master`.
 - Invalid `/api/*` routes return JSON `404`, not `index.html`.
 - `/api/i18n/translations?lng=en-GB` returns seeded RDS-backed translation JSON.
 - Fixture streaming returns `text/event-stream`.
@@ -124,8 +140,8 @@ The deployed frontend includes:
 - `apps/client` — landing, auth/login, dashboard/admin shell.
 - `apps/demo-ai-pipeline` — protected AI markdown streaming demo with fixture and live modes.
 - `apps/demo-datavis` — protected transport data dashboard.
-- `apps/demo-xscan` — protected dependency scan demo; still uses the external deps-xscan API unless intentionally
-  migrated.
+- `apps/demo-xscan` — protected dependency scan demo; uses same-origin `/api/xscan`, proxied by the EC2 Hono API to
+  the private `deps-xscan-api` container. The AWS build must not call the old Render URL.
 
 The AI pipeline prompt set is TMR/transport-flavoured and includes:
 
