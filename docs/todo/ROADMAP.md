@@ -129,6 +129,8 @@ Demo apps have Vitest/Playwright coverage locally; server/starter routes do not 
 
 - Expand server test coverage and add a CI `test` job
 - Optional map-heavy datavis views (crash locations, incident layers) from TMR source list
+- TypeScript 5.9 → 6 → 7 upgrade, staged via TS6 as a diagnostics bridge —
+  [TODO — TS7 Upgrade](/docs/todo/TODO_TS7_UPGRADE.md)
 
 ## P3 — Backlog
 
