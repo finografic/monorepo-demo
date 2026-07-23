@@ -30,7 +30,7 @@
     "build:pages": "moon run client:build-pages demo-ai-pipeline:build-pages demo-datavis:build-pages demo-xscan:build-pages",
     "·········· AWS_FRONTEND": "············································",
     "aws:frontend:build": "bash scripts/build-aws-frontend.sh",
-    "aws:frontend:deploy": "pnpm aws:frontend:build && aws s3 sync pages s3://monorepo-demo-demo-frontend --delete --region ap-southeast-2 && aws cloudfront create-invalidation --distribution-id ERCVOSB81GPS9 --paths '/*'",
+    "aws:frontend:deploy": "bash scripts/deploy-aws-frontend.sh",
     "·········· AWS_INFRA": "················································",
     "aws:infra:outputs": "terraform -chdir=infra/terraform/environments/demo output",
     "aws:infra:plan": "terraform -chdir=infra/terraform/environments/demo plan -out=tfplan",
