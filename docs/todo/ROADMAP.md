@@ -129,8 +129,6 @@ Demo apps have Vitest/Playwright coverage locally; server/starter routes do not 
 
 - Expand server test coverage and add a CI `test` job
 - Optional map-heavy datavis views (crash locations, incident layers) from TMR source list
-- TypeScript 5.9 → 6 → 7 upgrade, staged via TS6 as a diagnostics bridge —
-  [TODO — TS7 Upgrade](/docs/todo/TODO_TS7_UPGRADE.md)
 
 ## P3 — Backlog
 
@@ -154,19 +152,20 @@ Demo apps have Vitest/Playwright coverage locally; server/starter routes do not 
 
 ## Done
 
-| Date       | Item                                                                         |
-| ---------- | ---------------------------------------------------------------------------- |
-| 2026-05-27 | Initial repo scaffolding and roadmap                                         |
-| 2026-05-27 | Phase 01 — workspace bootstrap                                               |
-| 2026-05-27 | Phase 02 — client and server app shells                                      |
-| 2026-05-27 | Phase 03 — `@workspace/config` extracted; core skipped                       |
-| 2026-05-27 | Phase 04 — Auth.js, Drizzle, i18next, admin CMS, client UI                   |
-| 2026-05-27 | Phase 05 — pino logging, OpenAPI/Scalar, error envelope, rate limiting       |
-| 2026-06-28 | Phase 06 — Vite 8, Hono RPC, TanStack Query, route-tree migration            |
-| 2026-06-28 | Phase 07 — shadcn/Tailwind 4 UI package migration                            |
-| 2026-06-29 | Portfolio shell — `DemoLayout`, shared assets, landing links all three demos |
-| 2026-06-29 | GitHub Pages workflow — client + three demo apps                             |
-| 2026-06-30 | `demo-datavis` — seven charts, keyboard a11y, live CKAN views                |
-| 2026-06-30 | `demo-xscan` — terminal scan console with `DemoLayout`                       |
-| 2026-06-30 | AI pipeline — five TMR fixtures and prompt manifest                          |
-| 2026-06-30 | Cross-origin auth seams — CORS allowlist, credentialed stream, `requireAuth` |
+| Date       | Item                                                                                  |
+| ---------- | ------------------------------------------------------------------------------------- |
+| 2026-05-27 | Initial repo scaffolding and roadmap                                                  |
+| 2026-05-27 | Phase 01 — workspace bootstrap                                                        |
+| 2026-05-27 | Phase 02 — client and server app shells                                               |
+| 2026-05-27 | Phase 03 — `@workspace/config` extracted; core skipped                                |
+| 2026-05-27 | Phase 04 — Auth.js, Drizzle, i18next, admin CMS, client UI                            |
+| 2026-05-27 | Phase 05 — pino logging, OpenAPI/Scalar, error envelope, rate limiting                |
+| 2026-06-28 | Phase 06 — Vite 8, Hono RPC, TanStack Query, route-tree migration                     |
+| 2026-06-28 | Phase 07 — shadcn/Tailwind 4 UI package migration                                     |
+| 2026-06-29 | Portfolio shell — `DemoLayout`, shared assets, landing links all three demos          |
+| 2026-06-29 | GitHub Pages workflow — client + three demo apps                                      |
+| 2026-06-30 | `demo-datavis` — seven charts, keyboard a11y, live CKAN views                         |
+| 2026-06-30 | `demo-xscan` — terminal scan console with `DemoLayout`                                |
+| 2026-06-30 | AI pipeline — five TMR fixtures and prompt manifest                                   |
+| 2026-06-30 | Cross-origin auth seams — CORS allowlist, credentialed stream, `requireAuth`          |
+| 2026-07-23 | TypeScript 5.9 → 6 → 7 upgrade — [DONE — TS7 Upgrade](/docs/todo/DONE_TS7_UPGRADE.md) |
