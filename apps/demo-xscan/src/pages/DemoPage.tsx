@@ -27,10 +27,9 @@ const XSCAN_API_BASE_URL = (
   ''
 ).replace(/\/$/, '');
 
-// TEMPORARY (2026-07-23): deps-xscan-api's Render.com host was decommissioned, so the
-// live scanner has no working backend. Showing a placeholder instead of a broken fetch
-// until the API is redeployed elsewhere. Revert by flipping this back to false.
-const XSCAN_TEMPORARILY_OFFLINE = true;
+// deps-xscan-api now runs on the EC2 instance, proxied internally by apps/server at
+// /api/xscan/* (see apps/server/src/routes/xscan). No Render.com dependency anymore.
+const XSCAN_TEMPORARILY_OFFLINE = false;
 
 export function DemoPage() {
   return (
