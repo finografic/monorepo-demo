@@ -15,6 +15,7 @@ const ServerEnvSchema = v.pipe(
     DATA_COOKIE_SUFFIX: v.optional(v.string(), 'session_data'),
     AUTH_INVALIDATE_JWT_ON_SERVER_BOOT: v.optional(v.string()),
     CORS_ORIGINS: v.optional(v.string()),
+    XSCAN_API_URL: v.optional(v.pipe(v.string(), v.url()), 'http://127.0.0.1:4001'),
   }),
   v.transform((raw) => {
     const prefix = raw.AUTH_COOKIE_PREFIX;
@@ -72,6 +73,7 @@ const envServerValidated = v.parse(ServerEnvSchema, {
   DATA_COOKIE_SUFFIX: process.env.DATA_COOKIE_SUFFIX,
   AUTH_INVALIDATE_JWT_ON_SERVER_BOOT: process.env.AUTH_INVALIDATE_JWT_ON_SERVER_BOOT,
   CORS_ORIGINS: process.env.CORS_ORIGINS,
+  XSCAN_API_URL: process.env.XSCAN_API_URL,
 });
 
 type EnvServer = typeof envShared & typeof envServerValidated;

@@ -13,6 +13,7 @@ import { indexRouter } from './routes/index.route';
 import { streamRouter } from './routes/stream';
 import { translationsRouter } from './routes/translations';
 import { usersRouter } from './routes/users';
+import { xscanRouter } from './routes/xscan';
 
 const app = createApp();
 
@@ -34,7 +35,8 @@ export const appWithRoutes = app
   .route('/api/i18n', i18nRouter)
   .route('/api/stream', streamRouter)
   .route('/api/users', usersRouter)
-  .route('/api/translations', translationsRouter);
+  .route('/api/translations', translationsRouter)
+  .route('/api/xscan', xscanRouter);
 
 configureOpenAPI(appWithRoutes);
 
