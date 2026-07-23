@@ -12,10 +12,14 @@
 > build/deploy steps below unchanged. The rest of this doc describes that pre-redirect state and
 > is kept for when/if Pages is reactivated.
 >
-> **Known gap:** the AWS CloudFront deployment's `demo-xscan` app still calls
-> `https://deps-xscan-api.onrender.com` (a separate Render service from the main API) — see
-> `scripts/build-aws-frontend.sh`. If that service is also cancelled, `demo-xscan` will break on
-> the AWS site too; this needs its own fix and is not covered by the Pages redirect.
+> **Resolved (2026-07-23):** `demo-xscan`'s scan API no longer depends on Render at all. It now
+> runs as a `deps-xscan-api` container on the same EC2 instance as `monorepo-demo-api` (both on
+> `--network host`), reached through an internal proxy at `apps/server/src/routes/xscan` mounted
+> at `/api/xscan/*` — no Terraform/CloudFront changes needed since `/api/*` already routes to EC2.
+> The AWS build points `VITE_DEMO_XSCAN_API_BASE_URL` at the relative `/api/xscan` path (see
+> `scripts/build-aws-frontend.sh`). The `deps-xscan` repo has its own
+> `Dockerfile.ec2-xscan-api` for this. This part is **not** temporary — see the updated xscan
+> section below.
 
 ## Target Architecture
 
@@ -97,6 +101,24 @@ Recommended `CORS_ORIGINS` for the published Pages site:
 ```text
 https://finografic.github.io
 ```
+
+## xscan API (EC2, canonical)
+
+`demo-xscan`'s scan execution runs in a separate repo, `finografic/deps-xscan`
+(`demo/api/server.ts` — spawns the `xscan` CLI via `node-pty`, streams SSE output). It runs as a
+second container on the same EC2 instance as `monorepo-demo-api`:
+
+- Build: `Dockerfile.ec2-xscan-api` in the `deps-xscan` repo (root CLI build + `demo/api`,
+  `node-pty` compiled for `linux/amd64`).
+- Run: `docker run -d --name deps-xscan-api --restart unless-stopped --network host -e PORT=4001 deps-xscan-api:latest`
+- Both `deps-xscan-api` and `monorepo-demo-api` run with `--network host` so `apps/server`'s
+  internal proxy (`apps/server/src/routes/xscan`, mounted at `/api/xscan/*`) can reach it over
+  `http://127.0.0.1:4001` — set via `XSCAN_API_URL` in `/opt/monorepo-demo/.env`.
+- Not published on any public port; only reachable through the `/api/xscan/*` proxy, which
+  CloudFront already forwards to EC2 via the existing `/api/*` behavior. No security group or
+  Terraform change needed.
+- To redeploy after a `deps-xscan` change: SSM into EC2, `git -C /opt/deps-xscan/repo pull`,
+  rebuild the image, `docker rm -f deps-xscan-api` + rerun the `docker run` above.
 
 For local testing against a hosted API, include local origins too:
 
