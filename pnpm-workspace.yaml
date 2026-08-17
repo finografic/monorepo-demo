@@ -10,3 +10,6 @@ allowBuilds:
 onlyBuiltDependencies:
   - esbuild
   - node-pty
+
+minimumReleaseAgeExclude:
+  - '@finografic/project-scripts@1.6.1'
