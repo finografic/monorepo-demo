@@ -4,9 +4,5 @@ import type { OxlintConfig } from 'oxlint';
 
 export default defineConfig({
   ...oxlintClientConfig,
-  rules: {
-    ...oxlintClientConfig.rules,
-    'react/react-in-jsx-scope': 'off',
-  },
   overrides: [testOverrides, configOverrides],
 } satisfies OxlintConfig);

@@ -13,3 +13,4 @@ onlyBuiltDependencies:
 
 minimumReleaseAgeExclude:
   - '@finografic/project-scripts@1.6.1'
+  - '@finografic/oxc-config@2.9.0'
